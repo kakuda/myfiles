@@ -1,0 +1,16 @@
+# cjb
+
+FIXME: write description
+
+http://wizardsoweb.com/djb-hash-program-and-algorithm/2011/05/
+http://www.unixuser.org/~euske/doc/cdbinternals/index.html
+
+## Usage
+
+FIXME: write
+
+## License
+
+Copyright (C) 2011 FIXME
+
+Distributed under the Eclipse Public License, the same as Clojure.

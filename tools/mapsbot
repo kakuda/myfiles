@@ -1,0 +1,108 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH.push "/home/nakakuda/svn/libs/ruby"
+
+require 'ymchat'
+require 'yaml/store'
+
+class BotClient < MyClient
+  
+  SERVER_YAML = "qa-servers.yaml"
+  
+  def on_message(from, to, message, raw_message)
+    print "[#{from}] #{message}\n"
+    if message.index(@esc) == 0
+      commands = message[@esc.length .. -1].split
+      case commands[0]
+      when "add"
+        if commands[1]
+          server = commands[1]
+          if add_server(from, server)
+            send_message(from, "サーバー #{server} をQA中として追加しました")
+          end
+        else
+          send_message(from, "引数が足りません: /#{commands[0]} server")
+        end
+        
+      when "del"
+        if commands[1]
+          server = commands[1]
+          if del_server(from, server)
+            send_message(from, "サーバー #{server} をQA中リストから削除しました")
+          end
+        else
+          send_message(from, "引数が足りません: /#{commands[0]} server")
+        end
+        
+      when "list"
+        servers = list_server
+        if servers.empty?
+          send_message(from, "現在登録されているQA中のサーバーはありません")        
+        else
+          send_message(from, "現在登録されているQA中のサーバー一覧\n#{servers}")
+        end
+        
+      else
+        send_message(from, <<"USAGE")
+利用可能なコマンド一覧
+/add server	: server をQA中として登録します 
+/del server	: server をQA中リストから削除します
+/list		: 現在QA中のサーバ一覧を出力します
+USAGE
+      end
+    end
+  end
+  
+  def add_server(from, server)
+    yml = YAML::Store.new(SERVER_YAML)
+    yml.transaction do
+      if yml.root?(server)
+        user = yml[server]
+        send_message(from, "#{server}は既に#{user}さんが登録済みです")
+        return false
+      end
+      yml[server] = from
+    end    
+    return true
+  end
+
+  def del_server(from, server)
+    yml = YAML::Store.new(SERVER_YAML)
+    yml.transaction do
+      if yml.root?(server)
+        yml.delete(server)
+        return true
+      end
+    end
+    
+    send_message(from, "#{server}は登録されていません")
+    return false
+  end
+
+  def list_server
+    str = ""
+    yml = YAML::Store.new(SERVER_YAML, :SortKeys => true)
+    yml.transaction(true) do
+      yml.roots.sort.each do |server|
+        str << "#{server} [#{yml[server]}]\n"
+      end
+    end
+    return str
+  end
+  
+  def send_message(to, message)
+    sysmsg("#{message} => #{to}")
+    super(to, message)
+  end
+  
+end
+
+hide = false
+if ARGV[0] == "-h" || ARGV[0] == "--hide"
+	ARGV.shift
+	hide = true
+end
+nick, friend = *ARGV
+
+#BotClient.new.run(nick, friend, hide)
+BotClient.new.run("chkyj_st_nakakuda", friend, hide)

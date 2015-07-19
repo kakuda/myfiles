@@ -1,0 +1,30 @@
+escape ^T^T
+vbell off
+startup_message off
+defscrollback 10000
+hardstatus alwayslastline "[%02c] %`%-w%{=b bw}%n %t%{-}%+w"
+autodetach on
+defutf8 on
+defkanji utf-8
+encoding utf-8 utf-8
+defencoding utf-8
+
+## http://frexx.de/xterm-256-notes/
+# erase background with current bg color
+defbce "on"
+attrcolor b ".I"
+# do not use 'screen-bce'
+term xterm-256color
+termcapinfo xterm* 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
+#termcapinfo xterm* 'Co#256:pa#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm:'
+
+bind 'U' eval "encoding utf8" "stuff 'export LANG=ja_JP.UTF-8\012'"
+bind 'E' eval "encoding euc"  "stuff 'export LANG=ja_JP.EUC-JP\012'"
+
+# Keybind like Emacs (ex. C-t x 2)
+bind -c REGION 2 split
+bind -c REGION 1 only
+bind -c REGION 0 remove
+bind -c REGION o focus
+#bind -c REGION ^ resize
+bind x command -c REGION

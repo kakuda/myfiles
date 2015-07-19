@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates><template name="for" description="For loop" context="perl" enabled="true">for ($$i = 0; $$i &lt; ; $$i++) {
+    ${cursor}
+}</template><template name="sub" description="sub routine" context="perl" enabled="true">sub ${cursor} {
+    my $$self = shift;
+
+}</template><template name="log" description="debug log print" context="perl" enabled="true">$$log-&gt;debug("${cursor}");</template><template name="file" description="new file template" context="perl" enabled="true">#!/usr/local/bin/perl -w
+#
+# $$Id: $$
+#
+use strict;
+
+${cursor}
+
+__END__</template><template name="module" description="new module template" context="perl" enabled="true">package ${filename};
+#
+# $$Id: $$
+#
+use strict;
+
+sub new {
+    ${cursor}
+}
+
+1;
+__END__</template><template name="for" description="hash loop" context="perl" enabled="true">for my $$key (keys %hash) {&#13;
+    print "$$key\n";&#13;
+}</template><template name="open" description="file open" context="perl" enabled="true">open(IN, "&lt;${cursor}");&#13;
+while (&lt;IN&gt;) {&#13;
+    print;&#13;
+}&#13;
+close IN;</template><template name="for" description="array loop" context="perl" enabled="true">for my $$i (@array) {&#13;
+    ${cursor}&#13;
+}</template><template name="substr" description="substring" context="perl" enabled="true">substr $${str}, $${offset}, $${len};</template><template name="alltest" description="Test::Harness all test" context="perl" enabled="true">#!/usr/local/bin/perl -w&#13;
+&#13;
+use strict;&#13;
+use Test::Harness 'runtests';&#13;
+  &#13;
+my @testfiles = glob('t/*.pl');&#13;
+runtests(@testfiles);</template><template name="assert" description="PerlUnit assert (boolean check)" context="perl" enabled="true">$$self-&gt;assert(${cursor});</template><template name="new" description="module new" context="perl" enabled="true">sub new {&#13;
+    my $$class = shift;&#13;
+    return bless {${cursor}}, $$class;&#13;
+}</template><template name="assert_equals" description="PerlUnit asset_equals" context="perl" enabled="true">$$self-&gt;assert_equals("expected"${cursor}, "actual");</template><template name="assert_not_equals" description="PerlUnit assert_not_equals" context="perl" enabled="true">$$self-&gt;assert_not_equals("notexpected"${cursor}, "actual");</template><template name="assert_matches" description="PerlUnit assert_matches" context="perl" enabled="true">$$self-&gt;assert_matches(qr/${cursor}/, "string");</template><template name="assert_null" description="PerlUnit assert_null" context="perl" enabled="true">$$self-&gt;assert_null(${cursor});</template><template name="assert_not_null" description="PerlUnit assert_not_null" context="perl" enabled="true">$$self-&gt;assert_not_null(${cursor});</template><template name="assert" description="PerlUnit assert (match)" context="perl" enabled="true">$$self-&gt;assert(qr/${cursor}/, "actual");</template><template name="alltests" description="Test::Unit AllTests.pm" context="perl" enabled="true">package AllTests;&#13;
+use base qw(Test::Unit::TestSuite);&#13;
+&#13;
+use File::Find;&#13;
+&#13;
+sub include_tests {&#13;
+  my @classes;&#13;
+  File::Find::find(sub {/^.*Test\.pm\z/s &amp;&amp; push @classes, $$File::Find::name}, '.');&#13;
+  return map {s|^./||; s|/|::|g; /(.*)\.pm/} @classes;&#13;
+}&#13;
+&#13;
+1;</template><template name="push" description="push" context="perl" enabled="true">push @array, ${cursor};</template><template name="testcase" description="subclass of Test::Unit::TestCase" context="perl" enabled="true">package ${filename};&#13;
+#&#13;
+# $$Id: $$&#13;
+#&#13;
+use strict;&#13;
+use base qw(Test::Unit::TestCase);&#13;
+use ${cursor};&#13;
+&#13;
+sub test_foo {&#13;
+    my $$self = shift;&#13;
+}&#13;
+&#13;
+1;&#13;
+__END__</template><template name="sub" description="test subroutine" context="perl" enabled="true">sub test_${cursor} {&#13;
+    my $$self = shift;&#13;
+    &#13;
+}</template></templates>

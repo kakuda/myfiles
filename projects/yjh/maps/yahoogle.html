@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>Yahoo! Japan Hacks: Yahoo! 地図情報とGoogle Mapsの比較</title>
+  </head>
+  <body>
+    <h2>Yahoo! 地図情報(日本測地系)とGoogle Maps(世界測地系)の比較</h2>
+    <div id="yahoomaps" style="width: 500px; height: 200px"></div>
+    <div id="googlemaps" style="width: 500px; height: 200px"></div>
+    <script type="text/javascript" src="http://api.map.yahoo.co.jp/MapsService/js/V1/?appid=YahooDemo"></script>
+    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAdWTPSiqMhXSBxpNnZRIpBxT2yXp_ZAY8_ufC3CFXhHIE1NvwkxSk2OXmwhHVN0Z0iwKfwCc6lPp6YQ"></script>
+    <script type="text/javascript">
+    //<![CDATA[
+    
+    var ymap = new YahooMapsCtrl("yahoomaps", "35.65678,139.733555", 2);
+    var gmap = new GMap2(document.getElementById("googlemaps"));
+    gmap.setCenter(new GLatLng(35.65678, 139.733555), 18);
+    var isEvent = false;
+    
+    ymap.addEvent(YEventType.MAP_MOVING, function() {
+        if (! isEvent) {
+            isEvent = true;
+            var center = ymap.getCenter();
+            gmap.setCenter(new GLatLng(center.lat, center.lon), 18);
+            isEvent = false;
+        }
+    });
+    GEvent.addListener(gmap, "move", function(s, e) {
+        if (! isEvent) {
+            isEvent = true;
+            var center = gmap.getCenter();
+            ymap.moveTo(new YLLPoint(center.lat().toString() + ',' + center.lng().toString()));
+            isEvent = false;
+        }
+    });
+    
+    //]]>
+    </script>
+  </body>
+</html>

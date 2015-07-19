@@ -1,0 +1,142 @@
+ワイワイマップのスポットをGoogle Earthで観る
+{{toc}}
+
+Yahoo!地図情報のコンテンツとして、オリジナルの地図を作って他のYahoo!ユーザと共有できるサービス「ワイワイマップ」があります。各マップの右ペインにて新着順にスポットが並んでいるので、一つずつクリックしていくと、その場所へ地図が移動していきます。
+
+しかし、クリックすると瞬時に地図が移動するため、あまり面白くありません。見た目の豪華さにおいて優れているGoogle Earthに取り込めると楽しそうです。
+
+! コード
+
+ワイワイマップの各マップに新しい投稿スポットを知るためのRSSが提供されています。このRSSを見ると、通常のRSSフォーマット以外にygeorssという独自のタグがあります。
+
+ <?xml version="1.0" encoding="utf-8"?>
+ <rss version="2.0" xmlns:ygeorss="http://map.yahoo.co.jp/ygeorss">
+   <channel>
+     <title>ワイワイマップ - 日本歴史スポットマップ</title>
+     <link>http://waiwai.map.yahoo.co.jp/map?mid=wvomrwXEm916lwc09LvIb76DY5hIyB0p</link>
+     <description>日本全国で歴史に登場するスポット集。ここでは何年にこんなのとがあった。現在はこうなってる。全国からの投稿をお願いします。</description>
+     <language>ja</language>
+     <copyright>Copyright (C) 2007 Yahoo Japan Corporation. All Rights Reserved.</copyright>
+ 
+     <pubDate>Mon, 06 Aug 2007 19:15:23 +0900</pubDate>
+     <lastBuildDate>Wed, 08 Aug 2007 21:20:19 +0900</lastBuildDate>
+     <item>
+       <title>国会議事堂は…コノアタリか？？？</title>
+       <link>http://rd.yahoo.co.jp/rss/l/maps/yymap/map/*http://waiwai.map.yahoo.co.jp/spot?mid=wvomrwXEm916lwc09LvIb76DY5hIyB0p&amp;sid=zEMLCTaGh9QYQPgQMMQcWZZK1RAqLCu8Oe_6KYpwwg--</link>
+       <description>◎１８９４年（明治２７年）１０月１５日、第７回帝国議会（議会史上最初の軍国議会。議会史上唯一、首都東京以外の地で開催された～２２日）の国会議事堂は…コノアタリか？？？</description>
+ 
+       <pubDate>Mon, 06 Aug 2007 19:15:23 +0900</pubDate>
+       <guid isPermaLink="false">yahoo/maps/yymap/map/zEMLCTaGh9QYQPgQMMQcWZZK1RAqLCu8Oe_6KYpwwg--</guid>
+       <ygeorss:point>132.45716914573 34.393244463004</ygeorss:point>
+       <ygeorss:code>34101</ygeorss:code>
+     </item>
+     <item>
+       <title>広島大本営（広島城内）…日清戦争２６７日間の約８４％を広島に</title>
+ ......
+
+この内、<ygeorss:point>の値が緯度経度(経度、緯度の順で表記)を表しているようです。この緯度経度情報とRSSの項目を利用して、Google Earthに取り込むためのKMLに変換するためのスクリプトを作成してみます。
+
+     1	<?php
+     2	class YYMap2KML {
+     3	
+     4	    function process() {
+     5	        $url = "http://waiwai.map.yahoo.co.jp/rss/map/index.xml?mid=";
+     6	        if (isset($_REQUEST['rss'])) {
+     7	            $url = urldecode($_REQUEST['rss']);
+     8	        } else if(isset($_REQUEST['mid'])) {
+     9	            $url = $url . $_REQUEST['mid'];
+    10	        } else if(isset($_REQUEST['url'])) {
+    11	            $pu = parse_url(urldecode($_REQUEST['url']));
+    12	            parse_str($pu);
+    13	            $url .= $mid;
+    14	        } else {
+    15	            header("Content-Type: text/html; charset=utf-8");
+    16	            echo "specify yymap rss or mid or url.";
+    17	            return;
+    18	        }
+    19	
+    20	        $rss = simplexml_load_file($url);
+    21	        $kml = $this->rss2kml($rss);
+    22	        $this->printKML($kml);
+    23	    }
+    24	
+    25	    function rss2Kml($rss) {
+    26	        $kml = array();
+    27	        $kml['name'] = htmlspecialchars($rss->channel->title);
+    28	        $kml['description'] = $rss->channe->description;
+    29	        $kml['Placemark'] = $this->items2Placemarks($rss->channel->item);
+    30	        return $kml;
+    31	    }
+    32	
+    33	    function buildKML($kml) {
+    34	        $pm = "";
+    35	        foreach ($kml['Placemark'] as $p) {
+    36	            $pm .= <<< KML_PLACEMARK
+    37	<Placemark>
+    38	<name>{$p['name']}</name>
+    39	<description><![CDATA[{$p['description']}]]></description>
+    40	<Point><coordinates>{$p['Point']['coordinates']}</coordinates></Point>
+    41	</Placemark>
+    42	KML_PLACEMARK;
+    43	        }
+    44	        $result = <<< KML
+    45	<?xml version="1.0" encoding="UTF-8"?>
+    46	<kml xmlns="http://earth.google.com/kml/2.1">
+    47	<Document>
+    48	<name>{$kml['name']}</name>
+    49	<description>{$kml['description']}</description>
+    50	{$pm}
+    51	</Document>
+    52	</kml>
+    53	KML;
+    54	        return $result;
+    55	    }
+    56	
+    57	    function printKML($kml) {
+    58	        header("content-disposition: attachment; filename=yymap.kml");
+    59	        header("Content-Type: application/vnd.google-earth.kml+xml; charset=utf-8");
+    60	        echo $this->buildKML($kml);
+    61	    }
+    62	
+    63	    function tky2Wgs($lat, $lon) {
+    64	        $wlat = $lat - $lat * 0.00010695 + $lon * 0.000017464 + 0.0046017;
+    65	        $wlon = $lon - $lat * 0.000046038 - $lon * 0.000083043 + 0.010040;
+    66	        return array($wlat, $wlon);
+    67	    }
+    68	    
+    69	    function items2Placemarks($items) {
+    70	        if (! isset($items[0])) {
+    71	            $items = array($items);
+    72	        }
+    73	        $placemarks = array();
+    74	        foreach ($items as $item) {
+    75	            $p = array();
+    76	            $p['name'] = htmlspecialchars($item->title);
+    77	            $p['description'] = $item->description;
+    78	            $geo = $item->children("http://map.yahoo.co.jp/ygeorss");
+    79	            $tky = explode(' ', $geo->point);
+    80	            $wgs = $this->tky2wgs($tky[1], $tky[0]);
+    81	            $p['Point']['coordinates'] = "{$wgs[1]},{$wgs[0]},0";
+    82	            $placemarks[] = $p;
+    83	        }
+    84	        return $placemarks;
+    85	    }
+    86	
+    87	}
+    88	
+    89	$app = new YYMap2KML();
+    90	$app->process();
+
+このPHPスクリプトをWebサーバ上に設置し、任意のマップのRSS、mid、URLなどをパラメータに与えてアクセスすると、KMLファイルに変換されてダウンロード出来るようになります。これをGoogle Earthに取り込んで「ツアーの再生」ボタンを押すと、マップに投稿された各スポットに次々に移動し、空を飛んで旅行しているかのような気分に浸れます。
+
+{{attach_view(yymap_googleearth.png)}}
+
+! HackをさらにHackする
+
+今回は変換スクリプトを作成しましたが、この作業をYahoo! Pipesを使ってノンプログラミングで行うこともできます・・・と思って実際やってみたけど、Simple Mathモジュールが融通きかないため測地系変換の計算をPipesでやるのは無理そう。別のHack案を考えます。(もし何か方法あったら教えて下さい＞＜)
+
+* [[作りかけのPipes|http://pipes.yahoo.com/pipes/pipe.info?_id=DJCKFa9F3BGUSje_CB2yXQ]]
+
+-- Naoyuki Kakuda
+! コメント
+{{comment}}

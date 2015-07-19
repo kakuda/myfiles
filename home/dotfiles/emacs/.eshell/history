@@ -1,0 +1,128 @@
+~/hadoop-deployed/hadoop/bin/hadoop
+~/hadoop-deployed/hadoop/bin/hadoop fs -lsr
+which hadoop
+~/hadoop-deployed/hadoop/bin/hadoop -rm output_dir
+~/hadoop-deployed/hadoop/bin/hadoop fs -rm output_dir
+~/hadoop-deployed/hadoop/bin/hadoop fs -rmr output_dir
+~/hadoop-deployed/hadoop/bin/hadoop fs -lsr
+~/hadoop-deployed/hadoop/bin/hadoop jar playcount.jar PlayCount
+ls
+~/hadoop-deployed/hadoop/bin/hadoop fs -lsr
+~/hadoop-deployed/hadoop/bin/hadoop fs -get output_dir/part-r-00000 ./
+ls
+alias hadoop ~/hadoop-deployed/hadoop/bin/hadoop
+hadoop
+hadoop fs -lsr
+hadoop version
+hadoop
+hadoop fs
+~/hadoop-deployed/hadoop/bin/hadoop fs -lsr
+ls
+cp ../profiledata_06-May-2005/user_artist_data.txt ./
+cd python/
+ls
+ls -la
+chmod +x *
+ls -la
+cd ../
+ls
+head -n 100 user_artist_data.txt | python/mapper.py | python/reducer.py 
+head -n 10000 user_artist_data.txt | python/mapper.py | python/reducer.py 
+~/hadoop-deployed/hadoop/bin/hadoop jar ~/hadoop-deployed/hadoop/contrib/streaming/hadoop-0.20.0-streaming.jar -input input_dir -output output_dir2 -mapper python/mapper.py -reducer python/reducer.py -file python/mapper.py -file python/reducer.py
+~/hadoop-deployed/hadoop/bin/hadoop fs -lsr
+ls
+ruby ~/svn/tools/flickr-sample.rb 
+gem list
+gem install rmagick
+sudo gem install rmagick
+cd ~/work/
+ls
+mv ~/Downloads/rmagick-build.sh ./
+ls
+chmod +x rmagick-build.sh 
+./rmagick-build.sh 
+ruby
+irb
+cd ~/svn/tools/
+ls
+ruby flickr-sample.rb 
+ls
+open 
+open master_photo-0.jpg 
+ls
+rm master_photo-*
+ls
+mkdir flickr
+mv flickr-sample.rb flickr/
+cd flickr/
+ls
+ruby flickr-sample.rb 
+ls
+ruby flickr-sample.rb 
+ls
+ruby flickr-sample.rb 
+ls
+rm master_photo-*
+ls
+rm *~
+ls
+ruby flickr-sample.rb 
+ls
+open master_photo.jpg 
+rm master_photo.jpg 
+ruby flickr-sample.rb 
+open master_photo.jpg 
+cp ../boss-mosaic.rb ./
+sudo gem install xmlsimple
+sudo gem install xml-simple
+ls
+open mosaic.jpg 
+rm *.jpg
+ls
+ruby flickr-sample.rb 
+ls
+ruby flickr-sample.rb 
+ls
+open master_photo.jpg 
+cd ~/
+ls
+mv backup .backup
+clear
+ls
+cd svn/tools/
+ls
+ls -la
+cd flickr/
+ls
+sl -la
+rm *~
+ls
+ls
+ls
+rm mosaic.jpg 
+rm mosaic.jpg 
+ruby boss-mosaic.rb 
+port search w3m
+port install emacs-w3m
+sudo port sync
+port search haskell
+port search gauche
+ls -la
+ls
+ls -la
+l
+ls
+ls -la
+exit
+ls
+mv .emacs.d new.emacs.d
+ls
+mv dot.emacs.d .emacs.d
+mv dot.emacs .emacs
+cd .emacs.d/
+ls
+svn revert untabify-file.el
+svn status
+ls
+svn up
+ls -la

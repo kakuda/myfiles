@@ -1,0 +1,1046 @@
+これは python-lib-jp.info、python-lib-jp.texi より makeinfo バージョン
+4.8 によって作成されました。
+
+19th September, 2006
+
+
+Indirect:
+python-lib-jp.info-1: 123
+python-lib-jp.info-2: 288619
+python-lib-jp.info-3: 575879
+python-lib-jp.info-4: 874959
+python-lib-jp.info-5: 1174768
+python-lib-jp.info-6: 1474662
+python-lib-jp.info-7: 1772440
+python-lib-jp.info-8: 2071254
+python-lib-jp.info-9: 2370797
+python-lib-jp.info-10: 2659752
+python-lib-jp.info-11: 2886764
+python-lib-jp.info-12: 3332851
+
+Tag Table:
+(Indirect)
+Node: Top123
+Node: 序1434
+Node: はじめに3682
+Node: 組み込みオブジェクト6616
+Ref: 組み込みオブジェクト-Footnote-17528
+Ref: 組み込みオブジェクト-Footnote-27649
+Node: 組み込み関数7757
+Ref: 組み込み関数-Footnote-158108
+Ref: 組み込み関数-Footnote-258191
+Ref: 組み込み関数-Footnote-358522
+Node: 非必須組み込み関数 Non-essential Built-in Functions58721
+Node: 組み込み例外61592
+Node: 組み込み定数77861
+Node: 組み込み型78663
+Node: 真値テスト79810
+Ref: 真値テスト-Footnote-180841
+Node: ブール演算80908
+Node: 比較81847
+Node: 数値型 int84203
+Ref: 数値型 int-Footnote-188638
+Node: Bit-string Operations88738
+Node: イテレータ型90268
+Node: シーケンス型 str92972
+Ref: シーケンス型 str-Footnote-199196
+Node: 文字列メソッド99294
+Node: 文字列フォーマット操作110828
+Ref: 文字列フォーマット操作-Footnote-1117460
+Ref: 文字列フォーマット操作-Footnote-2117604
+Node: XRange 型117847
+Node: 変更可能なシーケンス型118381
+Node: set（集合）型123675
+Node: マップ型130191
+Node: ファイルオブジェクト136503
+Ref: ファイルオブジェクト-Footnote-1147692
+Ref: ファイルオブジェクト-Footnote-2147809
+Node: コンテキストマネージャ型148088
+Node: 他の組み込み型151482
+Node: モジュール151968
+Node: Classes and Instances153137
+Node: 関数153380
+Node: メソッド153875
+Node: コードオブジェクト155564
+Node: 型オブジェクト156256
+Node: ヌルオブジェクト156692
+Node: 省略表記オブジェクト157076
+Node: ブール値157477
+Node: 内部オブジェクト158092
+Node: 特殊な属性158366
+Node: 文字列処理159277
+Node: string159753
+Node: 文字列定数160216
+Node: テンプレート文字列162335
+Node: 文字列操作関数167238
+Node: 撤廃された文字列関数168271
+Node: re176134
+Node: 正規表現のシンタクス177903
+Node: マッチング vs 検索194211
+Node: Contents of Module re195357
+Node: 正規表現オブジェクト203093
+Node: MatchObject オブジェクト205863
+Node: 例210510
+Node: struct212649
+Node: difflib221250
+Node: SequenceMatcherオブジェクト232774
+Node: SequenceMatcher の例239844
+Node: Differ オブジェクト241639
+Node: Differ の例243649
+Node: StringIO245961
+Node: cStringIO247812
+Node: textwrap249666
+Node: codecs255381
+Node: Codec 基底クラス264748
+Node: Codec オブジェクト266984
+Node: IncrementalEncoder オブジェクト269663
+Node: IncrementalDecoder オブジェクト271614
+Node: StreamWriter オブジェクト273861
+Node: StreamReader オブジェクト276086
+Node: StreamReaderWriter オブジェクト279672
+Node: StreamRecoder オブジェクト280660
+Node: エンコーディングと Unicode282357
+Node: 標準エンコーディング288619
+Node: encodingsidna --- アプリケーションにおける国際化ドメイン名 IDNA301243
+Node: encodingsutf_8_sig --- BOM 印付き UTF-8303948
+Node: unicodedata304629
+Node: stringprep309649
+Node: fpformat313639
+Node: データ型315139
+Node: datetime315670
+Node: 利用可能なデータ型318127
+Node: timedelta オブジェクト319900
+Node: date オブジェクト325041
+Node: datetime オブジェクト332792
+Node: time オブジェクト349134
+Node: tzinfo オブジェクト353723
+Node: strftime の振る舞い364486
+Node: 使用例366630
+Node: Datetime オブジェクトをフォーマットされた文字列から生成する366817
+Node: calendar367496
+Node: collections376670
+Node: deque オブジェクト377192
+Node: レシピ381554
+Node: defaultdict オブジェクト383717
+Node: defaultdict の使用例385473
+Node: heapq387635
+Node: 理論391457
+Ref: 理論-Footnote-1395695
+Node: bisect396308
+Node: bisect-example398270
+Node: array398931
+Node: sets407890
+Node: Set オブジェクト410677
+Node: 使用例 2415211
+Node: 不変に自動変換するためのプロトコル416559
+Node: 組み込み set 型との比較418287
+Node: sched419445
+Node: スケジューラオブジェクト420854
+Node: mutex422789
+Node: mutex オブジェクト424094
+Node: Queue424888
+Node: キューオブジェクト426001
+Node: weakref429598
+Node: 弱参照オブジェクト436416
+Node: 例 2439036
+Node: 拡張型における弱参照439686
+Node: UserDict442250
+Node: UserList444572
+Node: UserString446528
+Node: types448837
+Node: new453346
+Node: copy455673
+Node: pprint458544
+Node: PrettyPrinter オブジェクト463554
+Node: repr465801
+Node: Reprオブジェクト466821
+Node: Reprオブジェクトをサブクラス化する468805
+Node: 数値と数学モジュール469610
+Node: math470168
+Ref: math-Footnote-1475593
+Node: cmath475763
+Node: decimal479599
+Node: Quick-start Tutorial483684
+Node: Decimal オブジェクト489450
+Node: Context オブジェクト494788
+Node: シグナル504850
+Node: 浮動小数点数に関する注意508944
+Node: 精度を上げて丸め誤差を抑制する509184
+Node: 特殊値510752
+Node: スレッドを使った処理512835
+Node: レシピ 2514274
+Node: Decimal FAQ518917
+Node: random523997
+Node: itertools534669
+Node: Itertool関数536500
+Node: 例 3548870
+Node: レシピ 3550587
+Node: functools553531
+Node: partial オブジェクト557348
+Node: operator558342
+Node: 演算子から関数への対応表569305
+Node: インターネット上のデータの操作572165
+Node: email572672
+Node: 電子メールメッセージの表現575879
+Node: 電子メールメッセージを解析パースする597672
+Ref: 電子メールメッセージを解析パースする-Footnote-1599953
+Node: FeedParser API600158
+Node: Parser クラス API602472
+Ref: Parser クラス API-Footnote-1606506
+Node: 追加事項606528
+Node: MIME 文書を生成する608236
+Ref: MIME 文書を生成する-Footnote-1614070
+Ref: MIME 文書を生成する-Footnote-2614161
+Node: 電子メールおよび MIME オブジェクトをゼロから作成する614189
+Node: 国際化されたヘッダ622713
+Node: 文字セットの表現630030
+Node: エンコーダ640049
+Ref: エンコーダ-Footnote-1642109
+Node: 例外および障害クラス642217
+Node: 雑用ユーティリティ645899
+Ref: 雑用ユーティリティ-Footnote-1652245
+Node: イテレータ652426
+Ref: イテレータ-Footnote-1654949
+Node: パッケージの履歴654981
+Node: mimelib との違い661566
+Ref: mimelib との違い-Footnote-1666576
+Node: 使用例 3666670
+Ref: 使用例 3-Footnote-1667426
+Node: mailcap667490
+Node: mailbox671142
+Node: Mailbox オブジェクト671925
+Node: Maildir680676
+Node: mbox685597
+Node: MH687968
+Node: Babyl691804
+Node: MMDF694577
+Node: Message objects696384
+Node: MaildirMessage698207
+Node: mboxMessage703333
+Node: MHMessage707966
+Node: BabylMessage710354
+Node: MMDFMessage714004
+Node: 例外718480
+Node: 撤廃されたクラスとメソッド719700
+Node: 例 4725385
+Node: mhlib727281
+Node: MH オブジェクト728213
+Node: Folder オブジェクト729267
+Node: Message オブジェクト730875
+Node: mimetools731225
+Node: Message オブジェクトの追加メソッド733948
+Node: mimetypes735656
+Node: Mime型 オブジェクト741840
+Node: MimeWriter743501
+Node: MimeWriter オブジェクト744579
+Node: mimify746741
+Node: multifile750175
+Node: MultiFile オブジェクト752205
+Node: MultiFile の例756049
+Node: rfc822757130
+Ref: rfc822-Footnote-1763220
+Node: Message オブジェクト 2763477
+Node: AddressList オブジェクト769363
+Node: base64770794
+Node: binhex777877
+Node: 注記779534
+Node: binascii780000
+Node: quopri785420
+Node: uu788064
+Node: 構造化マークアップツール790167
+Node: HTMLParser791514
+Node: HTML パーザアプリケーションの例797489
+Node: sgmllib798077
+Node: htmllib807802
+Node: HTMLParser オブジェクト811368
+Node: htmlentitydefs813376
+Node: xmlparsersexpat814410
+Node: XMLParser Objects817741
+Node: ExpatError 例外831585
+Node: 例 5832237
+Node: 内容モデルの記述833438
+Node: Expat エラー定数834978
+Node: xmldom839372
+Node: モジュールの内容843418
+Node: DOM 内のオブジェクト846034
+Node: DOMImplementation オブジェクト848593
+Node: Node オブジェクト850018
+Node: NodeList オブジェクト855401
+Node: DocumentType オブジェクト856871
+Node: Document オブジェクト858884
+Node: Element オブジェクト861604
+Node: Attr オブジェクト864401
+Node: NamedNodeMap Objects864928
+Node: Comment オブジェクト865654
+Node: Text オブジェクトおよび CDATASection オブジェクト866199
+Node: ProcessingInstruction オブジェクト867330
+Node: 例外 2867835
+Node: 適合性871797
+Node: 型の対応付け872094
+Node: アクセサメソッド873046
+Node: xmldomminidom874959
+Node: DOM オブジェクト879223
+Node: DOM の例881874
+Node: minidom と DOM 標準882172
+Node: xmldompulldom885060
+Node: DOMEventStream オブジェクト885932
+Node: xmlsax886179
+Node: SAXException オブジェクト891312
+Node: xmlsaxhandler891676
+Node: ContentHandler オブジェクト896652
+Node: DTDHandler オブジェクト903907
+Node: EntityResolver オブジェクト904430
+Node: ErrorHandler オブジェクト904877
+Node: xmlsaxsaxutils906364
+Node: xmlsaxxmlreader909342
+Node: XMLReader オブジェクト913043
+Node: IncrementalParser オブジェクト916175
+Node: Locator オブジェクト916928
+Node: InputSource オブジェクト917453
+Node: Attributes インターフェース919491
+Node: AttributesNS インターフェース920118
+Node: xmletreeElementTree920876
+Node: 関数 2922004
+Node: ElementTree オブジェクト926326
+Node: QName オブジェクト928963
+Node: TreeBuilder オブジェクト929628
+Node: XMLTreeBuilder オブジェクト930867
+Node: File Formats931775
+Node: csv932246
+Node: モジュールの内容 2934644
+Node: Dialect クラスと書式化パラメタ942518
+Node: reader オブジェクト945130
+Node: writer オブジェクト945832
+Node: 使用例 4947079
+Node: ConfigParser951845
+Node: RawConfigParser オブジェクト955997
+Node: ConfigParser オブジェクト960626
+Node: SafeConfigParser オブジェクト961439
+Node: robotparser962098
+Node: netrc963943
+Node: netrc オブジェクト965072
+Node: xdrlib966383
+Node: Packer オブジェクト967899
+Node: Unpacker オブジェクト970866
+Node: 例外 3973851
+Node: 暗号関連のサービス974499
+Node: hashlib975220
+Node: hmac979407
+Node: md5981270
+Node: sha984127
+Node: ファイルとディレクトリへのアクセス986631
+Node: ospath987462
+Node: fileinput997301
+Node: stat1003892
+Node: statvfs1008360
+Node: filecmp1009480
+Node: dircmp クラス1011377
+Node: tempfile1013575
+Node: glob1021749
+Node: fnmatch1023585
+Node: linecache1025568
+Node: shutil1027320
+Node: 使用例 51031557
+Node: dircache1032489
+Node: データ圧縮とアーカイブ1034318
+Node: zlib1034706
+Node: gzip1043071
+Node: bz21046282
+Node: ファイルの圧縮（解凍）1047630
+Node: 逐次的な圧縮（解凍）1051543
+Node: 一括圧縮（解凍）1053173
+Node: zipfile1053817
+Node: ZipFile オブジェクト1056556
+Node: PyZipFile オブジェクト1061026
+Node: ZipInfo オブジェクト1062721
+Node: tarfile1064587
+Node: TarFile オブジェクト1070743
+Node: TarInfo オブジェクト1077735
+Node: 例 61080242
+Node: データの永続化1081805
+Node: pickle1082632
+Ref: pickle-Footnote-11083786
+Node: 他の Python モジュールとの関係1083847
+Node: データストリームの形式1087619
+Node: 使用法1089191
+Ref: 使用法-Footnote-11096494
+Ref: 使用法-Footnote-21096923
+Node: 何を pickle 化したり unpickle 化できるのか?1097439
+Ref: 何を pickle 化したり unpickle 化できるのか?-Footnote-11100127
+Node: pickle 化プロトコル1100225
+Node: 通常のクラスインスタンスの pickle 化および unpickle 化1101085
+Ref: 通常のクラスインスタンスの pickle 化および unpickle 化-Footnote-11103404
+Ref: 通常のクラスインスタンスの pickle 化および unpickle 化-Footnote-21103485
+Node: 拡張型の pickle 化および unpickle 化1103582
+Node: 外部オブジェクトの pickle 化および unpickle 化1108544
+Ref: 外部オブジェクトの pickle 化および unpickle 化-Footnote-11111754
+Ref: 外部オブジェクトの pickle 化および unpickle 化-Footnote-21112006
+Node: Unpickler をサブクラス化する1112099
+Ref: Unpickler をサブクラス化する-Footnote-11114366
+Node: 例 71114648
+Node: cPickle1118391
+Ref: cPickle-Footnote-11119702
+Node: copy_reg1119999
+Node: shelve1121452
+Node: 制限事項1123957
+Node: 使用例 61127298
+Node: marshal1129345
+Ref: marshal-Footnote-11133958
+Node: anydbm1134348
+Node: whichdb1137346
+Node: dbm1138049
+Node: gdbm1140453
+Node: dbhash1143987
+Node: データベースオブジェクト1145721
+Node: bsddb1147052
+Node: ハッシュ、BTree、およびレコードオブジェクト1151848
+Node: dumbdbm1154954
+Node: Dumbdbm オブジェクト1156987
+Node: sqlite31157395
+Node: モジュールの関数と定数1161229
+Node: Connection オブジェクト1166218
+Node: カーソルオブジェクト1172388
+Node: SQLite と Python の型1174768
+Node: 入門編1175138
+Node: 追加された Python の型を SQLite データベースに格納するために適合関数を使う1176693
+Node: SQLite の値を好きな Python 型に変換する1178855
+Node: デフォルトの適合関数と変換関数1180309
+Node: トランザクション制御1181049
+Node: pysqlite の効率的な使い方1182612
+Node: ショートカットメソッドを使う1182872
+Node: 位置ではなく名前でカラムにアクセスする1183605
+Node: 汎用オペレーティングシステムサービス1184094
+Node: os1184826
+Node: プロセスのパラメタ1187908
+Node: ファイルオブジェクトの生成1194850
+Node: ファイル記述子の操作1198332
+Node: ファイルとディレクトリ1206326
+Node: プロセス管理1229431
+Node: 雑多なシステム情報1248108
+Node: 雑多な関数1252519
+Node: time1253183
+Ref: time-Footnote-11272736
+Node: optparse1273212
+Node: Background1275857
+Node: Terminology1276362
+Node: オプションとは何か1280607
+Node: 固定引数とは何か1282470
+Node: Tutorial1283729
+Node: オプション・アクションを理解する1286394
+Node: store アクション1287171
+Node: ブール値 フラグ オプションの処理1289524
+Node: その他のアクション1290479
+Node: デフォルト値1291110
+Node: ヘルプの生成1293192
+Node: バージョン番号の出力1297498
+Node: optparse のエラー処理法1298370
+Node: 全てをつなぎ合わせる1300681
+Node: リファレンスガイド1301691
+Node: Creating the parser1302146
+Node: パーザへのオプション追加1305353
+Node: オプションの定義1306831
+Node: 標準的なオプション・アクション1309906
+Node: オプション属性1316756
+Node: 標準のオプション型1319395
+Node: 引数の解析1320981
+Node: オプション解析器への問い合わせと操作1322309
+Node: オプション間の衝突1323361
+Node: クリーンアップ1325963
+Node: その他のメソッド1326543
+Node: オプション処理コールバック1328928
+Node: callbackオプションの定義1330079
+Node: コールバック関数はどのように呼び出されるか1332278
+Node: コールバック中で例外を送出する1334959
+Node: コールバックの例 1 ありふれたコールバック1335664
+Node: コールバックの例 2 オプションの順番をチェックする1336303
+Node: コールバックの例 3 オプションの順番をチェックする 汎用的1337107
+Node: コールバックの例 4 任意の条件をチェックする1338144
+Node: コールバックの例5 固定引数1339113
+Node: コールバックの例6 可変個の引数1340280
+Node: optparse の拡張1342691
+Node: 新しい型の追加1343097
+Node: 新しいアクションの追加1346328
+Node: getopt1350797
+Node: logging1355856
+Node: Logger オブジェクト1371860
+Node: 基本的な使い方1378759
+Node: 複数の出力先にログを出力する1383463
+Node: ログイベントをネットワーク越しに送受信する1386461
+Node: Handler オブジェクト1391704
+Node: StreamHandler1395011
+Node: FileHandler1396210
+Node: RotatingFileHandler1396925
+Node: TimedRotatingFileHandler1398689
+Node: SocketHandler1400464
+Node: DatagramHandler1402069
+Node: SysLogHandler1403145
+Node: NTEventLogHandler1404294
+Node: SMTPHandler1407285
+Node: MemoryHandler1408213
+Node: HTTPHandler1410513
+Node: Formatter オブジェクト1411266
+Node: Filter オブジェクト1415775
+Node: LogRecord オブジェクト1416909
+Node: スレッド安全性1418241
+Node: 環境設定1418731
+Node: 環境設定のための関数1418910
+Node: 環境設定ファイルの書式1420724
+Node: getpass1426551
+Node: curses1427653
+Node: 関数 31429226
+Node: Window オブジェクト1447325
+Node: 定数1462555
+Node: cursestextpad1473314
+Node: Textbox オブジェクト1474662
+Node: curseswrapper1478632
+Node: cursesascii1479780
+Node: cursespanel1485405
+Node: 関数 41485975
+Node: Panel オブジェクト1486757
+Node: platform1488190
+Node: クロス プラットフォーム1488765
+Node: Java プラットフォーム1492380
+Node: Windows プラットフォーム1492937
+Node: Win95/98 固有1493871
+Node: Mac OS プラットフォーム1494262
+Node: UNIX プラットフォーム1494870
+Node: errno1495834
+Node: ctypes1505535
+Node: ctypesチュートリアル1506083
+Node: 動的リンクライブラリをロードする1507351
+Node: ロードしたdllから関数にアクセスする1509245
+Node: 関数を呼び出す1511724
+Node: 基本のデータ型1514854
+Node: 続・関数を呼び出す1518992
+Node: 自作のデータ型とともに関数を呼び出す1520155
+Node: 要求される引数の型を指定する 関数プロトタイプ1521094
+Node: 戻り値の型1522952
+Node: ポインタを渡すまたは、パラメータの参照渡し1525614
+Node: 構造体と共用体1526763
+Node: 構造体/共用体アライメントとバイトオーダー1528866
+Node: 構造体と共用体におけるビットフィールド1529809
+Node: 配列1530544
+Node: ポインタ1531861
+Node: 型変換1534469
+Node: 不完全型1536752
+Node: コールバック関数1538318
+Node: dllからエクスポートされている値へアクセスする1543553
+Node: 予期しないこと1546337
+Node: 可変サイズのデータ型1548461
+Node: バグ、ToDoおよび実装されていないもの1549914
+Node: ctypesリファレンス1550263
+Node: 共有ライブラリを見つける1550610
+Node: 共有ライブラリをロードする1552993
+Node: 外部関数1557982
+Node: 関数プロトタイプ1561190
+Node: ユーティリティ関数1566867
+Node: データ型 21572729
+Node: 基本データ型1575077
+Node: 標準データ型1581074
+Node: 配列とポインタ1585912
+Node: オプションのオペレーティングシステムサービス1586156
+Node: select1586863
+Node: ポーリングオブジェクト1590119
+Node: thread1593341
+Node: threading1599243
+Node: Lock オブジェクト1605773
+Node: RLock オブジェクト1608033
+Node: Condition オブジェクト1610762
+Node: Semaphore オブジェクト1615743
+Node: Semaphore の例1617836
+Node: Event オブジェクト1618696
+Node: Thread オブジェクト1620169
+Node: Timer オブジェクト1625900
+Node: with 文でのロック・条件変数・セマフォの使い方1626970
+Node: dummy_thread1627830
+Node: dummy_threading1628559
+Node: mmap1629311
+Node: readline1635936
+Node: 例 81640455
+Node: rlcompleter1642040
+Node: Completerオブジェクト1643512
+Node: Unix独特のサービス1644187
+Node: posix1644733
+Node: ラージファイルのサポート1646254
+Node: モジュールの内容 31647532
+Node: pwd1648729
+Node: spwd1651125
+Node: grp1653324
+Node: crypt1655415
+Node: dl1657306
+Node: Dlオブジェクト1659235
+Node: termios1660420
+Node: termios Example1663249
+Node: tty1664015
+Node: pty1664872
+Node: fcntl1666411
+Node: pipes1672652
+Node: テンプレートオブジェクト1673575
+Node: posixfile1675474
+Node: resource1681381
+Node: リソースの制限1682084
+Node: リソースの使用状態1686005
+Node: nis1689722
+Node: syslog1691181
+Node: commands1693657
+Node: プロセス間通信とネットワーク1695186
+Node: subprocess1695830
+Node: subprocess モジュールを使う1696606
+Node: 便利な関数1701411
+Node: 例外 41702300
+Node: セキュリティ1703088
+Node: Popen オブジェクト1703415
+Node: 古い関数を subprocess モジュールで置き換える1705178
+Node: /bin/sh シェルのバッククォートを置き換える1705970
+Node: シェルのパイプラインを置き換える1706405
+Node: ossystem を置き換える1706869
+Node: osspawn* を置き換える1707776
+Node: ospopen* を置き換える1708551
+Node: popen2* を置き換える1709853
+Node: socket1711157
+Node: socket オブジェクト1727316
+Node: SSL オブジェクト1737092
+Node: 例 91737869
+Node: signal1742640
+Node: Simple Example1748768
+Node: popen21749754
+Node: Popen3 および Popen4 オブジェクト1752981
+Node: フロー制御の問題1754318
+Node: asyncore1756391
+Node: asyncoreの例：簡単なHTTPクライアント1763725
+Node: asynchat1764839
+Node: asynchat - 補助クラスと関数1771065
+Node: asynchat 使用例1772440
+Node: インターネットプロトコルとその支援1774673
+Node: webbrowser1775582
+Node: ブラウザコントローラーオブジェクト1781264
+Node: cgi1782235
+Node: cgi-intro1783049
+Node: Using the cgi module1784901
+Node: 高水準インタフェース1790098
+Ref: 高水準インタフェース-Footnote-11793632
+Node: 古いクラス群1793893
+Node: Functions in cgi module1794837
+Node: セキュリティへの配慮1799108
+Node: CGI スクリプトを UNIX システムにインストールする1800032
+Node: CGI スクリプトをテストする1802226
+Node: CGI スクリプトをデバッグする1803031
+Node: よくある問題と解決法1806175
+Node: cgitb1807590
+Node: wsgiref1810040
+Node: wsgirefutil - WSGI 環境のユーティリティ1811583
+Node: wsgirefheaders - WSGI レスポンスヘッダツール群1816349
+Node: wsgirefsimple_server - シンプルな WSGI HTTP サーバ1820248
+Node: wsgirefvalidate - WSGI 準拠チェッカ1824621
+Node: wsgirefhandlers - サーバ／ゲートウェイのベースクラス1826750
+Node: urllib1837322
+Node: URLopener オブジェクト1854139
+Node: Urllib Examples1857051
+Node: urllib21858247
+Node: Request オブジェクト1868148
+Node: OpenerDirector オブジェクト1870832
+Node: BaseHandler オブジェクト1874106
+Node: HTTPRedirectHandler オブジェクト1878614
+Node: HTTPCookieProcessor オブジェクト1880752
+Node: ProxyHandler オブジェクト1881164
+Node: HTTPPasswordMgr オブジェクト1881797
+Node: AbstractBasicAuthHandler オブジェクト1882855
+Node: HTTPBasicAuthHandler オブジェクト1883853
+Node: ProxyBasicAuthHandler オブジェクト1884220
+Node: AbstractDigestAuthHandler オブジェクト1884592
+Node: HTTPDigestAuthHandler オブジェクト1885139
+Node: ProxyDigestAuthHandler オブジェクト1885513
+Node: HTTPHandler オブジェクト1885875
+Node: HTTPSHandler オブジェクト1886227
+Node: FileHandler オブジェクト1886572
+Node: FTPHandler オブジェクト1886999
+Node: CacheFTPHandler オブジェクト1887348
+Node: GopherHandler オブジェクト1887800
+Node: UnknownHandler オブジェクト1888099
+Node: HTTPErrorProcessor オブジェクト1888379
+Node: 例 101889013
+Node: httplib1892184
+Node: HTTPConnection オブジェクト1902363
+Node: HTTPResponse オブジェクト1904743
+Node: 例 111905591
+Node: ftplib1906721
+Node: FTP オブジェクト1909481
+Node: gopherlib1917284
+Node: poplib1918764
+Node: POP3 オブジェクト1920848
+Node: POP3 の例1924291
+Node: imaplib1924864
+Node: IMAP4 オブジェクト1928738
+Node: IMAP4 の使用例1940296
+Node: nntplib1940875
+Node: NNTP オブジェクト1945079
+Node: smtplib1954923
+Node: SMTP オブジェクト1957714
+Node: SMTP 使用例1963444
+Node: smtpd1964604
+Node: SMTPServer オブジェクト1965111
+Node: DebuggingServer オブジェクト1966198
+Node: PureProxy オブジェクト1966584
+Node: MailmanProxy Objects1967079
+Node: telnetlib1967605
+Node: Telnet オブジェクト1969577
+Node: Telnet Example1974666
+Node: uuid1975275
+Node: 例 121981312
+Node: urlparse1982572
+Node: urlparse および urlsplit の結果1990178
+Node: SocketServer1992019
+Node: サーバ生成に関するノート1994596
+Node: Serverオブジェクト1998099
+Node: RequestHandlerオブジェクト2002001
+Node: BaseHTTPServer2003803
+Node: SimpleHTTPServer2012149
+Node: CGIHTTPServer2015321
+Node: cookielib2018051
+Node: CookieJar および FileCookieJar オブジェクト2024077
+Node: FileCookieJar のサブクラスと web ブラウザとの連携2030310
+Node: CookiePolicy オブジェクト2031857
+Node: DefaultCookiePolicy オブジェクト2035237
+Node: Cookie オブジェクト2041434
+Node: 使用例 72044768
+Node: Cookie2046174
+Node: Cookieオブジェクト2049143
+Node: Morselオブジェクト2050669
+Node: 例 132052060
+Node: xmlrpclib2054286
+Node: ServerProxy オブジェクト2060004
+Node: Boolean オブジェクト2062077
+Node: DateTime オブジェクト2062739
+Node: Binary オブジェクト2063527
+Node: Fault オブジェクト2064251
+Node: ProtocolError オブジェクト2064635
+Node: MultiCall オブジェクト2065216
+Node: 補助関数2066330
+Node: クライアントのサンプル2068032
+Node: SimpleXMLRPCServer2069404
+Node: SimpleXMLRPCServer オブジェクト2071254
+Node: CGIXMLRPCRequestHandler2075365
+Node: DocXMLRPCServer2077618
+Node: DocXMLRPCServer オブジェクト2078930
+Node: DocCGIXMLRPCRequestHandler2080001
+Node: マルチメディアサービス2081071
+Node: audioop2081657
+Node: imageop2090987
+Node: aifc2094657
+Node: sunau2100998
+Node: AU_read オブジェクト2103955
+Node: AU_write オブジェクト2105907
+Node: wave2107351
+Node: Wave_read オブジェクト2108757
+Node: Wave_write オブジェクト2110419
+Node: chunk2111841
+Ref: chunk-Footnote-12115996
+Node: colorsys2116099
+Node: rgbimg2117400
+Node: imghdr2119530
+Node: sndhdr2121493
+Node: ossaudiodev2122899
+Node: オーディオデバイスオブジェクト2125955
+Node: ミキサデバイスオブジェクト2134194
+Node: Tkを用いたグラフィカルユーザインターフェイス2137641
+Node: Tkinter2138914
+Node: Tkinter モジュール2140294
+Node: Tkinter お助け手帳 life preserver2143158
+Node: この節の使い方2144214
+Node: 簡単なHello Worldプログラム2146183
+Node: Tcl/Tk を 本当に少しだけ 見渡してみる2147189
+Node: 基本的な Tk プログラムと Tkinter との対応関係2150950
+Node: Tk と Tkinter はどのように関わっているのか2153085
+Node: 簡単なリファレンス2154708
+Node: オプションの設定2155082
+Node: Packer2157889
+Node: Packer のオプション2159602
+Node: ウィジェット変数を関連付ける2160419
+Node: ウィンドウマネジャ2162647
+Node: Tk オプションデータ型2164204
+Node: バインドとイベント2167277
+Node: index パラメータ2169443
+Node: 画像2171848
+Node: Tix2172638
+Node: Tixを使う2174218
+Node: Tixウィジェット2175815
+Node: 基本ウィジェット2176315
+Node: ファイルセレクタ2178502
+Node: ハイアラキカルリストボックス2180444
+Node: タビュラーリストボックス2181305
+Node: 管理ウィジェット2181883
+Node: 画像タイプ2183045
+Node: その他のウィジェット2183699
+Node: ジオメトリマネジャを作る2184020
+Node: Tixコマンド2184360
+Node: ScrolledText2188565
+Node: turtle2189565
+Node: Turtle、Pen と RawPen オブジェクト2195998
+Node: Idle2196649
+Node: メニュー2197505
+Node: Fileメニュー2197756
+Node: Editメニュー2198748
+Node: Windowsメニュー2200456
+Node: Debugメニュー Python シェルウィンドウ内のみ2200887
+Node: 基本的な編集とナビゲーション2201455
+Node: 自動的な字下げ2202023
+Node: Python Shellウィンドウ2202604
+Node: 構文の色づけ2203162
+Node: コマンドラインの使い方2203782
+Node: 他のグラフィカルユーザインタフェースパッケージ2204878
+Node: 国際化2209429
+Node: gettext2209855
+Node: GNU gettext API2210785
+Ref: GNU gettext API-Footnote-12215055
+Node: クラスに基づいた API2215493
+Ref: クラスに基づいた API-Footnote-12219684
+Node: NullTranslations クラス2219747
+Node: GNUTranslations クラス2224612
+Node: Solaris メッセージカタログ機構のサポート2228875
+Node: Catalog コンストラクタ2229318
+Node: プログラムやモジュールを国際化する2230156
+Ref: プログラムやモジュールを国際化する-Footnote-12233512
+Ref: プログラムやモジュールを国際化する-Footnote-22233707
+Node: モジュールを地域化する2233961
+Node: アプリケーションを地域化する2234918
+Node: 動作中 on the fly に言語を切り替える2235873
+Node: 翻訳処理の遅延解決2236736
+Ref: 翻訳処理の遅延解決-Footnote-12238878
+Node: gettext vs lgettext2238987
+Node: 謝辞2239909
+Node: locale2240330
+Node: ロケールの背景、詳細、ヒント、助言および補足説明2255769
+Node: Python 拡張の作者と、Python を埋め込むようなプログラムに関して2257811
+Node: メッセージカタログへのアクセス2258813
+Node: プログラムのフレームワーク2259895
+Node: cmd2260294
+Node: Cmdオブジェクト2261595
+Node: shlex2267332
+Node: モジュールの内容 42267897
+Node: shlex オブジェクト2269532
+Node: 解析規則2275845
+Node: 開発ツール2277439
+Node: pydoc2277951
+Node: doctest2280601
+Node: 簡単な利用法 docstring 中の例題をチェックする2285482
+Node: 簡単な利用法 テキストファイル中の例題をチェックする2286929
+Node: doctest のからくり2288949
+Node: どのドキュメンテーション文字列が検証されるのか?2289673
+Node: ドキュメンテーション文字列内の例をどうやって認識するのか?2290813
+Node: 実行コンテキストとは何か?2293555
+Node: 例外はどう扱えばよいのですか?2294428
+Ref: 例外はどう扱えばよいのですか?-Footnote-12298959
+Node: オプションフラグとディレクティブ2299140
+Node: 注意2307944
+Node: 基本 API2309994
+Node: 単位テスト API2317410
+Node: 拡張 API2326013
+Node: DocTest オブジェクト2328012
+Node: Example オブジェクト2329599
+Node: DocTestFinder オブジェクト2331539
+Node: DocTestParser オブジェクト2334803
+Node: DocTestRunner オブジェクト2336160
+Node: OutputChecker オブジェクト2341102
+Node: デバッグ2342408
+Node: 提言2349891
+Node: 進んだ使い方2352814
+Node: unittest2355722
+Node: 基礎的な例2358989
+Node: テストの構成2362181
+Node: 既存テストコードの再利用2369203
+Node: クラスと関数2370797
+Node: TestCase オブジェクト2374299
+Node: TestSuite オブジェクト2379809
+Node: TestResultオブジェクト2381265
+Node: TestLoader オブジェクト2384054
+Node: test2387764
+Node: testパッケージのためのユニットテストを書く2388924
+Node: testregrtestを使ってテストを実行する2393432
+Node: testtest_support --- テストのためのユーティリティ関数2395218
+Node: Pythonデバッガ2398036
+Node: デバッガコマンド2401731
+Node: どのように動作しているか2411377
+Node: Python プロファイラ2413770
+Ref: Python プロファイラ-Footnote-12416073
+Node: Profiler Introduction2416242
+Node: インスタント・ユーザ・マニュアル2417872
+Node: Deterministic Profiling2421675
+Node: リファレンス・マニュアル - profile と cProfile2423524
+Node: Stats クラス2427351
+Node: 制限事項 22433601
+Node: キャリブレーション補正2435299
+Ref: キャリブレーション補正-Footnote-12437151
+Node: Profiler Extensions2437384
+Node: hotshot2439775
+Node: プロファイル・オブジェクト2441440
+Node: hotshot データの利用2442681
+Node: 使用例 82443236
+Node: timeit2444253
+Node: コマンドライン・インターフェース2447813
+Node: 使用例 92450344
+Node: trace2452700
+Node: コマンドラインからの利用2453275
+Node: プログラミングインターフェース2455103
+Node: Python ランタイム サービス2457052
+Node: sys2457519
+Node: __builtin__2479572
+Node: __main__2481090
+Node: warnings2481778
+Node: 警告カテゴリ2483730
+Node: 警告フィルタ2485707
+Node: 利用可能な関数2488704
+Node: contextlib2492388
+Node: atexit2496291
+Node: atexit 例2498280
+Node: traceback2499267
+Node: トレースバックの例2504119
+Node: __future__2504877
+Node: gc2507348
+Ref: gc-Footnote-12514224
+Node: inspect2514361
+Node: 型とメンバ2515221
+Node: ソース参照2523804
+Node: クラスと関数 22525592
+Node: インタープリタ スタック2527931
+Node: site2530646
+Node: user2533508
+Node: fpectl2535860
+Node: 例 142537873
+Node: 制限と他に考慮すべきこと2538524
+Node: カスタム Python インタプリタ2539611
+Node: code2540244
+Node: 対話的なインタプリタオブジェクト2542922
+Node: 対話的なコンソールオブジェクト2545243
+Node: codeop2546893
+Node: 制限実行 restricted execution2550448
+Node: rexec2553905
+Node: RExec オブジェクト2557947
+Node: 制限された環境を定義する2560929
+Node: 例 152563842
+Node: Bastion2565413
+Node: モジュールのインポート2567574
+Node: imp2568019
+Node: 例 162577691
+Node: zipimport2578879
+Node: zipimporter オブジェクト2581650
+Node: zipimport Examples2583409
+Node: pkgutil2584210
+Node: modulefinder2586030
+Node: runpy2588034
+Node: Python言語サービス2590969
+Node: parser2591584
+Node: ASTオブジェクトを作成する2595785
+Node: ASTオブジェクトを変換する2597938
+Node: ASTオブジェクトに対する問い合わせ2600568
+Node: 例外とエラー処理2601835
+Node: ASTオブジェクト2603095
+Node: 例 172603784
+Node: compileのエミュレーション2604271
+Node: 情報発見2605387
+Node: symbol2618789
+Node: token2619660
+Node: keyword2620720
+Node: tokenize2621259
+Node: tabnanny2625867
+Node: pyclbr2627394
+Node: クラス記述オブジェクト2629020
+Node: 関数記述オブジェクト Function Descriptor Object2630020
+Node: py_compile2630664
+Node: compileall2632635
+Node: dis2634829
+Node: Pythonバイトコード命令2637750
+Node: pickletools2651018
+Node: distutils2652662
+Node: Python コンパイラパッケージ2654192
+Node: 基本的なインターフェイス2655752
+Node: 制限2657683
+Node: Python 抽象構文2658447
+Node: AST ノード2659752
+Node: 代入ノード2671292
+Node: サンプル2672576
+Node: Visitor を使って AST をわたり歩く2674804
+Node: バイトコード生成2676510
+Node: 抽象構文木2677093
+Node: 抽象文法 Abstract Grammar2679418
+Node: 各種サービス2679781
+Node: formatter2680055
+Node: formatter インタフェース2681609
+Node: formatter 実装2687032
+Node: writer インタフェース2687991
+Node: writer 実装2691568
+Node: SGI IRIX 特有のサービス2692635
+Node: al2693052
+Node: コンフィギュレーションオブジェクト2695181
+Node: ポートオブジェクト2696053
+Node: AL2697350
+Node: cd2697897
+Node: プレーヤーオブジェクト2701439
+Node: パーザオブジェクト2705320
+Node: fl2708018
+Node: FL Functions2709952
+Node: フォームオブジェクト2712903
+Node: FORMSオブジェクト2718762
+Node: FL2721565
+Node: flp2722137
+Node: fm2722679
+Node: gl2725237
+Node: DEVICE2729739
+Node: GL2730164
+Node: imgfile2730541
+Node: jpeg2733279
+Node: SunOS 特有のサービス2736111
+Node: sunaudiodev2736436
+Node: オーディオデバイスオブジェクト 22738070
+Node: SUNAUDIODEV2741362
+Node: MS Windows 特有のサービス2741782
+Node: msilib2742211
+Node: データベースオブジェクト 22746676
+Node: ビューオブジェクト2747347
+Node: サマリー情報オブジェクト2748669
+Node: レコードオブジェクト2749922
+Node: エラー2750903
+Node: CAB オブジェクト2751148
+Node: ディレクトリオブジェクト2752059
+Node: フィーチャー2754208
+Node: GUI クラス2754952
+Node: 事前に計算されたテーブル2757732
+Node: msvcrt - MS VC++実行時システムの有用なルーチン群2758588
+Node: ファイル操作関連2759427
+Node: コンソール I/O 関連2761387
+Node: その多の関数2762554
+Node: _winreg - Windows レジストリへのアクセス2762952
+Node: レジストリハンドルオブジェクト2775668
+Node: winsound2777720
+Node: ドキュメント化されていないモジュール2782363
+Node: フレームワーク2783075
+Node: 雑多な有用ユーティリティ2783427
+Node: プラットフォーム特有のモジュール2783934
+Node: マルチメディア関連2784722
+Node: 撤廃されたもの2785606
+Node: SGI 特有の拡張モジュール2786371
+Node: バグ報告2786821
+Node: 歴史とライセンス2789661
+Node: Python の歴史2789976
+Node: Terms and conditions for accessing or otherwise using Python2793690
+Node: Licenses and Acknowledgements for Incorporated Software2804375
+Node: Mersenne Twister2805099
+Node: Sockets2807510
+Node: Floating point exception control2809521
+Node: MD5 message digest algorithm2812716
+Node: Asynchronous socket services2815243
+Node: Cookie management2816652
+Node: Profiling2818041
+Node: Execution tracing2819743
+Node: UUencode and UUdecode functions2821184
+Node: XML Remote Procedure Calls2822967
+Node: 日本語訳について2824665
+Node: このドキュメントについて2824950
+Node: 翻訳者一覧 敬称略2825537
+Node: 24 差分翻訳者一覧 敬称略2826062
+Node: 25 差分翻訳者一覧 敬称略2826335
+Node: Module Index2826675
+Node: Class-Exception-Object Index2835285
+Node: Function-Method-Variable Index2886764
+Node: Miscellaneous Index3332851
+
+End Tag Table

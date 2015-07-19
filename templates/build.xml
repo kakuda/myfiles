@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="ymap" basedir="." default="compile">
+    <property name="TOMCAT_HOME" value="/home/maps/tomcat"/>
+    <property name="source.encoding" value="Shift_JIS"/>
+    <property name="src.dir" value="${basedir}/WEB-INF/src"/>
+    <property name="classes.dir" value="${basedir}/WEB-INF/classes"/>
+    <property name="javadoc.dir" value="${basedir}/docs"/>
+    
+    
+    <path id="web-inf-libs">
+        <fileset dir="${basedir}/WEB-INF/lib">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+    
+    <target name="init">
+        <mkdir dir="${classes.dir}"/>
+    </target>
+
+    <target name="clean">
+        <delete dir="${classes.dir}"/>
+        <delete dir="${javadoc.dir}"/>
+    </target>
+
+    <target name="compile" depends="init">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac destdir="${classes.dir}" encoding="${source.encoding}" debug="on">
+            <src path="${src.dir}"/>
+            <classpath>
+                <path location="${TOMCAT_HOME}/common/lib/servlet-api.jar"/>
+                <path refid="web-inf-libs"/>
+                <path location="${classes.dir}"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="war" depends="compile">
+        <war destfile="${basedir}/${ant.project.name}.war"
+             webxml="${basedir}/WEB-INF/web.xml">
+            <fileset dir="${basedir}" excludes="**/web.xml"/>
+        </war>
+    </target>
+    
+    <target name="svn">
+        <exec executable="svn">
+            <env key="LANG" value="C"/>
+            <arg line="update"/>
+        </exec>
+    </target>
+
+    <target name="javadoc">
+        <javadoc destdir="${javadoc.dir}" encoding="${source.encoding}">
+            <fileset dir="${src.dir}"/>
+        </javadoc>
+    </target>
+        
+    <taskdef name="start" classname="org.apache.catalina.ant.StartTask"/>
+    <taskdef name="stop" classname="org.apache.catalina.ant.StopTask"/>
+    <taskdef name="reload" classname="org.apache.catalina.ant.ReloadTask"/>
+    <taskdef name="list" classname="org.apache.catalina.ant.ListTask"/>
+
+    <property name="tomcat.user" value="maps"/>
+    <property name="tomcat.pass" value="yahoo!maps"/>
+    
+    <target name="stop">
+        <stop url="http://localhost:8080/manager"
+            username="${tomcat.user}"
+            password="${tomcat.pass}"
+            path="/${ant.project.name}"/>
+    </target>
+    <target name="start">
+        <start url="http://localhost:8080/manager"
+            username="${tomcat.user}"
+            password="${tomcat.pass}"
+            path="/${ant.project.name}"/>
+    </target>
+    <target name="reload">
+        <reload url="http://localhost:8080/manager"
+            username="${tomcat.user}"
+            password="${tomcat.pass}"
+            path="/${ant.project.name}"/>
+    </target>
+    <target name="list">
+        <list url="http://localhost:8080/manager"
+            username="${tomcat.user}"
+            password="${tomcat.pass}"/>
+    </target>
+</project>

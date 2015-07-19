@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><templates><template autoinsert="true" context="java" deleted="false" description="assertEquals template" enabled="true" name="ae">assertEquals(${expected}, ${actual});</template><template autoinsert="true" context="java" deleted="false" description="assertFalse template" enabled="true" name="af">assertFalse(${actual});</template><template autoinsert="true" context="java" deleted="false" description="assertNull template" enabled="true" name="anl">assertNull(${actual});</template><template autoinsert="true" context="java" deleted="false" description="assertNotNull template" enabled="true" name="ann">assertNotNull(${actual});</template><template autoinsert="true" context="java" deleted="false" description="assertSame template" enabled="true" name="asm">assertSame(${expected}, ${actual});</template><template autoinsert="true" context="java" deleted="false" description="assertTrue template" enabled="true" name="at">assertTrue(${actual});</template><template autoinsert="false" context="java" deleted="false" description="テスト・メソッド" enabled="true" id="org.eclipse.jdt.ui.templates.test" name="test">public void test${name}() throws Exception {
+	${cursor} 
+}</template><template autoinsert="true" context="java" deleted="false" description="exception test template" enabled="true" name="testex">public void test${name}() throws Exception {&#13;
+    try {&#13;
+        ${cursor}&#13;
+        fail();&#13;
+    } catch (${exception} expected) {&#13;
+    }&#13;
+}</template></templates>

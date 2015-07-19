@@ -1,0 +1,1572 @@
+2005-07-20 TADA Tadashi <sho@spc.gr.jp>
+	* release 2.0.2.
+
+2005-07-19 Yutaka OIWA <y.oiwa at aist.go.jp>
+	* doc/HOWTO-make-plugin.html: add about against CSRF attack.
+
+2005-07-07 Yutaka OIWA <y.oiwa at aist.go.jp>
+	* tdiary.rb, 00default.rb, skel/*.rhtml, tdiary.conf.sample: against
+	CSRF attack.
+
+2005-05-29 KURODA Hiraku <hiraku at hinet.mydns.jp>
+	* escape quote in TSUKKOMI.
+
+2005-05-18 TADA Tadashi <sho@spc.gr.jp>
+	* doc/HOWTO-make-io.rd: fix about IO#transaction block parameter.
+
+2005-05-05 TADA Tadashi <sho@spc.gr.jp>
+	* plugin/{ja,en.zh}/00default.rb: fix wrong </h4> to </h3>.
+
+2005-03-31 TADA Tadashi <sho@spc.gr.jp>
+	* release 2.0.1.
+
+2005-03-11 TADA Tadashi <sho@spc.gr.jp>
+	* back ports bug fixes from HEAD. see below:
+	* emptdiary_style.rb: body_to_html defined.
+	* theme_convert.rb: adjusted to ruby 1.8
+	* skel/i.update.rhtml: bug fix - Kanji code converted from shift-jis to euc
+	* skel/i.month.rhtml: use labels from plugin for i18n
+	* tdiary.rb: add mobile user agents; 'Vodafone' and 'MOT-'. thanks Masaru Yokoi <masaru at masaru.org>
+	* skel/i.update.rhtml: fix HTML tag typo. thanks Masaru Yokoi <masaru at masaru.org>
+
+2004-09-24 Fri UECHI Yasumasa <uechi@potaway.net>
+	* rd_style.rb: fix tainted name space of RD Headline class. Thanks Shugo Maeda <maeda@shugo.net>. 
+
+2004-08-08 Junichiro Kita <kita@kitaj.no-ip.com>
+	* tdiary.rb: TDiaryCategoryView's @last_modified changed to Time.now from Time.at(0). Thanks MATSUOKA Kohei <kohei@machu.jp>.
+
+2004-07-18 Junichiro Kita <kita@kitaj.no-ip.com>
+	* tdiary.rb, tdiary/defaultio.rb: delete dispensable data dir and cache.
+
+2004-07-01 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary_style.rb: implement body_to_html method.
+
+2004-06-28 Junichiro Kita <kita@kitaj.no-ip.com>
+	* misc/i18n/tdiary.conf.sample-en: fix typo. thanks to jfkimura@yahoo.co.jp
+
+2004-06-27 TADA Tadashi <sho@spc.gr.jp>
+	* release 2.0.0.
+
+2004-06-18 TADA Tadashi <sho@spc.gr.jp>
+	* 00default.rb: deny robots when update modes.
+
+2004-06-16 TADA Tadashi <sho@spc.gr.jp>
+	* add zh (Traditional Chinese) language resources. thanks Hiroshi Yui <thinker60@mail2000.com.tw>.
+
+2004-06-15 Tue UECHI Yasumasa <uechi@potaway.net>
+	* rd_style.rb: remove <p> tags in manufacture(*_to_html) only subtitles is given.
+
+2004-06-09 TADA Tadashi <sho@spc.gr.jp>
+	* 00default.rb: remove debug code.
+
+2004-05-22 zunda <zunda at freeshell.org>
+	* tdiary.conf.sample: English notice at the top.
+
+2004-05-22 TADA Tadashi <sho@spc.gr.jp>
+	* default.css, tdiary1.css: add '@charset "euc-jp";'.
+
+2004-05-20  Kazuhiko  <kazuhiko@fdiary.net>
+	* skel/mail.rtxt, skel/mail.rtxt.en: separate each address by
+	comma.
+
+2004-05-20 TADA Tadashi <sho@spc.gr.jp>
+	* mail.rtxt.en: against empty @author_mail or @author_name.
+	* tdiary.rb: catch exceptions when cannot delete cache files.
+
+2004-05-19 ZnZ <zn@mbf.nifty.com>
+	* 00default.rb, mail.rtxt: against empty @author_mail or @author_name.
+
+2004-05-16 TADA Tadashi <sho@spc.gr.jp>
+	* misc/style/wiki/wiki_parser.rb: ignore any elements in plugin.
+	* tdiary.conf.sample: add self URL into @no_referer. thanks ZnZ <zn@mbf.nifty.com>.
+
+2004-05-14 TADA Tadashi <sho@spc.gr.jp>
+	* skel/mail.rtxt: support absolute path of @conf.index.
+
+2004-05-09 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: support absolute path of @conf.index.
+	* skel/i.diary.rhtml: show TSUKKOMI body length 100 to 200 chars.
+
+2004-05-05 TADA Tadashi <sho@spc.gr.jp>
+	* misc: move posttdiary.rb and tdiary-mode to contrib package.
+	* release 1.5.7.
+
+2004-05-05  Kazuhiko  <kazuhiko@fdiary.net>
+	* misc/style/etdiary/etdiary_style.rb: fix a bug that causes a
+	problem in 'to_html' without options.
+
+2004-05-04  Kazuhiko  <kazuhiko@fdiary.net>
+	* skel/update.rhtml: display an e-mail address of comment if
+	exists.
+
+2004-05-04 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: remove to add '...' after using Config#shorten.
+
+2004-04-19 ZnZ <zn@mbf.nifty.com>
+	* tdiary.rb: add error information to eval.
+
+2004-04-19 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.conf.sample: uncomment @options['apply_plugin'] and @options['bot'].
+	* tdiary.conf.sample: some robots add to @options['bot']. thanks MUSHA <knu@ruby-lang.org>.
+
+2004-04-06 zunda <zunda at freeshell.org>
+	* plugin/01sp.rb: records only plug-in filenames. When more than one plug-ins in different directories have the same filename, first occurance in sp.path will be used, without raising an error.
+
+2004-04-05 TADA Tadashi <sho@spc.gr.jp>
+	* theme/base.css: add .highlight class. thanks ZnZ <zn@mbf.nifty.com> and Naoko <naoko@ns.undefine.to>.
+
+2004-04-04 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: apply comment_filter for TrackBack.
+	* tdiary/filter/default.rb: reject without GET method in comment_filter.
+
+2004.03.16 SHIMADA Mitsunobu <simm@fan.jp>
+	* misc/style/etdiary/etdiary_style.rb: fix bug: section without subtitle.
+
+2004-03-15  Kazuhiko  <kazuhiko@fdiary.net>
+	* tdiary.rb (apply_plugin): return empty string if input string is
+	nil.
+
+2004.03.15 Junichiro Kita <kita@kitaj.no-ip.com>
+	* plugin/*/00default.rb: resurrection of category_anchor. Thanks mput.
+
+2004.03.15 Junichiro Kita <kita@kitaj.no-ip.com>
+	* index.rb, tdiary.rb, skel/category.rhtml, plugin/*/00default.rb: indexed category.
+	 Thanks mass and phonondrive.com.
+
+2004-03-04 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: do not call update_proc when TSUKKOMI was filtered.
+	* plugin/00default.rb: fix bug in comment_mail_send. 
+
+2004-02-27 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb, skel/*: call update_proc after all plugins loaded.
+
+2004-02-17 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: fix TDiary::Filter::Filter#comment_filter prototype.
+
+2004.02.12 Junichiro Kita <kita@kitaj.no-ip.com>
+	* tdiary/filter/default.rb: support ruby 1.6.x.
+
+2004-02-11 zunda <zunda at freeshell.org>
+	* tdiary.rb, tdiary/filter/default.rb: fix bugs.
+
+2004-02-10 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb, tdiary/filter/default.rb: TSUKKOMI and referer filter feature.
+
+2004-02-09 TADA Tadashi <sho@spc.gr.jp>
+	* plugin/00default.rb: fuzzy regexp in my plugin.
+	* skel/mail.rtxt*: anchor move to the bottom of body.
+
+2004-02-09 mput <mput@users.sf.net>
+	* tdiary.rb: fix Plugin#apply_plugin.
+
+2004-02-04 UECHI Yasumasa <uh@u.dhis.portside.net>
+	* misc/style/rd/rd_style.rb: rescue ParseError
+
+2004-01-26 UECHI Yasumasa <uh@u.dhis.portside.net>
+	* misc/style/rd/rd_style.rb: fix body_to_html
+
+2004.01.21 Junichiro Kita <kita@kitaj.no-ip.com>
+	* tdiary.rb: call update_proc in TDiaryTrackBackReceive#eval_rhtml for recent_trackback3.rb.
+
+2004-01-17 TADA Tadashi <sho@spc.gr.jp>
+	* plugin/{ja,en}/00default.rb: split @theme_location_comment.
+	* theme/base.css: modify style of calendar3 plugin.
+
+2004-01-17 TADA Tadashi <sho@spc.gr.jp>
+	* misc/posttdiary.rb: support ruby 1.8.1.
+
+2004-01-17 Kazuhiko <kazuhiko@fdiary.net>
+	* tdiary.rb: use erbscan if possible.
+
+2004.01.12 Junichiro Kita <kita@kitaj.no-ip.com>
+	* tdiary.rb: remove TDiaryTrackBackBase#trackback_url.
+	* tdiary.rb: use @conf.base_url in TDiaryTrackBackBase#diary_url.
+
+2004.01.12 Junichiro Kita <kita@kitaj.no-ip.com>
+	* tdiary.rb: if trackback is longer than 255 byte, it will be shorten to 252 byte and '...' will be added.
+
+2004.01.09 TADA Tadashi <sho@spc.gr.jp>
+	* plugin/00default.rb: meta link support HTML 4.01.
+
+2003.12.30 Junichiro Kita <kita@kitaj.no-ip.com>
+	* plugin/00default.rb: my can handle 'yyyymmdd#txx'.
+	* wiki_style.rb: strip_subtitle returns nil if sibtitle == ''. thanks to YAA.
+
+2003.12.26 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary/pstoreio.rb: fix bug: enable running 1.5.6 or later.
+
+2003.12.26  Kazuhiko  <kazuhiko@fdiary.net>
+	* tdiary.rb(trackback_url): HTTP_HOST -> SERVER_NAME.
+	(base_url): return '' in non CGI case.
+
+2003.12.26 Junichiro Kita <kita@kitaj.no-ip.com>
+	* skel/mail.rtxt*: add comment's URL in the body.
+
+2003.12.25 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: TDiaryBase#clear_cache support parameter of file name pattern.
+
+2003.12.26 Kazuhiro NISHIYAMA <zn@mbf.nifty.com>
+	* misc/style/wiki/wiki_style.rb: bug fix of parsing categories. thanks to yowa.
+
+2003.12.26 Kazuhiro NISHIYAMA <zn@mbf.nifty.com>
+	* tdiary.rb: catch StandardError when broken cache.
+
+2003.12.20 Kazuhiko  <kazuhiko@fdiary.net>
+	* misc/style/rd/rd_style.rb: bug fix. 
+
+2003.12.19 TADA Tadashi <sho@spc.gr.jp>
+	* index.rb, update.rb: set $KCODE to 'n'.
+
+2003.12.19 Fri UECHI Yasumasa <uh@u.dhis.portside.net>
+	* misc/style/rd/rd_style.rb: accept lower level headlines without upper level headlines.
+
+2003.12.18 TADA Tadashi <sho@spc.gr.jp>
+	* 00default.rb: save theme conf before call header_proc.
+
+2003.12.16 Takeru KOMORIYA <komoriya@paken.org>
+	* tdiary.rb: do not count up last-modified when the diary disabled.
+
+2003.12.16 TADA Tadashi <sho@spc.gr.jp>
+	* 00default.rb: accept fuzzy anchor style.
+
+2003.12.11 TADA Tadashi <sho@spc.gr.jp>
+	* skel/day.rhtml, skel/diary.rhtml: do not make link URL when access from bot.
+
+2003.12.09 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: String#make_link replace space to '&nbsp;' only top of lines.
+
+2003.12.01 TADA Tadashi <sho@spc.gr.jp>
+	* misc/posttdiary.rb: support over 10 images. thanks jun.o.
+
+2003.11.27 TADA Tadashi <sho@spc.gr.jp>
+	* index.rb, update.rb: no 'Content-Type' in error message running on mod_ruby.
+	* plugin/01sp.rb: sp.path can terminate by '/'.
+
+2003.11.21 Junichiro Kita <kita@kitaj.no-ip.com>
+	* tdiary.rb: Url returned by base_url ends with '/'.
+
+2003.11.21  Kazuhiko  <kazuhiko@fdiary.net>
+	* tdiary.rb: remove tail '/' of base_url.
+
+2003.11.19 Junichiro Kita <kita@kitaj.no-ip.com>
+	* tdiary.rb: import base_url method from RWiki.
+
+2003.11.18 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: run Plugin#apply_plugin under $SAFE = 4 when secure mode.
+
+2003.11.17 TADA Tadashi <sho@spc.gr.jp>
+	* dot.htaccess: move comment about YYYYMMDD.html access to html_anchor.rb plugin.
+	* tdiary/lang/ja.rb: remove decoding of charref.
+	* plugin/00default.rb: remove sub from hostname in comment_mail_send.
+
+2003.11.14 TADA Tadashi <sho@spc.gr.jp>
+	* misc/jtime.rb: removed. use plugin/jdate.rb.
+
+2003.11.13 TADA Tadashi <sho@spc.gr.jp>
+	* release 1.5.6.
+
+2003.11.10 TADA Tadashi <sho@spc.gr.jp>
+	* skel/update.rhtml*: add subtitle in update form.
+
+2003.11.06 zunda <zunda at freeshell.org>
+	* misc/style/emptdiary/README.rd and README.rd.en: emptdiary -> emptDiary
+
+2003.11.06 TADA Tadashi <sho@spc.gr.jp>
+	* plugin/{ja,en}/00default.rb: looks up style documents in docs.tdiary.org wiki.
+
+2003.11.05 Junichiro Kita <kita@kitaj.no-ip.com>
+	* misc/style/wiki/README*: add document for kw plugin.
+
+2003.11.05 Junichiro Kita <kita@kitaj.no-ip.com>
+	* tdiary.rb: rescue SyntaxError and raise BadStyleError when bad style is specified.
+
+2003.11.03 Junichiro Kita <kita@kitaj.no-ip.com>
+	* ske/category.rhtml: stripped_subtitle -> stripped_subtitle_to_html.
+
+2003.10.29 zunda <zunda at freeshell.org>
+	* tdiary.rb: passes yield separate values instead of an Array to follow behavior of yield [ruby-dev:21276]
+
+2003.10.28 Junichiro Kita <kita@kitaj.no-ip.com>
+	* tdiary.rb: dup string in apply_plugin.
+	* doc/HOWTO-make-io.rd: add documents for *_to_html.
+	* misc/style/etdiary/etdiary_style.rb, misc/style/rd/rd_style.rb,
+	misc/style/wiki/wiki_style.rb, tdiary/pstoreio.rb, tdiary/tdiary_style.rb: add *_to_html.
+
+2003.10.25 Junichiro Kita <kita@kitaj.no-ip.com>
+	* tdiary.rb: auto invalidation of parser cache and ERb cache.
+
+2003.10.23  Kazuhiko  <kazuhiko@fdiary.net>
+	* plugin/ja/00default.rb, plugin/ja/00default.rb,
+	skel/category.rhtml, skel/conf.rhtml, skel/i.conf.rhtml,
+	skel/i.day.rhtml, skel/i.latest.rhtml, skel/i.month.rhtml,
+	skel/i.show.rhtml, skel/i.update.rhtml, skel/i.update.rhtml.en,
+	skel/preview.rhtml, skel/preview.rhtml.en, skel/show.rhtml,
+	skel/update.rhtml, skel/update.rhtml.en: escape HTML @html_title.
+
+2003.10.22 TADA Tadashi <sho@spc.gr.jp>
+	* skel/tdiary.rconf: fix error when @author_mail was nil.
+
+2003.10.21 Junichiro Kita <kita@kitaj.no-ip.com>
+	* tdiary/lang/ja.rb: shorten('') returns '' instead of nil.
+
+2003.10.14 Junichiro Kita <kita@kitaj.no-ip.com>
+	* misc/style/wiki/wiki_style.rb: support '[[string|inter:key]]'.
+
+2003.10.10 TADA Tadashi <sho@spc.gr.jp>
+	* misc/posttdiary.rb: --image-format.
+
+2003.10.10  zunda <zunda at freeshell.org>
+	* plugin/01sp.rb: CGI::escape instead of CGI::escapeHTML to make a URL
+
+2003.10.09  zunda <zunda at freeshell.org>
+	* plugin/01sp.rb: links to plugin documents
+
+2003.10.09  Kazuhiko  <kazuhiko@fdiary.net>
+	* plugin/00default.rb: untaint receivers for mod_ruby.
+
+2003.10.09 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb, 00default.rb: move Plugin#bot? to Config class, and make wrapper in Plugin.
+	* tdiary.rb: suppress saving referer from bot.
+
+2003.10.08 Kazuhiko <kazuhiko@fdiary.net>
+	* plugin/01sp.rb: untaint sp_option( 'selected' ) for mod_ruby.
+
+2003.10.07 Kazuhiko <kazuhiko@fdiary.net>
+	* tdiary.rb: untaint '#{@lang}.rb' for mod_ruby.
+
+2003.10.07 Yasuaki Gohko <gony@sm.rim.or.jp>
+	* pstoreio.rb: support ruby 1.8.
+
+2003.10.06 zunda <zunda at freeshell.org>
+	* plugin/01sp.rb: allows multiple directories for plugins
+
+2003.10.01 zunda <zunda at freeshell.org>
+	* plugin/01sp.rb: no more revision information, links to sources and comments
+	* plugin/01sp.rb: user friendlier sequence of plugin list
+
+2003.10.01 Kazuhiro NISHIYAMA <zn@mbf.nifty.com>
+	* tdiary.rb: change security error message in Plugin#add_cookie.
+
+2003.09.29 TADA Tadashi <sho@spc.gr.jp>
+	* plugin/01sp.rb: support sucure mode.
+
+2003.09.28 TADA Tadashi <sho@spc.gr.jp>
+	* add new setting @referer_day_only to reduce 'referer noise'.
+
+2003.09.27 zunda <zunda at freeshell.org>
+	* plugin/01sp.rb: better to have default opt values set nil: hide* -> show*
+	* plugin/01sp.rb: shows help in the resouce file if there is
+
+2003.09.27 TADA Tadashi <sho@spc.gr.jp>
+	* add plugin/01sp.rb and resources of ja and en.
+
+2003.09.26 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary/lang/en.rb: add comments.
+
+2003.09.25 TADA Tadashi <sho@spc.gr.jp>
+	* i18n framework.
+	* tdiary/lang: add ja.rb and en.rb.
+	* tdiary.rb: move DiaryBase#disp_referer method to Plugin class.
+	* tdiary.rb: remove Comment#shorten and Plugin#shorten.
+	* misc/i18n/00lang.en.rb: moved to plugin/en/00default.rb.
+	* add plugin/ja/00default.rb.
+
+2003.09.25 Junichiro Kita <kita@kitaj.no-ip.com>
+	* tdiary.rb, skel/diary.rhtml, plugin/00default.rb: add <div class="trackbacks">. Thanks to mput.
+
+2003.09.17 UECHI Yasumasa <uh@u.dhis.portside.net>
+	* rd_style.rb: change URL of RAA.
+
+2003.09.16 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb, tdiary.conf*: add @cache_path. Thanks MoonWolf <moonwolf@moonwolf.com>.
+
+2003.09.10 TADA Tadashi <sho@spc.gr.jp>
+	* skel/tdiary.rconf: fix typo.
+	* tdiary.rb: automatic generate date when Append.
+	* misc/posttdiary.rb: not send date to update CGI.
+	* misc/posttdiary.rb: unset date to request for tDiary.
+
+2003.09.02 Junichiro kita <kita@kitaj.no-ip.com>
+	* plugin/00default.rb: calc_links works correctly with mobile agent.
+
+2003.09.02 KAKUTANI Shintaro <shintaro@kakutani.com>
+	* skel/plugin_error.rhtml: follow conf proc.
+
+2003.09.02 TADA Tadashi <sho@spc.gr.jp>
+	* dot.htaccess: deny "*.rhtml*".
+	* plugin/00default.rb: mobile_navi supports ruby 1.8.
+
+2003.09.01 Junichiro kita <kita@kitaj.no-ip.com>
+	* plugin/00default.rb, skel/i.*.rhtml: create navigation link with mobile_navi.
+
+2003-08-23 zunda <zunda at freeshell.org>
+	sp.rb: simpler configuration display
+
+2003.08.28 Kazuhiko <kazuhiko@fdiary.net>
+	* rd_style.rb, wiki_style.rb insert "\n\n" at the end of @body.
+
+2003-08-28 Thu UECHI Yasumasa <uh@u.dhis.portside.net>
+	* rd_style.rb: fix bug when last section dosen't terminate by CR.
+
+2003-08-26 zunda <zunda at freeshell.org>
+	sp.rb: English translation
+	sp.rb: option defaults are flipped
+	sp.rb: Typo for @options are fixed
+
+2003-08-22 zunda <zunda at freeshell.org>
+	sp.rb: following options are added: thanks to kaz
+	sp.rb: @options['select_plugins.hidesource']
+	sp.rb: @options['select_plugins.hidemandatory']
+	sp.rb: @options['select_plugins.newdefault']
+	sp.rb: new plugins are marked in the list until the user configures the selections
+	sp.rb: bug fix: check conf mode before updating the options
+
+2003.08.21 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: remove debug message.
+	* tdiary.rb, 00default.rb: add Plugin@last_modified and insert it into HTML header.
+	* 00default.rb, update.rhtml*, preview.rhtml*: add style_howto plugin.
+	* index.rb, update.rb: waiting 1 second after post.
+
+2003-08-20 zunda <zunda at freeshell.org>
+	sp.rb: first release
+
+2003.08.20 TADA Tadashi <sho@spc.gr.jp>
+	* skel/tdiary.rconf: cancel saving Array and Hash.
+
+2003.08.20 TADA Tadashi <sho@spc.gr.jp>
+	* skel/tdiary.rconf: save Array and Hash value of @options2. thanks kazuhiko.
+	* tdiary.rb: Config#delete as delete a key of @options.
+
+2003.08.06 zunda <zunda at freeshell.org>
+	* tdiary.rb: taint @options2 when it is created for the first time
+
+2003.08.06 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb, 00default.rb: taint all param values of @cgi in Plugin.
+
+2003.08.05 TADA Tadashi <sho@spc.gr.jp>
+	* doc/HOWTO-make-plugin.html: about conf_proc.
+	* 00default.rb: fix about comment_mail error in secure mode. thanks kazuhiko.
+	* release 1.5.5.
+
+2003.08.04 TADA Tadashi <sho@spc.gr.jp>
+	* support ruby 1.8.0 preview7.
+	* wiki_parser.rb: add "\n" to end of blockquoted lines.
+
+2003.07.31 Junichiro Kita <kita@kitaj.no-ip.com>
+	* index.rb: tdiary.cookies is set after tdiary.eval_rhtml, at least in case of whats_new plugin.
+
+2003.07.30 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: use ERB2 when running on ruby 1.8 or later (testing).
+	* wiki_style.rb: support TrackBack anchor.
+
+2003.07.29 UECHI Yasumasa <uh@u.dhis.portside.net>
+	* rd_style: fix Refference element to recognize trackbacks
+
+2003.07.29 Kazuhiko <kazuhiko@fdiary.net>
+	* index.rb: don't make 'body' in case of HEAD request.
+
+2003.07.22 TADA Tadashi <sho@spc.gr.jp>
+	* skel/conf.rhtml: to valid html.
+
+2003.07.18 zunda <zunda at freeshell.org>
+	* misc/style/emptdiary/emptydiary.rb: support ruby 1.8.0 (2003-07-18):
+	  Array.join() no longer returns EmptdiaryString but returns String.
+
+2003.07.18 UECHI Yasumasa <uh@u.dhis.portside.net>
+	* rd_style: fix ref_ext_IMG is not for HTML4
+
+2003.07.15 TADA Tadashi <sho@spc.gr.jp>
+	* save only valid referer, and referer URL to euc before display.
+
+2003.07.10 TADA Tadashi <sho@spc.gr.jp>
+	* fix bug when empty receivers in comment_mail plugins.
+
+2003.07.05 TADA Tadashi <sho@spc.gr.jp>
+	* fix yeasterday's bug.
+
+2003.07.04 TADA Tadashi <sho@spc.gr.jp>
+	* fix some bugs in comment_mail plugins.
+
+2003.06.24 TADA Tadashi <sho@spc.gr.jp>
+	* wiki_style.rb: fix bug about only subtitle section.
+	* tdiary.rb, wiki_style.rb: support ruby 1.8.0 preview3.
+
+2003.06.22 TADA Tadashi <sho@spc.gr.jp>
+	* 00default.rb: css_tag plugin support base.css.
+	* default.css: remove including base.css.
+
+2003.06.21 TADA Tadashi <sho@spc.gr.jp>
+	* conf_proc supports secure mode.
+
+2003.06.16 Junichiro Kita <kita@kitaj.no-ip.com>
+	* 00default.rb: use @conf.author_mail when @conf['comment_mail.receivers'] is nil.
+
+2003.06.16 TADA Tadashi <sho@spc.gr.jp>
+	* conf_proc: English support.
+	* conf_proc: mobile agent support.
+
+2003.06.15 Hideki SAKAMOTO <hs@on-sky.net>
+	* tdiary.rb: initialize @css in Config class.
+
+2003.06.14 TADA Tadashi <sho@spc.gr.jp>
+	* conf_proc plugin modify.
+	* conf.rhtml.en: deleted.
+
+2003.06.13 TADA Tadashi <sho@spc.gr.jp>
+	* [TESTING] conf_proc plugin modify.
+
+2003.06.12 TADA Tadashi <sho@spc.gr.jp>
+	* [TESTING] conf_proc plugin support.
+	* 00default.rb, mail.rtxt: optimize comment mail.
+
+2003.06.07 TADA Tadashi <sho@spc.gr.jp>
+	* update.rhtml, preview.rhtml: renumbering tabindex.
+
+2003.06.07 Junichiro Kita <kita@kitaj.no-ip.com>
+	* wiki_style.rb: remove categorizable?
+
+2003.06.06 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb, update.rb: redirection to day page after append or replace diary.
+	* update.rhtml, preview.rhtml: change update form layout.
+	* 00default.rb, 00lang.en.rb: marge edit.rb and change some labels.
+
+2003.06.05 TADA Tadashi <sho@spc.gr.jp>
+	* base.css: add some plugin's default settings. thanks Nana.
+
+2003.06.02 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: fix error in 1st preview in the new day.
+
+2003.05.30 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: fix wrong style selected in preview when editing a diary in the another stlye.
+	* base.css: add default of calendar3 plugin.
+
+2003.05.17 Kenta MURATA <muraken2@nifty.com>
+	* TDiaryComment#eval_rhtml ignores some exceptions
+
+2003.05.15 TADA Tadashi <sho@spc.gr.jp>
+	* wiki_parser.rb: remove #!... line.
+	* release 1.5.4.
+
+2003.05.15 UECHI Yasumasa <uh@u.dhis.portside.net>
+	* rd_style.rb: fix footnote element with mput's patch.
+
+2003.05.13 Junichiro Kita <kita@kitaj.no-ip.com>
+	* tdiary.rb: TDiary::TDiaryTrackBackReceive#to_euc don't look charset parameter.(automatic translation)
+
+2003.05.11 Junichiro Kita <kita@kitaj.no-ip.com>
+	* tdiary.rb: TDiaryTrackBackReceive#eval_rhtml call super to do some plugin tasks. (eg. update_proc)
+
+2003.05.10 Junichiro Kita <kita@kitaj.no-ip.com>
+	* tdiary.rb: TrackBack support charset parameter.
+
+2003.05.09 TADA Tadashi <sho@spc.gr.jp>
+	* preview.rhtml: show anchor.
+
+2003.05.09 Junichiro Kita <kita@kitaj.no-ip.com>
+	* plugin/00default.rb: add bot?
+
+2003.05.06 Junichiro Kita <kita@kitaj.no-ip.com>
+	* plugin/00default.rb: anchor can handle yyyymmdd#txx.
+
+2003.05.06 TADA Tadashi <sho@spc.gr.jp>
+	* preview: change to simple action on append mode.
+
+2003.05.03 Junichiro Kita <kita@kitaj.no-ip.com>
+	* tdiary.rb: import classes for TrackBack(TDiary::TDiaryTrackBack*) from tb.rb.
+
+2003.05.02 TADA Tadashi <sho@spc.gr.jp>
+	* index.rb, updatre.rb: untaint org_path. thanks mput.
+
+2003.04.28 TADA Tadashi <sho@spc.gr.jp>
+	* HOWTO-make-plugin.html: add about form_proc.
+
+2003.04.27 Junichiro Kita <kita@kitaj.no-ip.com>
+	* plugin/00default.rb: send comment_mail when receive TrackBack Ping.
+
+2003.04.22 TADA Tadashi <sho@spc.gr.jp>
+	* escape backslash in header and footer.
+
+2003.04.20 TADA Tadashi <sho@spc.gr.jp>
+	* support form_proc plugin.
+
+2003.04.18 TADA Tadashi <sho@spc.gr.jp>
+	* remove comment mail feature to plugin: comment_mail-{smtp,qmail,sendmail}.rb.
+
+2003.04.17 TADA Tadashi <sho@spc.gr.jp>
+	* default.css: add table settings.
+	* tdiary.conf.sample: updated.
+
+2003.04.15 TADA Tadashi <sho@spc.gr.jp>
+	* support edit_proc plugin.
+
+2003.04.11 zunda <zunda@freeshell.org>
+	* skel/i.day.rhtml, skel/i.latest.rhtml, skel/i.month.rhtml: <input ... -> <INPUT ...
+
+2003.04.07 TADA Tadashi <sho@spc.gr.jp>
+	* plugin_error.rhtml: 'Update' -> 'Edit' when error in updating.
+
+2003.04.06 TADA Tadashi <sho@spc.gr.jp>
+	* preview: show safety page when plugin error.
+
+2003.04.05 TADA Tadashi <sho@spc.gr.jp>
+	* support preview page.
+
+2003.04.04 TADA Tadashi <sho@spc.gr.jp>
+	* 00default.rb: add content_script_type plugin.
+
+2003.04.03 TADA Tadashi <sho@spc.gr.jp>
+	* HOWTO-use-plugin.html: add about @options['apply_plugin'].
+	* mobile mode support AirH"PHONE browser.
+
+2003-04-02 UECHI Yasumasa <uh@u.dhis.portside.net>
+	* rd_style.rb: fix nested <a> tag in DescList. thanx mput.
+	* rd_style.rb: MethodList use for HTML block element.
+
+2003.03.25 TADA Tadashi <sho@spc.gr.jp>
+	* wiki_style.rb: disable WikiName in WikiSection#strip_subtitle.
+
+2003.03.22 Minero Aoki <aamine@loveruby.net>
+	* misc/jtime.rb, misc/posttdiary.rb, misc/theme_convert/theme_conver.rb: remove warning on ruby 1.8.
+	* emptdiary_style.rb, etdiary_style.rb, rd_style.rb, wiki_style.rb: remove warning on ruby 1.8.
+	* skel/plugin_error.rb: remove warning on ruby 1.8.
+	* tdiary/defaultio.rb, tdiary/pstoreio.rb, tdiary/tdiary_style.rb: remove warning on ruby 1.8.
+	* tdiary.rb: remove warning on ruby 1.8.
+
+2003.03.21 zunda <zunda@freeshell.org>
+	* skel/(i.)diary.rhtml, i.update.rhtml(.en): comment.body.shorten -> comment.shorten
+
+2003.03.19 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: loading plugin files before eval rhtmls.
+
+2003.03.17 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: fix bug of referer_limit.
+
+2003.03.14 TADA Tadashi <sho@spc.gr.jp>
+	* HOWTO-make-plugin.html: add about @plugin_files.
+
+2003.03.10 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: add @plugin_files into Plugin.
+
+2003.03.08 UECHI Yasumasa <uh@u.dhis.portside.net>
+	* rd style: 'my' and 'a' plugins are used for reference.
+
+2003.03.06 UECHI Yasumasa <uh@u.dhis.portside.net>
+	* rd style: simple subtitle in CHTML
+
+2003.03.06 TADA Tadashi <sho@spc.gr.jp>
+	* tDiary/etDiary/emptDiary style: subtitle <P> to <H3> in mobile mode.
+
+2003.03.05 TADA Tadashi <sho@spc.gr.jp>
+	* Wiki style: fix bug of definition list.
+
+2003.03.04 UECHI Yasumasa <uh@u.dhis.portside.net>
+	* rd_style.rb: change apply_to_RefToElement calls ref_ext_* methods directly.
+
+2003.03.04 TADA Tadashi <sho@spc.gr.jp>
+	* suport ruby 1.8.0 preview2 (again).
+
+2003.03.03 TADA Tadashi <sho@spc.gr.jp>
+	* etDiary style: fix section starts with plugin. thanks simm.
+	* suport ruby 1.8.0 preview2.
+
+2003.03.01 TADA Tadashi <sho@spc.gr.jp>
+	* rd style: fix subtitle without category (again). thenks mput and uechi.
+
+2003.02.29 TADA Tadashi <sho@spc.gr.jp>
+	* rd style: fix subtitle without category. thenks mput.
+
+2003.02.26 TADA Tadashi <sho@spc.gr.jp>
+	* wiki style: fix bug again when last section dosen't terminate by CR.
+	* add navi_edit plugin (label) into 00default.rb and 00lang.en.rb.
+
+2003.02.25 TADA Tadashi <sho@spc.gr.jp>
+	* wiki style: fix bug when last section dosen't terminate by CR.
+	* some styles: update document about install.
+
+2003.02.23 TADA Tadashi <sho@spc.gr.jp>
+	* wiki style: fix bug about blockquote grammar.
+	* etDiary style: update.
+	* release 1.5.3.
+
+2003.02.21 TADA Tadashi <sho@spc.gr.jp>
+	* wiki style: modify blockquote grammar.
+	* some documents update.
+
+2003.02.19 TADA Tadashi <sho@spc.gr.jp>
+	* add etdiary style's document.
+	* some documents update.
+
+2003.02.18 TADA Tadashi <sho@spc.gr.jp>
+	* add emptdiary_style.rb and some documents of styles.
+	* move misc/style/wiki/kw.rb to plugin.
+	* doc.css: fix bug.
+
+2003.02.17 TADA Tadashi <sho@spc.gr.jp>
+	* add rd_style.rb.
+
+2003.02.16 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary_style.rb: fix bug when subtitle has only category.
+	* tdiary.rb: taint Plugin instance.
+
+2003.02.13 TADA Tadashi <sho@spc.gr.jp>
+	* 00deffault.rb: hide preferences in navi_admin when categorized view.
+
+2003.02.13 Junichiro Kita <kita@kitaj.no-ip.com>
+	* add misc/style/etdiary/etdiary_style.rb
+
+2003.02.12 Junichiro Kita <kita@kitaj.no-ip.com>
+	* merge from Test_Category.
+
+2003.02.12 Junichiro Kita <kita@kitaj.no-ip.com>
+	* tdiary/pstoreio.rb: class Diary include UncategorizableDiary.
+
+2003.02.11 Junichiro Kita <kita@kitaj.no-ip.com>
+	* wiki_style.rb, tdiary_style.rb: stripped_subtitle returns nil if @subtitle or stripped subtitle is nil.
+
+2003.02.11 Junichiro Kita <kita@kitaj.no-ip.com>
+	* plugin/category.rb, skel/category.rhtml: separate cgi parameters with ';'.
+
+2003.02.10 Junichiro Kita <kita@kitaj.no-ip.com>
+	* category.rb: valid HTML. thanks Yoshimi KURUMA <yoshimik@iris.dti.ne.jp>
+
+2003.02.08 Junichiro Kita <kita@kitaj.no-ip.com>
+	* move CategorizableDiary/UncategorizableDiary into tdiary.rb.
+	* HOWTO-make-io.rd: add about category.
+
+2003.02.08 TADA Tadashi <sho@spc.gr.jp>
+	* change IO <-> style interface: IOBase#load_styles.
+
+2003.02.06 TADA Tadashi <sho@spc.gr.jp>
+	* support WikiWord and table in Wiki parser.
+
+2003.01.22 TADA Tadashi <sho@spc.gr.jp>
+	* fix the term of style.
+
+2003.01.21 TADA Tadashi <sho@spc.gr.jp>
+	* defaultio.rb: fix style require bug.
+	* pstoreio.rb: fix about style.
+
+2003.01.20 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: rescue SyntaxError in plugins, and support mod_ruby.
+	* support changing describe style.
+
+2003.01.18 TADA Tadashi <sho@spc.gr.jp>
+	* HOWTO-make-plugin.html: add about HTML style generated by plugins.
+
+2003.01.10 TADA Tadashi <sho@spc.gr.jp>
+	* 00default.rb: making @prev_day and @next_day in calc_link. for navi_user
+	* 00default.rb: add link elements into head: start, first, prev, next and last.
+
+2003.01.09 TADA Tadashi <sho@spc.gr.jp>
+	* 00default.rb: add title attr into specifying stylesheet.
+	* tdiary.rb: Plugin#shorten.
+
+2003.01.06 TADA Tadashi <sho@spc.gr.jp>
+	* defaultio.rb: truncate after .td2 saving. thanks MIZUNO Takehiko.
+
+2002.12.30 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: fix for mod_ruby. thanks rcn.
+
+2002.12.25 Junichiro Kita <kita@kitaj.no-ip.com>
+	* apply_plugin apply ERb when @options['apply_plugin'] == true
+
+2002.12.25 TADA Tadashi <sho@spc.gr.jp>
+	* pstoreio.rb: for PStore of ruby 1.6.8.
+
+2002.12.25 TADA Tadashi <sho@spc.gr.jp>
+	* release 1.5.2.
+
+2002.12.24 TADA Tadashi <sho@spc.gr.jp>
+	* skel/i.*.rhtml: support @hide_comment_form in tdiary.conf.
+
+2002.12.20 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb, HOWTO-make-plugin.html: add Plugin#apply_plugin method.
+
+2002.12.19 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.conf.sample: change URL of yahoo search.
+	* document update: theme gallery and theme bench to tDiary.org.
+	* 00default.rb: fix nyear title. thank uechi <uh@u.dhis.portside.net>.
+
+2002.12.18 TADA Tadashi <sho@spc.gr.jp>
+	* conf.rhtml*: change theme gallery URL.
+	* tdiary.rb, index.rb: be able to change last modified from plugins.
+
+2002.12.16 TADA Tadashi <sho@spc.gr.jp>
+	* dot.htaccess: add some comments about ErrorDocument.
+	* 00default.rb: skip hidden diary in navi_user.
+
+2002.12.15 TADA Tadashi <sho@spc.gr.jp>
+	* 00default.rb, 00lang.en.rb: fix wrong title tag when NYEAR mode.
+
+2002.12.13 TADA Tadashi <sho@spc.gr.jp>
+	* 00default.rb, 00lang.en.rb: prev and next navi when NYEAR mode, more.
+	* default.css: a little change in list elements.
+
+2002.12.11 TADA Tadashi <sho@spc.gr.jp>
+	* 00default.rb: prev and next navi when NYEAR mode.
+
+2002.12.04 Junichiro Kita <kita@kitaj.no-ip.com>
+	* plugin/00default.rb: bugfix in navi_user.
+
+2002.12.02 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary1.css: convert for 1.5 or later.
+	* misc/i18n/00lang.en.rb: add nyear labels.
+	* update English documents. thanks Mizuho <gha@intrastore.cdc.com>.
+	* add theme/base.css for basic styles.
+	* footer.rhtml: move footer_proc before div.footer.
+
+2002.12.02 Junichiro Kita <kita@kitaj.no-ip.com>
+	* skel/diary.rhtml: let nyear into <span>.
+
+2002.12.01 Junichiro Kita <kita@kitaj.no-ip.com>
+	* doc/HOWTO-make-plugin.html: add about footer_proc.
+
+2002.12.01 Junichiro Kita <kita@kitaj.no-ip.com>
+	* merge from Test_NYEAR.
+
+2002.11.26 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.net -> tdiary.org.
+
+2002.11.25 TADA Tadashi <sho@spc.gr.jp>
+	* update documents. thanks Mizuho <gha@intrastore.cdc.com>.
+
+2002.11.20 TADA Tadashi <sho@spc.gr.jp>
+	* fix: bad last modified setting in CommentManager::add_comment.
+
+2002.11.19 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: remove a debugging message.
+	* defaultio.rb, pstoreio.rb: support Ruby 1.6.8 (ad hoc).
+	* show.rhtml: make anchor name of section.
+
+2002.11.18 TADA Tadashi <sho@spc.gr.jp>
+	* remove Japanese char in diary.rhtml and 00lang.en.rb.
+	* fix: setting default values in Config.
+	* release 1.5.1.
+
+2002.11.17 TADA Tadashi <sho@spc.gr.jp>
+	* specify configuration value in deffault.
+	* navi_user plugin: send Time object to navi_{prev|next}_diary.
+
+2002.11.16 Minero Aoki <aamine@loveruby.net>
+	* avoid ruby 1.7 warnings.
+
+2002.11.13 TADA Tadashi <sho@spc.gr.jp>
+	* update docs.
+
+2002.11.13 Junichiro Kita <kita@kitaj.no-ip.com>
+	*index.rb: fix: put cookies into head after tdiary.eval_rhtml.
+
+2002.11.12 TADA Tadashi <sho@spc.gr.jp>
+	* skel/*.en: marge some files to language independent revision.
+	* tdiary.rb: fix: rescue plugin error.
+	* defaultio.rb, pstoreio.rb: remove white space in the top of paragrapth..
+
+2002.11.11 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: TDiaryBase#mode method added.
+
+2002.11.08 Junichiro Kita <kita@kitaj.no-ip.com
+	* 00default.rb: use @years to make links to prev/next month in navi_user
+
+2002.11.09 TADA Tadashi <sho@spc.gr.jp>
+	* add TDiary::Config::mobile_agent? (for squeeze's error...)
+
+2002.11.08 Junichiro Kita <kita@kitaj.no-ip.com
+	* merge navi_user_light.rb into 00default.rb
+
+2002.11.08 TADA Tadashi <sho@spc.gr.jp>
+	* @lang in tdiary.conf and add English resources.
+
+2002.11.07 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.conf.sample: fix Regexp of private address in @no_referer.
+	* dot.htaccess: more condition setting for 'YYYYMMDD.html' style.
+	* add @plugin_path into conf.
+
+2002.11.05 TADA Tadashi <sho@spc.gr.jp>
+	* misc/i18n/*: spell checking.
+
+2002.11.02 TADA Tadashi <sho@spc.gr.jp>
+	* doc/HOWTO-make-theme.html: add about font-size and div.sidebar, themebench2.
+
+2002.10.30 TADA Tadashi <sho@spc.gr.jp>
+	* misc/i18n/*: add English documents(draft), thanks Mizuho <gha@intrastore.cdc.com>.
+
+2002.10.29 Junichiro Kita <kita@kitaj.no-ip.com>
+	* tdiary.rb: rescue ArgumentError in parser_cache
+
+2002.10.28 TADA Tadashi <sho@spc.gr.jp>
+	* misc/mail-via-*: follow up for TDiary::Config.
+
+2002.10.23 TADA Tadashi <sho@spc.gr.jp>
+	* Config#hide_comment_form.
+	* fix bug: waste sending mail when no body of comment.
+
+2002.10.22 TADA Tadashi <sho@spc.gr.jp>
+	* remove misc/squeeze.rb. use squeeze.rb in the plugin collection.
+
+2002.10.17 TADA Tadashi <sho@spc.gr.jp>
+	* fix(?) bug(?) of 'YYYYMMDD.html' style.
+
+2002.10.12 TADA Tadashi <sho@spc.gr.jp>
+	* support 'YYYYMMDD.html' style using ErrorDocument.
+	* fix about reading hidden mode.
+
+2002.10.07 TADA Tadashi <sho@spc.gr.jp>
+	* fix @mode value in TDiary::TDiaryBase#load_plugins.
+
+2002.10.03 TADA Tadashi <sho@spc.gr.jp>
+	* marge with Test_TDiary_modile branch, so...
+		* split namespace by TDiary module.
+		* load plugin files in TDiary::Plugin class.
+		* split TDiary::Config class.
+		* add @conf into Plugin class.
+		* HOWTO-make-io.rd: update.
+	* HOWTO-make-plugin.html: update.
+
+2002.09.30 Hiroyuki Ikezoe <zoe@kasumi.sakura.ne.jp>
+	* update.rhtml: add "update" into class selector in <div class="day">.
+	* conf.rhtml: add "conf" into class selector in <div class="day">.
+
+2002.09.29 TADA Tadashi <sho@spc.gr.jp>
+	* misc/posttdiary.rb:fix bug when boundary has special charactor of Regexp.
+
+2002.09.28 TADA Tadashi <sho@spc.gr.jp>
+	* update.rb: remove an unnecessary </div>.
+
+2002.09.24 TADA Tadashi <sho@spc.gr.jp>
+	* i.update.rhtml: fix typo.
+
+2002.09.16 TADA Tadashi <sho@spc.gr.jp>
+	* update.rhtml: class="field" into all input field element.
+
+2002.09.15 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: fix bug in TDiaryAppend and TDiaryReplace: title= -> set_title.
+
+2002.09.13 TADA Tadashi <sho@spc.gr.jp>
+	* HOWTO-make-io.rd: about Section#body.
+
+2002.09.12 TADA Tadashi <sho@spc.gr.jp>
+	* index.rb: redirect using by meta element after comment posting.
+
+2002.09.11 TADA Tadashi <sho@spc.gr.jp>
+	* update documents for 1.5 features.
+	* 00default.rb, doc/*.html: HTML 4.01 Strict DOCTYPE.
+
+2002.09.10 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: argument check in DiaryBase#set_date.
+	* HOWTO-make-io.html -> HOWTO-make-io.rd.
+
+2002.09.09 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: implement DiaryBase#title, DiaryBase#set_title.
+	* defaultio.rb, pstoreio.rb: remove title, title=, date method.
+	* rename method: Section#text -> to_src.
+
+2002.08.26 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: change TDiary::DIRTY_NONE false to zero.
+	* tdiary.rb, diary.rhtml: add CommentManager#each_visible_comment.
+	* tdiary.conf.sample: referer_table update.
+	* pstoreio.rb: fix determination of dirty flag.
+	* defaultio.rb: enable hidden comment flag.
+
+2002.08.25 TADA Tadashi <sho@spc.gr.jp>
+	* defaultio.rb: fix about lost hidden comments at saving. thanks Mizuho <gha@intrastore.cdc.com>.
+	* update.rhtml: change format of comments.
+
+2002.08.22 TADA Tadashi <sho@spc.gr.jp>
+	* defaultio.rb: untaint directory name in calendar method. thanks Mizuho <gha@intrastore.cdc.com>.
+
+2002.08.16 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: create cache directory before using perser cache. thanks Mizuho <gha@intrastore.cdc.com>.
+	* paragraph_anchor -> section_anchor.
+	* theme: panchor -> sanchor.
+	* tdiary.rb: @ignore_parser_cache for yasqeeze.
+
+2002.08.13 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb, defaultio.rb pstoreio.rb: change intarface of io#transaction method.
+	* diary#each_paragraph -> each_section
+	* update.rhtml, defaultio.rb pstoreio.rb: to_text -> to_src.
+	* HOWTO-make-io.html: add a document for IO class builders (cont.)
+
+2002.08.07 TADA Tadashi <sho@spc.gr.jp>
+	* update.rhtml: replace Diary#each_paragraph to Diary#to_text.
+
+2002.08.06 TADA Tadashi <sho@spc.gr.jp>
+	* diary.rhtml: remove commenttitle class.
+	* tdiary.rb: call plugins after posting a comment.
+	* tdiary.rb: use Plugin#anchor to make new location after posting comment.
+
+2002.08.05 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb, defaultio.rb: implement parser cache.
+	* defaultio.rb: split modules CommentIO and RefererIO.
+	* tdiary.rb, defaultio.rb: optimize dirty flags.
+
+2002.07.25 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: fix of bad fragment of redirection after posting comment. thanks NT.
+	* diary.rhtml: separate CR/LF in comments by <br>: try again.
+	* append text when the target diary existed on replace mode (porting from Rev.1.31.2.4).
+
+2002.07.24 TADA Tadashi <sho@spc.gr.jp>
+	* index.rb, tdiary.rb: redirect to day page after posting comment.
+	* diary.rhtml: separate CR/LF in comments by <br>: more try.
+	* defaultio.rb: cut surplus \n in tail of comments.
+
+2002.07.23 TADA Tadashi <sho@spc.gr.jp>
+	* diary.rhtml: separate CR/LF in comments by <br>.
+	* defauldio.rb: restore last modified into diaries.
+	* convert2.rb: fix bugs.
+
+2002.06.01 TADA Tadashi <sho@spc.gr.jp>
+	* defaultio.rb: fix IO#calendar.
+	* defaultio.rb: fix tDiary2 parser.
+
+2002.05.31 TADA Tadashi <sho@spc.gr.jp>
+	* 00default.rb: remove media="all" from meta element in HTML header.
+	* implement tDiary2 file format [update support].
+	* update.rhtml, default.css: change class of 'hide diary' checkbox 'hide' to 'hidediary'.
+
+2002.05.30 TADA Tadashi <sho@spc.gr.jp>
+	* implement tDairy2 file format [read only].
+	* diary.rhtml, update.rhtml: change class of form.
+	* misc/convert2.rb: added.
+
+2002.05.23 TADA Tadashi <sho@spc.gr.jp>
+	* follow i.diary.rhtml also.
+	* diary.rhtml: add <div ...> into referer list.
+
+2002.05.22 TADA Tadashi <sho@spc.gr.jp>
+	* split DiaryBase module from Diary class.
+	* generate diary body in Diary class.
+
+2002.05.21 TADA Tadashi <sho@spc.gr.jp>
+	* generate new HTML.
+
+2002.05.20 TADA Tadashi <sho@spc.gr.jp>
+	* fix security hole about apply plugin.
+
+2002.05.16 TADA Tadashi <sho@spc.gr.jp>
+	* replace new default theme.
+
+2002.05.15 TADA Tadashi <sho@spc.gr.jp>
+	* split CommentManager and RefererManager from Diary class.
+	* move theme files into each directory.
+
+2002.05.14 TADA Tadashi <sho@spc.gr.jp>
+	* split IO class to tdiary/pstoreio.rb.
+	* tdiary.rb: move transaction to IO classes.
+	* tdiary.rb: rename make_years to calendar and move to IO class.
+	* tdiary.rb: move Diary and Paragraph class to pstoreio.rb.
+	* enable define @cache_path in tdiary.conf.
+	* add String#shorten.
+
+2002.05.14 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: ignore $KCODE in disp_referer.
+	* tdiary.conf.sample: shorten referer URL in @referer_table.
+
+2002.05.12 TADA Tadashi <sho@spc.gr.jp>
+	* 1.4.2.
+	* README.html: add notice about copyright of themes and plugins.
+
+2002.04.26 TADA Tadashi <sho@spc.gr.jp>
+	* remove Plugin#eval_rhtml.
+
+2002.04.24 TADA Tadashi <sho@spc.gr.jp>
+	* i.day.rhtml, i.show.rhtml: call update_proc when comment added.
+	* tdiary.rb: suppress result string in Plugin#update_proc.
+
+2002.04.23 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: cache file change .rhtml -> .rb. thanks sakai <s01397ms@sfc.keio.ac.jp>.
+	* add skel/plugin_error.rhtml and change message when errors in plugin.
+	* HOWTO-make-plugin.html: add about @debug.
+
+2002.04.23 MUTOH Masao <mutoh@highway.ne.jp>
+	* tdiary.rb: add @debug for Plugin#method_missing.
+
+2002.04.21 TADA Tadashi <sho@spc.gr.jp>
+	* i.diary.rhtml: fix bug of paragraph number increment.
+
+2002.04.19 TADA Tadashi <sho@spc.gr.jp>
+	* i.diary.rhtml: fix bug of paragraph number.
+
+2002.04.18 TADA Tadashi <sho@spc.gr.jp>
+	* justify mail address auto-link in comment.
+
+2002.04.17 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: change version.
+	* HOWTO-make-plugin.html: add about methods in Plugin.
+	* doc/*: some bugs fixed.
+
+2002.04.17 MUTOH Masao <mutoh@highway.ne.jp>
+	* index.rb, tdiary.rb: add Plugin#add_cookie.
+
+2002.04.16 TADA Tadashi <sho@spc.gr.jp>
+	* misc/posttdiary.rb:bmp support for feelH". if found Ruby::Magick use it, else use convert.
+
+2002.04.07 TADA Tadashi <sho@spc.gr.jp>
+	* misc/posttdiary.rb:fix mojibake: -mQ -> -m0.
+
+2002.04.05 TADA Tadashi <sho@spc.gr.jp>
+	* 1.4.1
+
+2002.04.05 TADA Tadashi <sho@spc.gr.jp>
+	* misc/posttdiary.rb: set permission of image to readable everybody.
+	* misc/posttdiary.rb:--image-path and --image-url options.
+
+2002.04.02 TADA Tadashi <sho@spc.gr.jp>
+	* conf.rhtml: make link to new Theme Gallery.
+	* conf.rhtml: add notify about comment mail sent to.
+	* update erb to 1.4.3.
+
+2002.03.28 TADA Tadashi <sho@spc.gr.jp>
+	* default.css: no underline for links.
+
+2002.03.27 TADA Tadashi <sho@spc.gr.jp>
+	* index.rb, update.rb: $:.unshift orig_path.
+	* tdiary.rb: fail safe check for @data_path.
+
+2002.03.26 TADA Tadashi <sho@spc.gr.jp>
+	* @options support in tdiary.conf and plugins.
+
+2002.03.22 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: Plugin#add_xxx_proc can receive a block.
+	* 00default.rb: follow new add_xxx_proc style.
+	* HOWTO-make-plugin.html: follow new add_xxx_proc style.
+	* diary.rhtml: escape HTML in comment form.
+	* tdiary.rb: shorten commentator's nsme and mail address validation in comment mail.
+
+2002.03.20 TADA Tadashi <sho@spc.gr.jp>
+	* doctype plugin.
+	* add HTML 4.01 Tr DTD's URL into default DOCTYPE. [testing]
+
+2002.03.18 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: fix comment mail subject was wrong.
+
+2002.03.17 TADA Tadashi <sho@spc.gr.jp>
+	* 1.4.0
+	* conf.rhtml, tdiary.conf.sample, default.css: image anchor in default.
+	* tdiary.rb: no referer saving into hidden diary.
+	* update documents.
+
+2002.03.15 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: fix duplicated referer on day mode.
+	* update.rb: move hide checkbox to right of submit button.
+
+2002.03.14 TADA Tadashi <sho@spc.gr.jp>
+	* update.rhtml: remove 'class="commenttitle"' from changing comment status button.
+	* default.css: add style for blockquote and some plugins.
+
+2002.03.12 TADA Tadashi <sho@spc.gr.jp>
+	* update erb to 1.4.0.
+	* taint @body_{enter,leave}_procs in Plugin class.
+
+2002.03.11 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb, mail.rtxt: fix mime bug in From and Subject of comment mail.
+
+2002.03.09 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.conf.sapmle: add notice about documentation in @footer.
+
+2002.03.09 TADA Tadashi <sho@spc.gr.jp>
+	* 1.3.4
+
+2002.03.08 TADA Tadashi <sho@spc.gr.jp>
+	* mail.rtxt: add white space after serial in subject.
+
+2002.03.07 TADA Tadashi <sho@spc.gr.jp>
+	* add doc/HOWTO-make-theme.html.
+	* tdiay.rb: join all lines in Comment#shorten.
+
+2002.03.06 TADA Tadashi <sho@spc.gr.jp>
+	* @mail_header accept the format of Time#strftime.
+
+2002.03.05 TADA Tadashi <sho@spc.gr.jp>
+	* documents moved to doc.
+	* HOWTO-use-plugin.html, HOWTO-make-plugin.html: add.
+	* remove sample plugins.
+	* tdiary.rb: change to_mime to return array.
+
+2002.03.05 Kazuhiko <kazuhiko@fdiary.net>
+	* tdiary.conf.sample, conf.rhtml: remove restriction of using Japanese in @mail_header.
+	* skel/mail.rtxt: (Subject) use @date_format instead of '%Y-%m-%d'.
+	* tdiary.rb: specify a message_id by hour, minute and second to avoid possible message_id confliction. exclude @mail_header from a message_id so as to avoid non-ascii character.
+
+2002.03.04 TADA Tadashi <sho@spc.gr.jp>
+	* jtime.rb: add discription.
+
+2002.03.02 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.conf.sample: fix comment of @latest_limit.
+
+2002.03.01 TADA Tadashi <sho@spc.gr.jp>
+	* i.update.rhtml: adjust comment number when some comments hidden.
+	* add 'anchor' plugin. for mod_rewrite.
+	* add 'my' plugin.
+
+2002.02.28 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb, update.rhtml: adjust comment number when some comments hidden.
+
+2002.02.27 TADA Tadashi <sho@spc.gr.jp>
+	* i.diary.rhtml: paragraph/comment anchor fixed in mobile mode.
+	* squeeze.rb: add -c option and other changes.
+
+2002.02.26 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: fix when wrong file in @data_path.
+
+2002.02.23 TADA Tadashi <sho@spc.gr.jp>
+	* mail-via-{qmail,sendmail}.rb: fix typo.
+	* recent_list: fix paragraph numbering.
+
+2002.02.22 Daisuke Kato <dai@kato-agri.com>
+	* posttdiary.rb: support Multipart Mail.
+
+2002.02.22 TADA Tadashi <sho@spc.gr.jp>
+	* *.css: valid by W3C. thanks shinchan <stakei@nga.jp>.
+	* update.rhtml, i.update.rhtml: change tabsindexs.
+	* recent_comment.rb: update by kitaj <kita@kitaj.no-ip.com>.
+
+2002.02.21 TADA Tadashi <sho@spc.gr.jp>
+	* recent_comment.rb: fix by zoe.
+
+2002.02.20 TADA Tadashi <sho@spc.gr.jp>
+	* update.rhtml, i.update.rhtml: move hide box below submit button.
+	* document maintenance.
+	* theme: add wiLL.css.
+	* misc/plugin: add recent_list.rb, calendar2.rb, recent_comment.rb, comment_rank.rb.
+	* title_list.rb: HTML tags have compatibility with recent_list.
+
+2002.02.19 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: enable when no @no_referer in tdiary.conf.
+	* tdiaty.rb: untaint cache file name when clear cache.
+	* tdiary.rb: rescue when errors in eval plugins.
+	* tdiary.rb, diary.rhtml, i.diary.rhtml: [testing] body_{enter|leave}_proc plugin.
+	* tdiary.rb, update.rhtml, i.update.rhtml: support hidden diary.
+	* tdiary.rb, diary.rhtml, i.diary.rhtml: correct count of comments by Diary#count_comments.
+	* misc/jtime.rb: added.
+	* tdiary.rb: clear cache after changing comment status.
+
+2002.02.12 TADA Tadashi <sho@spc.gr.jp>
+	* mail.rhtml: URL change.
+	* 00default.rb: escape HTML tags in referer table. thanks KT <pakira@bd6.so-net.ne.jp>.
+	
+2002.02.07 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb, 00default.rb: leap second again.
+	* dot.htaccess: ExecCGI -> +ExecCGI.
+	* tdiary.rb: mail-via-smtp as default.
+	* tdiary.rb: sort themes in TDiaryConf.
+	* skel/footer.rhtml: www.spc.gr.jp -> www.tdiary.net.
+	* tdiary.rb: correct message_id. thanks woods <sodium@da2.so-net.ne.jp>
+	
+2002.01.31 TADA Tadashi <sho@spc.gr.jp>
+	* misc/plugin/README.html: fix bug: description of insert plugin.
+	* 00default.rb: support leap second in navi_user.
+	* tdiary.rb: ignore case hostname in Diary#add_referer. thanks munemasa <munemasa@msi.biglobe.ne.jp>.
+	* conf.rhtml: insert 'navi plugin'.
+
+2002.01.24 TADA Tadashi <sho@spc.gr.jp>
+	* @@update_proc -> add_update_proc, @@header_proc -> add_header_proc.
+	* modify document misc/plugin/README.html.
+	* call update_proc when a new comment appended.
+	* misc/mail-via-{smtp|qmail|sendmail).rb: added.
+	* UPGRADE: update.
+	* mail.rtxt: add name to subject.
+	* remove name attribute in anchor tag without DAY mode.
+	* fix error in mobile mode.
+
+2002.01.23 TADA Tadashi <sho@spc.gr.jp>
+	* add @@header into plugin.
+	* fix error handling for loading plugins.
+	* tdiary.conf.sample: maintain referer_table.
+	* add Plugin's instance var: @cgi, @author_name, @author_mail, @theme, @css, @cookie.
+
+2002.01.21 TADA Tadashi <sho@spc.gr.jp>
+	* 1.3.3
+	* tdiary.rb: fix TDiaryLatest#initialize.
+	* tdiary.rb: easy to understand errors in plugins.
+	* @hour_offset support.
+	* 00default.rb: add plugins, "comment_total" and "comment_date".
+
+2002.01.13 TADA Tadashi <sho@spc.gr.jp>
+	* 00default.rb: fix navi_user plugin when comment mode.
+	* edit.rb: add new plugin into misc/plugin.
+	* index.rb, update.rb: move 'begin' to top of script.
+	* posttdiary.rb: add into misc.
+
+2002.01.12 TADA Tadashi <sho@spc.gr.jp>
+	* misc/posttdiary.rb: added and support null subject.
+
+2002.01.10 TADA Tadashi <sho@spc.gr.jp>
+	* fix cache bug.
+	* conf.rhtml: fix typo.
+	* tdiary.rb: bug fix: error when @index_page is nil in navi_user.
+	* dropdown_calendar.rb: fix unclosed tag.
+	* tdiary.rb: cache latest and month.
+	* 00default.rb, diary.rhtml: move referer list to plugin.
+	* tdiary.rb: add to Plugin @data_path and @cache_path.
+
+2001.12.26 TADA Tadashi <sho@spc.gr.jp>
+	* 1.3.2
+	* diary.rhtml: add <p class="commenttitle"> when no comment.
+	* themes update for new layout.
+	* tdiary.rb: reverse.each -> reverse_each :-)
+	* 00default.rb: remove title_list.
+	* misc/plugin: added dropdown_calendar.rb, src.rb, title_list.rb.
+	* misc/plugin: documentation of how to use/make plugin as README.html.
+	* update plugin test implement.
+
+2001.12.21 TADA Tadashi <sho@spc.gr.jp>
+	* over monthes in latest mode. thanks gekisive <gekisive@84ch.net>
+	* misc/squeeze.rb: 1.0.1.
+
+2001.12.20 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: add @diaries to Plugin, again.
+	* 00default.rb: bug fix: error when @index_page is empty in navi_user.
+	* diary.rhtml, show.rhtm: hide comment form after update.
+	* follow symlink-shared diary.
+	* 00default.rb: add theme_url.
+	* 00default.rb, *.rhtml: add xxx_label
+	* 00default.rb: add title_list (trial).
+	* CHANGES -> ChangeLog
+
+2001.12.19 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb, diary.rhtml: bug fix: adjust number of comments.
+	* tdiary.rb: some refactoring.
+	* tdiary.rb: add @diaries to Plugin.
+	* diary:rhtml: bug fix: @index -> opt['index'] in comment form.
+
+2001.12.19 TADA Tadashi <sho@spc.gr.jp>
+	* index.rb, update.rb: remove Accept-Ranges header field in HTTP response.
+	* tdiary.rb: add Plugin#method_missing.
+	* tdiary.rb: comment summary upto 120 bytes.
+	* day.rhtml: move referer list below comment form.
+	* concat all default plugins into 00default.rb.
+	* 00default.rb: split navi to navi_user and navi_admin.
+	* index.rb, update.rb: add Vary header field.
+	* diary.rhtml: change 'More...' to 'Before...'.
+	* diary.rhtml: add '<div class="section">...</div>'.
+
+2001.12.17 TADA Tadashi <sho@spc.gr.jp>
+	* fix bug: error with mod_ruby.
+
+2001.12.16 TADA Tadashi <sho@spc.gr.jp>
+	* 1.3.1
+	* moved *.rhtml *.rtxt *.rconf to skel/.
+	* plugin support. thanks kitaj <kita@kitaj.no-ip.com>.
+	* calendar and insert to plugin.
+	* added navi plugin.
+
+2001.11.26 TADA Tadashi <sho@spc.gr.jp>
+	* index.rb, update.rb: $defout.bimmode.
+	* link to tDiary Themes.
+	* misc/squeeze.rb: added.
+	* diary.rhtml: escape html to comment.name.
+
+2001.11.18 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb, diary.rhtml: HTMLescape for referer.
+
+2001.11.15 TADA Tadashi <sho@spc.gr.jp>
+	* index.rb, tdiary.rb: traped permission error again.
+
+2001.11.12 TADA Tadashi <sho@spc.gr.jp>
+	* index.rb, tdiary.rb: traped permission error.
+	* tdiary.rb: PStore#abort when unless @dirty. thanks sakai <zvm01052@nifty.ne.jp>.
+
+2001.10.12 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: fix no effective show_referer/show_comment in CGI conf.
+
+2001.10.01 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: Xiino and L-mode into mobile terminal.
+	* tdiary.conf.sample: referer_table update.
+	* tdiary.rb: added 'Xiino' to mobile agent list.
+	* tdiary.rb: fix error when no @smtp_host and @mail_on_comment == true.
+	* tdiary.rb: different TZ problem fix(?).
+
+2001.09.01 TADA Tadashi <sho@spc.gr.jp>
+	* 1.2.0
+	* tdiary.conf.sample: added some search engines into referer_table.
+	* UPGRADE: added.
+	* Document update.
+	* tdiary.rb: exactly match for no_referer.
+
+2001.08.30 TADA Tadashi <sho@spc.gr.jp>
+	* update.rb: remove no-cache.
+	* HOWTO-write-tDiary.html: added.
+	* update.rhtml: hide change comment mode button when no comments.
+
+2001.08.27 TADA Tadashi <sho@spc.gr.jp>
+	* 1.1.4
+	* repackage.
+	* tdiary.conf.sample: document update.
+
+2001.08.27 TADA Tadashi <sho@spc.gr.jp>
+	* split referer.rhtml from conf.rhtml.
+	* update/configration page for i-mode.
+
+2001.08.24 TADA Tadashi <sho@spc.gr.jp>
+	* add Windows CE's IE to mobile terminal.
+
+2001.08.19 TADA Tadashi <sho@spc.gr.jp>
+	* theme: maroon by Shinchan.
+
+2001.08.18 TADA Tadashi <sho@spc.gr.jp>
+	* add ASTEL DOTi and H" to mobile terminal.
+	* @index, @update.
+	* owner can hide any comments.
+
+2001.08.17 TADA Tadashi <sho@spc.gr.jp>
+	* 1.1.3
+	* support mod_ruby completely.
+	* tdiary.rb: fix make_link when URL have '@' in it.
+	* add Zaurus to mobile terminal.
+	* diary.conf: hidden 'new comment' when @show_comment was false.
+
+2001.08.16 TADA Tadashi <sho@spc.gr.jp>
+	* testing for mod_ruby (3).
+
+2001.08.16 TADA Tadashi <sho@spc.gr.jp>
+	* testing for mod_ruby (2).
+
+2001.08.11 TADA Tadashi <sho@spc.gr.jp>
+	* testing for mod_ruby.
+
+2001.08.07 TADA Tadashi <sho@spc.gr.jp>
+	* 1.1.2
+	* conf.rhtml: CGI::escapeHTML for each data.
+
+2001.08.03 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: fix bug not saving @latest_limit via CGI.
+	* tdiary.rb: secure CGI setting. changing format of @data_path/tdiary.conf.
+	* header.rhtml: showing error message.
+	* diary.rtml: link of "making new comment".
+	* conf.rhtml: fix bug: diaplay diff @no_referer2/@referer_table2 and @no_referer/@referer_table.
+
+2001.07.30 TADA Tadashi <sho@spc.gr.jp>
+	* 1.1.1
+	* theme: line, nebula by zoe.
+	* configuration via CGI.
+	* index.rb, update.rb: no-cache.
+	* errata: "auther" -> "author" (^^;
+	* changing term: "Referer" -> "リンク元"
+
+2001.07.25 TADA Tadashi <sho@spc.gr.jp>
+	* tdiary.rb: fix bug bad cookie when running on root directory.
+
+2001.07.21 TADA Tadashi <sho@spc.gr.jp>
+	* <%=calendar%> added into tdiary.conf.sample.
+
+2001.07.20 TADA Tadashi <sho@spc.gr.jp>
+	* make editable when multi user mode.
+	* @date_format for comment.
+	* referer_table into title attr in referer list.
+	* Diary#eval_rhtml requires Hash parameter.
+
+2001.07.19 TADA Tadashi <sho@spc.gr.jp>
+	* @date_format.
+
+2001.07.18 TADA Tadashi <sho@spc.gr.jp>
+	* testing code for multi user mode.
+
+2001.07.14 TADA Tadashi <sho@spc.gr.jp>
+	* 1.1.0
+	* making theme directory, and move default.css to theme.
+	* theme: desert, lovely, midnight, pool side.
+	* header and footer eval eRuby in Element class.
+
+2001.07.05 TADA Tadashi <sho@spc.gr.jp>
+	* 1.0.1
+	* tdiary.rb: white space to '&nbsp;' in String#make_link.
+	* calender -> calendar (^^;
+	* mail.rtxt: add MIME-Version on header.
+	* index.rb, tdiary.rb: force latest mode when incorrect date specified.
+	* tdiary.conf.sample, README.html: 'Mary Diary' into @referer_table.
+	* README.html: hoge.net -> hoge.example (as RFC2606).
+	* tdiary.rb: 'anonymouse@anywhere' -> @auther_mail.
+
+2001.07.01 TADA Tadashi <sho@spc.gr.jp>
+	* 1.0.0
+	* tdiary.rb: fix referer dupulicated on latest day bug.
+	* release.
+
+2001.06.29 TADA Tadashi <sho@spc.gr.jp>
+	* 0.9.9.5
+	* tdiary.rb: char code force to EUC-JP
+	* update.rhtml: referer_table apply to update.
+	* header.rhtml: insert generator.
+	* tdiary.rb: no saving duplicated comments.
+	* update.rhtml: unescapeHTML for title.
+	* diary.rhtml, default.css: <p> to <h3> on subtitle.
+	* day.rhtml: button of previous/next day.
+	* diary.rhtml: SPACE and TAB change to &nbsp; on comment.
+	* default.css: hr.sep { display: none; }
+	* tdiary.rb: suppress '?\d{8}' of referer URL.
+	* tdiary.rb: text_save. thanks densuke <densuke-web@usi.dyndns.org>
+	* update.rhtml: add @referer_table.
+
+2001.06.16 TADA Tadashi <sho@spc.gr.jp>
+	* 0.9.9
+	* tdiary.rb: fix referer saving bug on TDiaryDay.
+	* tdiary.rb: ignore case when compare referers.
+	* tdiary.conf.sample: fix typo.
+
+2001.06.16 TADA Tadashi <sho@spc.gr.jp>
+	* 0.9.8
+	* saving name and mail of comment by cookie.
+
+2001.06.15 TADA Tadashi <sho@spc.gr.jp>
+	* 0.9.7
+	* tdiary.rb: using unescaped URL for referer's key.
+	* month.rhtml: fix error when no 1st day on MONTH mode.
+	* tdiary.rb: compair @no_referer with unescaped referer.
+	* tdiary.rb: fix add_referer miss type.
+	* tdiary.rb, index.rb: Palmscape/ezWeb/J-PHONE support.
+	* i.header.rhtml: date in <title>
+	* tdiary.rb: method 'title' in TDiaryView
+	* tdiary.rb: show always latest month on view mode.
+	* tdiary.rb: TDiary{Day|Comment|Month|Latest} classes.
+	* tdiary.rb: mail on comment.
+	* tdiary.rb, day.rhtml: referer_table.
+
+2001.06.12 TADA Tadashi <sho@spc.gr.jp>
+	* 0.9.6
+	* tdiary.rb: fix referer bug.
+
+2001.06.12 TADA Tadashi <sho@spc.gr.jp>
+	* 0.9.5
+	* header.rhtml: disable CSS for Netscape 4.
+	* header.rhtml: date for <title> tag.
+	* footer.rhtml: 'powerd' -> 'powered'.
+	* tdiary.rb: fix make_link '&' bug.
+	* tdiary.rb: unescape referer.
+	* diary.rhtml: to_euc for referer URL.
+	* diary.rhtml: idx -> count on today's referer.
+	* diary.rhtml, i.diary.rhtml: enable TAGed paragraph after subtitle.
+	  Thanks for Masahiro Sakai <zvm01052@nifty.ne.jp>
+	* index.rb, update.rb: using /usr/bin/env.
+
+2001.05.18 TADA Tadashi <sho@spc.gr.jp>
+	* 0.9.4
+	* i-mode support (view only)
+	* tdiary.rb: fixed Last-Modified bug.
+	* rename: admin.rb -> update.rb
+	* move: ../tdiary.css -> default.css
+	* anchor for comments.
+	* .diary: @paragraph_ancher, @comment_anchor, @limit_latest
+	* document as README.html.
+
+2001.05.14 TADA Tadashi <sho@spc.gr.jp>
+	* 0.9.3
+	* tdiary.css: hr.sep class
+	* tdiary.conf support
+	* move: data path
+	* move: admin/index.rb -> admin.rb
+
+2001.04.25 TADA Tadashi <sho@spc.gr.jp>
+	* 0.9.2
+	* tdiary.rb: fixed Last-Modified bug.
+	* diary.rhtml: split paragraphs when a Paragraph object have some line.
+	* tdiary.rb: saving referer only starting with 'http://'.
+	* diary.rhtml: unescape referer URL when display.
+
+2001.04.24 TADA Tadashi <sho@spc.gr.jp>
+	* 0.9.1
+	* no update last-modified when request with referer.
+	* no file creation when specified a date no existent.
+
+2001.04.23 TADA Tadashi <sho@spc.gr.jp>
+	* 0.9.0
+	* create and local release.

@@ -1,0 +1,156 @@
+これは python-ref-jp.info、python-ref-jp.texi より makeinfo バージョン
+4.8 によって作成されました。
+
+19th September, 2006
+
+
+Indirect:
+python-ref-jp.info-1: 123
+python-ref-jp.info-2: 299852
+
+Tag Table:
+(Indirect)
+Node: Top123
+Node: 序580
+Node: 導入2631
+Node: 別のPythonの実装4484
+Node: 本マニュアルにおける表記法6694
+Node: 字句解析8854
+Node: 行構造10514
+Node: 論理行 logical line10904
+Node: 物理行 physical line11396
+Node: コメント12128
+Node: エンコード宣言 encoding declaration12535
+Node: 明示的な行継続13815
+Node: 非明示的な行継続14968
+Node: 空行15885
+Node: インデント16396
+Node: トークン間の空白19771
+Node: その他のトークン20247
+Node: 識別子 identifier およびキーワード keyword20841
+Node: キーワード keyword21460
+Node: 予約済みの識別子種 reserved classes of identifiers22297
+Node: リテラル literal24046
+Node: 文字列リテラル24476
+Node: 文字列リテラルの結合 concatenation31407
+Node: 数値リテラル32472
+Node: 整数および長整数リテラル33055
+Ref: 整数および長整数リテラル-Footnote-134309
+Node: 浮動小数点数リテラル34644
+Node: 虚数 imaginary リテラル35653
+Node: 演算子 operator36289
+Node: デリミタ delimiter36781
+Node: データモデル37763
+Node: オブジェクト、値、および型37993
+Ref: オブジェクト、値、および型-Footnote-142918
+Node: 標準型の階層43488
+Node: 新スタイルと旧スタイル80685
+Node: 特殊メソッド名82847
+Ref: 特殊メソッド名-Footnote-184371
+Node: 基本的なカスタマイズ84470
+Node: 属性値アクセスをカスタマイズする95201
+Node: 新しい形式のクラスのための別の属性アクセス97746
+Node: デスクリプタ descriptor の実装98807
+Node: デスクリプタを呼び出す100184
+Node: __slots__103418
+Node: クラス生成をカスタマイズする106560
+Node: 呼び出し可能オブジェクトをエミュレートする108362
+Node: コンテナをエミュレートする108852
+Node: シーケンス型エミュレーションで使われるその他のメソッド114409
+Node: 数値型をエミュレーションする118682
+Ref: 数値型をエミュレーションする-Footnote-1124630
+Node: 型強制規則 coercion rule124813
+Node: with文とコンテキストマネージャ128921
+Node: 実行モデル130702
+Node: 名前づけと束縛 naming and binding130886
+Node: 動的な機能とのやりとり136950
+Ref: 動的な機能とのやりとり-Footnote-1138443
+Node: 例外138563
+Node: 式 expression141139
+Node: 算術変換 arithmetic conversion142138
+Node: アトム、原子的要素 atom143097
+Node: 識別子 identifier、または名前 name143880
+Node: リテラル145227
+Node: 丸括弧形式 parenthesized form146162
+Node: リスト表現147222
+Ref: リスト表現-Footnote-1148445
+Node: ジェネレータ式148686
+Node: 辞書表現150057
+Node: 文字列変換151043
+Node: 一次語 primary152314
+Node: 属性参照152741
+Node: 添字表記 subscription153456
+Node: スライス表記 slicing154607
+Node: 呼び出し call157540
+Node: べき乗演算 power operator163606
+Node: 単項算術演算 unary arithmetic operation164962
+Node: 二項算術演算 binary arithmetic operation165787
+Ref: 二項算術演算 binary arithmetic operation-Footnote-1168779
+Ref: 二項算術演算 binary arithmetic operation-Footnote-2169358
+Node: シフト演算 shifting operation169609
+Node: ビット単位演算の二項演算 binary bit-wise operation170566
+Node: 比較 comparison171525
+Ref: 比較 comparison-Footnote-1177304
+Ref: 比較 comparison-Footnote-2177392
+Node: ブール演算 boolean operation177782
+Node: ラムダ lambda179560
+Node: 式のリスト180300
+Node: 評価順序180898
+Node: まとめ181465
+Node: 単純文 simple statement183429
+Node: 式文 expression statement184333
+Node: Assert 文 assert statement185231
+Node: 代入文 assignment statement186494
+Node: 累算代入文 augmented assignment statement192496
+Node: pass 文194258
+Node: del 文194763
+Node: print 文195784
+Node: return 文197802
+Node: yield 文198631
+Node: raise 文200634
+Node: break 文202679
+Node: continue 文203314
+Ref: continue 文-Footnote-1203756
+Node: import 文203900
+Node: future 文 future statement208911
+Node: global 文211995
+Node: exec 文213455
+Node: 複合文 compound statement215143
+Node: if 文217472
+Node: while 文218150
+Node: for 文218845
+Node: try 文221139
+Ref: try 文-Footnote-1225171
+Ref: try 文-Footnote-2225259
+Node: with 文225389
+Node: 関数定義227512
+Node: クラス定義231726
+Node: トップレベル要素233335
+Node: 完全な Python プログラム233834
+Node: ファイル入力235389
+Node: 対話的入力235856
+Node: 式入力236290
+Node: 歴史とライセンス236861
+Node: Python の歴史237184
+Node: Terms and conditions for accessing or otherwise using Python240898
+Node: Licenses and Acknowledgements for Incorporated Software251583
+Node: Mersenne Twister252307
+Node: Sockets254718
+Node: Floating point exception control256729
+Node: MD5 message digest algorithm259924
+Node: Asynchronous socket services262451
+Node: Cookie management263860
+Node: Profiling265249
+Node: Execution tracing266951
+Node: UUencode and UUdecode functions268392
+Node: XML Remote Procedure Calls270175
+Node: 日本語訳について271873
+Node: このドキュメントについて272129
+Node: 翻訳者一覧 敬称略272703
+Node: 25 差分翻訳者一覧 敬称略273040
+Node: Module Index273247
+Node: Class-Exception-Object Index281586
+Node: Function-Method-Variable Index289812
+Node: Miscellaneous Index299852
+
+End Tag Table

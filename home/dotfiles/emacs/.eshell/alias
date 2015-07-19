@@ -1,0 +1,6 @@
+alias hadoop /Users/kaku/hadoop-deployed/hadoop/bin/hadoop
+alias stakeout ruby ~/svn/tools/stakeout.rb $*
+alias ll ls -la $*
+alias l ls -l $*
+alias rmtmp find . -type f -name "*~" -exec rm {} \;
+alias rep 'for i in (number-sequence 1 $1) { $2 }'

@@ -1,0 +1,38 @@
+# clj-algo
+
+basic algorithm implementation
+
+## Usage
+
+FIXME: write
+
+## Algorithms
+* naive bayes
+** http://d.hatena.ne.jp/ruby-U/20100504/1272946467
+** http://people.csail.mit.edu/jrennie/20Newsgroups/20news-bydate-matlab.tgz
+** http://people.csail.mit.edu/jrennie/20Newsgroups/vocabulary.txt
+* suffix array
+* k-means clustering
+* jaccard index
+* euclid edit distance
+* trie
+* double array
+* simhash LSH
+* consistent hashing
+** http://nakkaya.com/2010/05/05/consistent-hashing-with-clojure/
+** http://8-p.info/consistent-hashing/
+* bloom filter
+* skip list
+* longest common subsequence
+* latent dirichlet allocation
+* slope one
+* perceptron
+* ada boost
+* bayesian sets
+* page rank
+
+## License
+
+Copyright (C) 2011 FIXME
+
+Distributed under the Eclipse Public License, the same as Clojure.

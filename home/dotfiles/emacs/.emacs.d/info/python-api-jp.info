@@ -1,0 +1,121 @@
+これは python-api-jp.info、python-api-jp.texi より makeinfo バージョン
+4.8 によって作成されました。
+
+19th September, 2006
+
+
+Indirect:
+python-api-jp.info-1: 123
+python-api-jp.info-2: 299943
+
+Tag Table:
+(Indirect)
+Node: Top123
+Node: 序770
+Node: はじめに1938
+Node: インクルードファイル3576
+Node: オブジェクト、型および参照カウント5896
+Node: 参照カウント7310
+Node: 参照カウントの詳細11112
+Node: 型17462
+Node: 例外18016
+Node: Python の埋め込み24207
+Node: デバッグ版ビルド Debugging Builds27480
+Node: 超高レベルレイヤ29947
+Node: 参照カウント 240276
+Node: 例外処理43088
+Node: 標準例外59951
+Node: 文字列例外の廃止62241
+Node: ユーティリティ関数62635
+Node: オペレーティングシステム関連のユーティリティ63237
+Node: プロセス制御65485
+Node: モジュールの import66877
+Node: データ整列化 data marshalling のサポート75381
+Node: 引数の解釈と値の構築78652
+Node: 抽象オブジェクトレイヤ abstract objects layer103510
+Node: オブジェクトプロトコル object protocol104446
+Node: 数値型プロトコル number protocol118412
+Node: シーケンス型プロトコル sequence protocol128644
+Node: マップ型プロトコル mapping protocol134270
+Node: イテレータプロトコル iterator protocol136829
+Node: バッファプロトコル buffer protocol138321
+Node: 具象オブジェクト concrete object レイヤ140184
+Node: 基本オブジェクト fundamental object141452
+Node: 型オブジェクト type object141904
+Node: None オブジェクト143986
+Node: 数値型オブジェクト numeric object144759
+Node: 通常整数型オブジェクト plain integer object145274
+Node: Bool 型オブジェクト149103
+Node: 長整数型オブジェクト long integer object150506
+Node: 浮動小数点型オブジェクト floating point object155515
+Node: 浮動小数点オブジェクト complex number object157093
+Node: C 構造体としての複素数157715
+Node: Python オブジェクトとしての複素数型159201
+Node: シーケンスオブジェクト sequence object160622
+Node: 文字列オブジェクト string object161252
+Node: Unicode オブジェクト Unicode object172394
+Node: 組み込み codec built-in codec180334
+Node: メソッドおよびスロット関数 slot function195818
+Node: Buffer Objects200875
+Node: タプルオブジェクト tuple object206267
+Node: List Objects209737
+Node: マップ型オブジェクト mapping object213980
+Node: 辞書オブジェクト dictionary object214308
+Node: その他のオブジェクト221543
+Node: ファイルオブジェクト file object222271
+Node: インスタンスオブジェクト instance object226472
+Node: 関数オブジェクト Function Objects227552
+Node: メソッドオブジェクト method object229928
+Node: モジュールオブジェクト module object232002
+Node: イテレータオブジェクト iterator object234975
+Node: デスクリプタオブジェクト descriptor object236982
+Node: スライスオブジェクト slice object238405
+Node: 弱参照オブジェクト weak reference object240794
+Node: Cオブジェクト CObject243554
+Node: セルオブジェクト cell object245500
+Node: ジェネレータオブジェクト247607
+Node: DateTime オブジェクト248717
+Node: 集合オブジェクト Set Objects254898
+Node: 初期化 initialization、終了処理 finalization、スレッド259869
+Node: スレッド状態 thread state とグローバルインタプリタロック global interpreter lock276138
+Node: プロファイルとトレース profiling and tracing293952
+Node: 高度なデバッガサポート advanced debugger support298466
+Node: メモリ管理299682
+Node: 概要299943
+Node: メモリインタフェース303802
+Node: 例306377
+Node: オブジェクト実装サポート object implementation support308370
+Node: オブジェクトをヒープ上にメモリ確保する309178
+Node: 共通のオブジェクト構造体 common object structure313231
+Node: 型オブジェクト321348
+Node: マップ型オブジェクト構造体 mapping object structure369394
+Node: 数値オブジェクト構造体 number object structure369876
+Node: シーケンスオブジェクト構造体 sequence object structure370385
+Node: バッファオブジェクト構造体 buffer object structure370917
+Node: イテレータプロトコルをサポートする376333
+Node: 循環参照ガベージコレクションをサポートする376656
+Node: バグ報告382786
+Node: 歴史とライセンス385644
+Node: Python の歴史385959
+Node: Terms and conditions for accessing or otherwise using Python389673
+Node: Licenses and Acknowledgements for Incorporated Software400358
+Node: Mersenne Twister401082
+Node: Sockets403493
+Node: Floating point exception control405504
+Node: MD5 message digest algorithm408699
+Node: Asynchronous socket services411226
+Node: Cookie management412635
+Node: Profiling414024
+Node: Execution tracing415726
+Node: UUencode and UUdecode functions417167
+Node: XML Remote Procedure Calls418950
+Node: 日本語訳について420648
+Node: このドキュメントについて420904
+Node: 翻訳者一覧 敬称略421483
+Node: 25 差分翻訳者一覧 敬称略421691
+Node: Module Index421879
+Node: Class-Exception-Object Index423266
+Node: Function-Method-Variable Index426721
+Node: Miscellaneous Index524034
+
+End Tag Table

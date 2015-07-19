@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=EUC-JP" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<link rel="stylesheet" href="theme/base.css" type="text/css" media="all">
+<link rel="stylesheet" href="theme/citrus/citrus.css" title="citrus" type="text/css" media="all">
+<script type="text/javascript">
+
+var inputId  = 'search';
+var targetId = 'result';
+var cache     = new Array();
+
+function getXmlHttpObject() {
+    var xmlhttp;
+    /*@cc_on
+    @if (@_jscript_version >= 5)
+        try {
+            xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+        } catch (e) {
+            try {
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            } catch (E) {
+                xmlhttp = false;
+            }
+        }
+    @else
+        xmlhttp = false;
+    @end @*/
+    if (!xmlhttp && typeof XMLHttpRequest != 'undefined') {
+        try {
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.overrideMimeType("text/xml"); 
+        } catch (e) {
+            xmlhttp = false;
+        }
+    }
+    return xmlhttp;
+}
+
+var xmlHttp = getXmlHttpObject();
+
+function handleHttpResponse() {
+    if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+        var targetNode = document.getElementById(targetId);
+        targetNode.innerHTML = xmlHttp.responseText;
+    }
+}
+
+function search(key) {
+    if (key == '')  return;
+    if (key.length < 2)  return;
+    if (! document.getElementById) return;
+    key = encodeURI(key);
+    if (!xmlHttp) return;
+    xmlHttp.open("GET", "ajax.rb?q=" + key, true);
+    xmlHttp.onreadystatechange = handleHttpResponse;
+    xmlHttp.send(null);
+}
+
+</script>
+
+<title>えいじゃっくす？</title>
+</head>
+<body onload="document.getElementById(inputId).focus();">
+<h2>あやっくす？</h2>
+<p><input id="search" type="text" size="40" value="" onkeyup="search(this.value);" />(←めっちゃおそおそ)</p>
+<ul id="result"></ul>
+</body>
+</html>

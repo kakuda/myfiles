@@ -1,0 +1,5008 @@
+これは python-lib-jp.info、python-lib-jp.texi より makeinfo バージョン
+4.8 によって作成されました。
+
+19th September, 2006
+
+
+File: python-lib-jp.info,  Node: AST ノード,  Next: 代入ノード,  Prev: Python 抽象構文,  Up: Python 抽象構文
+
+31.3.1 AST ノード
+-----------------
+
+`compiler.ast' モジュールは、各ノードのタイプとその要素を記述した
+テキストファイルからつくられます。各ノードのタイプはクラスとして表現され、
+そのクラスは抽象基底クラス `compiler.ast.Node' を継承し
+子ノードの名前属性を定義しています。
+
+`Node()'
+     `Node'
+     インスタンスはパーザジェネレータによって自動的に作成されます。
+     ある特定の `Node'
+     インスタンスに対する推奨されるインターフェイスとは、
+     子ノードにアクセスするために public な (訳注: 公開された)
+     属性を使うことです。 public
+     な属性は単一のノード、あるいは一連のノードのシーケンスに
+     束縛されている (訳注: バインドされている) かもしれませんが、
+     これは `Node' のタイプによって違います。 たとえば `Class' ノードの
+     `bases' 属性は 基底クラスのノードのリストに束縛されており、`doc'
+     属性は 単一のノードのみに束縛されている、といった具合です。
+
+     各 `Node' インスタンスは `lineno' 属性をもっており、 これは `None'
+     かもしれません。 XXX どういったノードが使用可能な lineno
+     をもっているかの規則は定かではない。
+
+`Node' オブジェクトはすべて以下のメソッドをもっています:
+
+`getChildren()'
+     子ノードと子オブジェクトを、これらが出てきた順で、平らなリスト形式にして返します。
+     とくにノードの順序は、 Python
+     文法中に現れるものと同じになっています。 すべての子が `Node'
+     インスタンスなわけではありません。
+     たとえば関数名やクラス名といったものは、ただの文字列として表されます。
+
+`getChildNodes()'
+     子ノードをこれらが出てきた順で平らなリスト形式にして返します。
+     このメソッドは `getChildren()' に似ていますが、 `Node'
+     インスタンスしか返さないという点で異なっています。
+
+`Node' クラスの一般的な構造を説明するため、 以下に
+2つの例を示します。`while' 文は以下のような文法規則により
+定義されています:
+
+     while_stmt:     "while" expression ":" suite
+                    ["else" ":" suite]
+
+`While' ノードは 3つの属性をもっています: `test'、 `body'、 および
+`else_' です。(ある属性にふさわしい名前が Python
+の予約語としてすでに使われているとき、その名前を属性名にすることは
+できません。そのため、ここでは名前が正規のものとして受けつけられるように
+アンダースコアを後につけてあります、そのため `else_' は `else'
+のかわりです。)
+
+`if' 文はもっとこみ入っています。なぜならこれは
+いくつもの条件判定を含む可能性があるからです。
+
+     if_stmt: 'if' test ':' suite ('elif' test ':' suite)* ['else' ':' suite]
+
+`If' ノードでは、`tests' および `else_' の
+2つだけの属性が定義されています。`tests' 属性には条件式とその後の動作の
+タプルがリスト形式で入っています。おのおのの `if'/`elif' 節ごとに
+1タプルです。各タプルの最初の要素は条件式で、2番目の要素はもしその式が
+真ならば実行されるコードをふくんだ `Stmt' ノードになっています。
+
+`If' の `getChildren()' メソッドは、
+子ノードの平らなリストを返します。`if'/`elif' 節が 3つあって `else'
+節がない場合なら、`getChildren()' は 6要素のリストを 返すでしょう:
+最初の条件式、最初の `Stmt'、2番目の条件式…といった具合です。
+
+以下の表は `compiler.ast' で定義されている `Node' サブクラスと、
+それらのインスタンスに対して使用可能なパブリックな属性です。
+ほとんどの属性の値じたいは `Node'
+インスタンスか、インスタンスのリストです。
+この値がインスタンス型以外の場合、その型は備考の中で記されています。
+これら属性の順序は、 `getChildren()' および `getChildNodes()'
+が返す順です。
+
+ノードの型               属性                     値
+------                   -----                    -----
+Add                      `left'                   左側の項
+                         `right'                  右側の項
+And                      `nodes'                  項のリスト
+AssAttr                                           _代入先をあらわす属性_
+                         `expr'                   ドット(.) の左側の式
+                         `attrname'               属性名をあらわす文字列
+                         `flags'                  XXX
+AssList                  `nodes'                  代入先のリスト要素のリスト
+AssName                  `name'                   代入先の名前
+                         `flags'                  XXX
+AssTuple                 `nodes'                  代入先のタプル要素のリスト
+Assert                   `test'                   検査される条件式
+                         `fail'                   `AssertionError' の値
+Assign                   `nodes'                  代入先のリスト、代入記号(=)ごとにひとつ
+                         `expr'                   代入する値
+AugAssign                `node'                   
+                         `op'                     
+                         `expr'                   
+Backquote                `expr'                   
+Bitand                   `nodes'                  
+Bitor                    `nodes'                  
+Bitxor                   `nodes'                  
+Break                                             
+CallFunc                 `node'                   呼ばれる側をあらわす式
+                         `args'                   引数のリスト
+                         `star_args'              *-arg 拡張引数の値
+                         `dstar_args'             **-arg 拡張引数の値
+Class                    `name'                   クラス名をあらわす文字列
+                         `bases'                  基底クラスのリスト
+                         `doc'                    doc
+                                                  string、文字列あるいは
+                                                  `None'
+                         `code'                   クラス文の本体
+Compare                  `expr'                   
+                         `ops'                    
+Const                    `value'                  
+Continue                                          
+Decorators               `nodes'                  関数のデコレータ表現のリスト
+Dict                     `items'                  
+Discard                  `expr'                   
+Div                      `left'                   
+                         `right'                  
+Ellipsis                                          
+Expression               `node'                   
+Exec                     `expr'                   
+                         `locals'                 
+                         `globals'                
+FloorDiv                 `left'                   
+                         `right'                  
+For                      `assign'                 
+                         `list'                   
+                         `body'                   
+                         `else_'                  
+From                     `modname'                
+                         `names'                  
+Function                 `decorators'             `Decorators' か `None'
+                         `name'                   def
+                                                  で定義される名前をあらわす文字列
+                         `argnames'               引数をあわらす文字列のリスト
+                         `defaults'               デフォルト値のリスト
+                         `flags'                  xxx
+                         `doc'                    doc
+                                                  string、文字列あるいは
+                                                  `None'
+                         `code'                   関数の本体
+GenExpr                  `code'                   
+GenExprFor               `assign'                 
+                         `iter'                   
+                         `ifs'                    
+GenExprIf                `test'                   
+GenExprInner             `expr'                   
+                         `quals'                  
+Getattr                  `expr'                   
+                         `attrname'               
+Global                   `names'                  
+If                       `tests'                  
+                         `else_'                  
+Import                   `names'                  
+Invert                   `expr'                   
+Keyword                  `name'                   
+                         `expr'                   
+Lambda                   `argnames'               
+                         `defaults'               
+                         `flags'                  
+                         `code'                   
+LeftShift                `left'                   
+                         `right'                  
+List                     `nodes'                  
+ListComp                 `expr'                   
+                         `quals'                  
+ListCompFor              `assign'                 
+                         `list'                   
+                         `ifs'                    
+ListCompIf               `test'                   
+Mod                      `left'                   
+                         `right'                  
+Module                   `doc'                    doc
+                                                  string、文字列あるいは
+                                                  `None'
+                         `node'                   モジュール本体、`Stmt'
+                                                  インスタンス
+Mul                      `left'                   
+                         `right'                  
+Name                     `name'                   
+Not                      `expr'                   
+Or                       `nodes'                  
+Pass                                              
+Power                    `left'                   
+                         `right'                  
+Print                    `nodes'                  
+                         `dest'                   
+Printnl                  `nodes'                  
+                         `dest'                   
+Raise                    `expr1'                  
+                         `expr2'                  
+                         `expr3'                  
+Return                   `value'                  
+RightShift               `left'                   
+                         `right'                  
+Slice                    `expr'                   
+                         `flags'                  
+                         `lower'                  
+                         `upper'                  
+Sliceobj                 `nodes'                  文のリスト
+Stmt                     `nodes'                  
+Sub                      `left'                   
+                         `right'                  
+Subscript                `expr'                   
+                         `flags'                  
+                         `subs'                   
+TryExcept                `body'                   
+                         `handlers'               
+                         `else_'                  
+TryFinally               `body'                   
+                         `final'                  
+Tuple                    `nodes'                  
+UnaryAdd                 `expr'                   
+UnarySub                 `expr'                   
+While                    `test'                   
+                         `body'                   
+                         `else_'                  
+With                     `expr'                   
+                         `vars'                   
+                         `body'                   
+Yield                    `value'                  
+
+
+File: python-lib-jp.info,  Node: 代入ノード,  Next: サンプル,  Prev: AST ノード,  Up: Python 抽象構文
+
+31.3.2 代入ノード
+-----------------
+
+代入をあらわすのに使われる一群のノードが存在します。
+ソースコードにおけるそれぞれの代入文は、抽象構文木 AST では
+単一のノード `Assign' になっています。 `nodes'
+属性は各代入の対象にたいするノードのリストです。
+これが必要なのは、たとえば `a = b = 2' のように
+代入が連鎖的に起こるためです。 このリスト中における各 `Node' は、
+次のうちどれかのクラスになります: `AssAttr'、 `AssList'、 `AssName'、
+または `AssTuple'。
+
+代入対象の各ノードには代入されるオブジェクトの種類が記録されています。
+`AssName' は `a = 1' などの単純な変数名、 `AssAttr' は `a.x = 1'
+などの属性に対する代入、 `AssList' および `AssTuple' はそれぞれ、 `a,
+b, c = a_tuple' などのようなリストとタプルの展開をあらわします。
+
+代入対象ノードはまた、そのノードが代入で使われるのか、それとも del
+文で使われるのかをあらわす属性 `flags' も持っています。 `AssName' は
+`del x' などのような del 文をあらわすのにも 使われます。
+
+ある式がいくつかの属性への参照をふくんでいるときは、 代入あるいは del
+文はただひとつだけの `AssAttr' ノードをもちます -
+最終的な属性への参照としてです。それ以外の属性への参照は `AssAttr'
+インスタンスの `expr' 属性にある `Getattr'
+ノードによってあらわされます。
+
+
+File: python-lib-jp.info,  Node: サンプル,  Prev: 代入ノード,  Up: Python 抽象構文
+
+31.3.3 サンプル
+---------------
+
+この節では、Python ソースコードに対する抽象構文木 AST の
+かんたんな例をいくつかご紹介します。これらの例では `parse()'
+関数をどうやって使うか、AST の repr 表現は
+どんなふうになっているか、そしてある AST ノードの属性に
+アクセスするにはどうするかを説明します。
+
+最初のモジュールでは単一の関数を定義しています。 かりにこれは
+`/tmp/doublelib.py' に格納されていると仮定しましょう。
+
+     """This is an example module.
+
+     This is the docstring.
+     """
+
+     def double(x):
+         "Return twice the argument"
+         return x * 2
+
+以下の対話的インタプリタのセッションでは、 見やすさのため 長い AST の
+repr を整形しなおしてあります。 AST の repr では qualify
+されていないクラス名が使われています。 repr
+表現からインスタンスを作成したい場合は、 `compiler.ast' モジュールから
+それらのクラス名を import しなければなりません。
+
+     >>> import compiler
+     >>> mod = compiler.parseFile("/tmp/doublelib.py")
+     >>> mod
+     Module('This is an example module.\n\nThis is the docstring.\n',
+            Stmt([Function(None, 'double', ['x'], [], 0,
+                           'Return twice the argument',
+                           Stmt([Return(Mul((Name('x'), Const(2))))]))]))
+     >>> from compiler.ast import *
+     >>> Module('This is an example module.\n\nThis is the docstring.\n',
+     ...    Stmt([Function(None, 'double', ['x'], [], 0,
+     ...                   'Return twice the argument',
+     ...                   Stmt([Return(Mul((Name('x'), Const(2))))]))]))
+     Module('This is an example module.\n\nThis is the docstring.\n',
+            Stmt([Function(None, 'double', ['x'], [], 0,
+                           'Return twice the argument',
+                           Stmt([Return(Mul((Name('x'), Const(2))))]))]))
+     >>> mod.doc
+     'This is an example module.\n\nThis is the docstring.\n'
+     >>> for node in mod.node.nodes:
+     ...     print node
+     ...
+     Function(None, 'double', ['x'], [], 0, 'Return twice the argument',
+              Stmt([Return(Mul((Name('x'), Const(2))))]))
+     >>> func = mod.node.nodes[0]
+     >>> func.code
+     Stmt([Return(Mul((Name('x'), Const(2))))])
+
+
+File: python-lib-jp.info,  Node: Visitor を使って AST をわたり歩く,  Next: バイトコード生成,  Prev: Python 抽象構文,  Up: Python コンパイラパッケージ
+
+31.4 Visitor を使って AST をわたり歩く
+======================================
+
+visitor パターンは ...  `compiler' パッケージは、Python
+のイントロスペクション機能を利用して visitor
+のために必要な大部分のインフラを省略した、visitor
+パターンの変種を使っています。
+
+visit されるクラスは、visitor
+を受け入れるようにプログラムされている必要はありません。 visitor
+が必要なのはただそれがとくに興味あるクラスに対して visit メソッドを
+定義することだけです。それ以外はデフォルトの visit
+メソッドが処理します。
+
+XXX The magic `visit()' method for visitors.
+
+`walk(tree, visitor[, verbose])'
+
+`ASTVisitor()'
+     `ASTVisitor' は構文木を正しい順序でわたり歩くようにします。
+     それぞれのノードはまず `preorder()' の呼び出しではじまります。
+     各ノードに対して、これは `visitNodeType'
+     という名前のメソッドに対する `preorder()' 関数への VISITOR
+     引数をチェックします。 ここで NodeType
+     の部分はそのノードのクラス名です。たとえば `While'
+     ノードなら、`visitWhile()' が呼ばれるわけです。
+     もしそのメソッドが存在している場合、それはそのノードを第一引数として呼び出されます。
+
+     ある特定のノード型に対する visitor メソッドでは、
+     その子ノードをどのようにわたり歩くかが制御できます。 `ASTVisitor'
+     は visitor に visit メソッドを追加することで、 その visitor
+     引数を修正します。特定のノード型に対する visitor が
+     存在しない場合、 `default()' メソッドが呼び出されます。
+
+
+`ASTVisitor' オブジェクトには以下のようなメソッドがあります:
+
+XXX 追加の引数を記述
+
+`default(node[, ...])'
+
+`dispatch(node[, ...])'
+
+`preorder(tree, visitor)'
+
+
+File: python-lib-jp.info,  Node: バイトコード生成,  Prev: Visitor を使って AST をわたり歩く,  Up: Python コンパイラパッケージ
+
+31.5 バイトコード生成
+=====================
+
+バイトコード生成器はバイトコードを出力する visitor です。 visit
+メソッドが呼ばれるたびにこれは `emit()' メソッドを
+呼び出し、バイトコードを出力します。基本的なバイトコード生成器は
+モジュール、クラス、および関数によって拡張できます。
+アセンブラがこれらの出力された命令を低レベルのバイトコードに変換します。
+これはコードオブジェクトからなる定数のリスト生成や、
+分岐のオフセット計算といった処理をおこないます。
+
+
+File: python-lib-jp.info,  Node: 抽象構文木,  Next: 各種サービス,  Prev: Python コンパイラパッケージ,  Up: Top
+
+32 抽象構文木
+*************
+
+_Added in Python version 2.5_
+
+`_ast' モジュールは、Python アプリケーションで Python
+の抽象構文木を処理しやすくするものです。Python コンパイラは、
+現在は構文木への読み込みアクセス機能しか提供していません。
+つまり、アプリケーションでできるのは Python ソースコードから
+構文木を作成することだけであり、(それを修正したりした)
+構文木からバイトコードを作成することはできないということです。
+抽象構文そのものは、Python のリリースごとに変化する可能性があります。
+このモジュールを使用すると、現在の文法をプログラム上で知る助けになるでしょう。
+
+抽象構文木を作成するには、組み込み関数 `compile' のフラグとして
+`_ast.PyCF_ONLY_AST' を渡します。 その結果は、`_ast.AST'
+を継承したクラスのオブジェクトのツリーとなります。
+
+実際のクラスは `Parser/Python.asdl' ファイルから派生したものです。
+これは後ほど示します。
+抽象構文の左辺のシンボルに対してそれぞれクラスが定義されています
+(たとえば `_ast.stmt' や `_ast.expr')。また、右辺の
+各コンストラクタに対してもそれぞれクラスが定義されています。
+これらのクラスは左辺のツリーのクラスを継承しています。 たとえば
+`_ast.BinOp' は `_ast.expr' を継承しています。 production rules with
+alternatives (aka "sums") の場合、左辺は抽象クラ
+スとなります。特定のコンストラクタノードのインスタンスのみが作成されま
+す。
+
+各具象クラスは属性 `_fields' を持っており、すべての子ノードの名前を
+そこに保持しています。
+
+具象クラスのインスタンスは、各子ノードに対してそれぞれひとつの属性を持っ
+ています。この属性は、文法で定義された型となります。たとえば
+`_ast.BinOp' のインスタンスは `left' という属性を持っており、 その型は
+`_ast.expr' です。`_ast.expr' や `_ast.stmt'
+のサブクラスのインスタンスにはさらにlinenoやcol_offsetといった属性があ
+ります。linenoはソーステキスト上の行番号(1から数え始めるので、最初の
+行の行番号は1となります)、そしてcol_offsetはノードが生成した最初のトー
+クンのutf8バイトオフセットとなります。utf8オフセットが記録される理由は、
+パーサが内部でutf8を使用するからです。
+
+これらの属性が、文法上オプションであると (クエスチョンマークを用いて)
+マークされている場合は、その値が `None' となることもあります。
+属性のが複数の値をとりうる場合 (アスタリスクでマークされている場合)
+は、値は Python のリストで表されます。
+
+* Menu:
+
+* 抽象文法 Abstract Grammar::
+
+
+File: python-lib-jp.info,  Node: 抽象文法 Abstract Grammar,  Prev: 抽象構文木,  Up: 抽象構文木
+
+32.1 抽象文法 (Abstract Grammar)
+================================
+
+このモジュールでは文字列定数 `__version__' を定義しています。
+これは、以下に示すファイルの subversion リビジョン番号です。
+
+抽象文法は、現在次のように定義されています。
+
+`../../Parser/Python.asdl'
+
+
+File: python-lib-jp.info,  Node: 各種サービス,  Next: SGI IRIX 特有のサービス,  Prev: 抽象構文木,  Up: Top
+
+33 各種サービス
+***************
+
+この章では、Pythonのすべてのバージョンで利用可能な各種サービスについて説明します。
+以下に概要を示します。
+
+* Menu:
+
+* formatter::
+
+
+File: python-lib-jp.info,  Node: formatter,  Prev: 各種サービス,  Up: 各種サービス
+
+33.1 汎用の出力書式化機構
+=========================
+
+汎用の出力書式化機構およびデバイスインタフェース。
+
+このモジュールでは、二つのインタフェース定義を提供しており、
+それらの各インタフェースについて複数の実装を提供しています。
+_formatter_ インタフェースは `htmllib' モジュールの `HTMLParser'
+クラスで使われており、_writer_ インタフェースは formatter
+インタフェースを使う上で必要です。 
+
+formatter オブジェクトはある抽象化された書式イベントの流れを writer
+オブジェクト上の特定の出力イベントに変換します。 formatter
+はいくつかのスタック構造を管理することで、writer
+オブジェクトの様々な属性を変更したり復元したりできるように しています;
+このため、writer は相対的な変更や "元に戻す" 操作
+を処理できなくてもかまいません。writer の特定のプロパティのうち、
+formatter オブジェクトを介して制御できるのは、水平方向の字揃え、
+フォント、そして左マージンの字下げです。
+任意の、非排他的なスタイル設定を writer に提供するための
+メカニズムも提供されています。さらに、段落分割のように、
+可逆でない書式化イベントの機能を提供するインタフェース もあります。
+
+writer オブジェクトはデバイスインタフェースをカプセル化します。
+ファイル形式のような抽象デバイスも物理デバイス同様にサポートされて
+います。ここで提供されている実装内容はすべて抽象デバイス上で
+動作します。デバイスインタフェースは formatter オブジェクトが
+管理しているプロパティを設定し、データを出力端に書き込める
+ようにします。
+
+* Menu:
+
+* formatter インタフェース::
+* formatter 実装::
+* writer インタフェース::
+* writer 実装::
+
+
+File: python-lib-jp.info,  Node: formatter インタフェース,  Next: formatter 実装,  Prev: formatter,  Up: formatter
+
+33.1.1 formatter インタフェース
+-------------------------------
+
+formatter を作成するためのインタフェースは、インスタンス化しようと
+する個々の formatter クラスに依存します。以下で解説するのは、
+インスタンス化された全ての formatter がサポートしなければならない
+インタフェースです。
+
+モジュールレベルではデータ要素を一つ定義しています:
+
+`AS_IS'
+     後に述べる `push_font()' メソッドでフォント指定をする時に
+     使える値です。また、その他の `push_PROPERTY()'
+     メソッドの新しい値として使うことができます。
+
+     `AS_IS' の値をスタックに置くと、どのプロパティが変更されたかの
+     追跡を行わずに、対応する `pop_PROPERTY()' メソッドが呼び
+     出されるようになります。
+
+formatter インスタンスオブジェクトには以下の属性が定義されています:
+
+`writer'
+     formatter とやり取りを行う writer インスタンスです。
+
+`end_paragraph(blanklines)'
+     開かれている段落があれば閉じ、次の段落との間に少なくとも
+     BLANKLINES が挿入されるようにします。
+
+`add_line_break()'
+     強制改行挿入します。既に強制改行がある場合は挿入しません。
+     論理的な段落は中断しません。
+
+`add_hor_rule(*args, **kw)'
+     出力に水平罫線を挿入します。現在の段落に何らかのデータがある
+     場合、強制改行が挿入されますが、論理的な段落は中断しません。
+     引数とキーワードは writer の `send_line_break()' メソッドに
+     渡されます。
+
+`add_flowing_data(data)'
+     空白を折りたたんで書式化しなければならないデータを提供します。
+     空白の折りたたみでは、直前や直後の `add_flowing_data' 呼び出しに
+     入っている空白も考慮されます。このメソッドに渡されたデータは
+     出力デバイスで行末の折り返し (word-wrap) されるものと想定されて
+     います。出力デバイスでの要求やフォント情報に応じて、writer
+     オブジェクト
+     でも何らかの行末折り返しが行われなければならないので注意してください。
+
+`add_literal_data(data)'
+     変更を加えずに writer に渡さなければならないデータを提供します。
+     改行およびタブを含む空白を DATA の値にしても問題ありません。
+
+`add_label_data(format, counter)'
+     現在の左マージン位置の左側に配置されるラベルを挿入します。この
+     ラベルは箇条書き、数字つき箇条書きの書式を構築する際に使われます。
+     FORMAT の値が文字列の場合、整数の値 COUNTER の
+     書式指定として解釈されます。
+
+     FORMAT の値が文字列の場合、整数の値をとる COUNTER の
+     書式化指定として解釈されます。書式化された文字列はラベルの値に
+     なります; FORMAT が文字列でない場合、ラベルの値として
+     直接使われます。ラベルの値は writer の `send_label_data()'
+     メソッドの唯一の引数として渡されます。非文字列のラベル値をどう
+     解釈するかは関連付けられた writer に依存します。
+
+     書式化指定は文字列からなり、 counter の値と合わせてラベルの値を算出
+     するために使われます。書式文字列の各文字はラベル値にコピーされます。
+     このときいくつかの文字は counter
+     値を変換を指すものとして認識されます。 特に、文字 `1'
+     はアラビア数字の counter 値を表し、 `A' と `a'
+     はそれぞれ大文字および小文字の アルファベットによる counter
+     値を表し、`I' と `i'
+     はそれぞれ大文字および小文字のローマ数字による counter 値を表し
+     ます。アルファベットおよびローマ字数字への変換の際には、counter の
+     値はゼロ以上である必要があるので注意してください。
+
+`flush_softspace()'
+     以前の `add_flowing_data()' 呼び出しでバッファされている
+     出力待ちの空白を、関連付けられている writer オブジェクトに送信
+     します。このメソッドは writer オブジェクトに対するあらゆる直接操作
+     の前に呼び出さなければなりません。
+
+`push_alignment(align)'
+     新たな字揃え (alignment) 設定を字揃えスタックの上にプッシュします。
+     変更を行いたくない場合には `AS_IS' にすることができます。
+     字揃え設定値が以前の設定から変更された場合、writer の
+     `new_alignment()' メソッドが ALIGN の値と共に呼び出されます。
+
+`pop_alignment()'
+     以前の字揃え設定を復元します。
+
+`push_font(`('size, italic, bold, teletype`)')'
+     writer
+     オブジェクトのフォントプロパティのうち、一部または全てを変更します。
+     `AS_IS' に設定されていないプロパティは引数で渡された値に
+     設定され、その他の値は現在の設定を維持します。writer の
+     `new_font()' メソッドは完全に設定解決されたフォント指定で
+     呼び出されます。
+
+`pop_font()'
+     以前のフォント設定を復元します。
+
+`push_margin(margin)'
+     左マージンのインデント数を一つ増やし、論理タグ MARGIN を
+     新たなインデントに関連付けます。マージンレベルの初期値は `0'
+     です。変更された論理タグの値は真値とならなければなりません;
+     `AS_IS' 以外の偽の値はマージンの変更としては不適切です。
+
+`pop_margin()'
+     以前のマージン設定を復元します。
+
+`push_style(*styles)'
+     任意のスタイル指定をスタックにプッシュします。全てのスタイルは
+     スタイルスタックに順番にプッシュされます。`AS_IS' 値を含み、
+     スタック全体を表すタプルは writer の `new_styles()' メソッド
+     に渡されます。
+
+`pop_style([n` = 1'])'
+     `push_style()' に渡された最新 N 個のスタイル指定を
+     ポップします。`AS_IS' 値を含み、変更されたスタックを表す タプルは
+     writer の `new_styles()' メソッドに渡されます。
+
+`set_spacing(spacing)'
+     writer の割り付けスタイル (spacing style) を設定します。
+
+`assert_line_data([flag` = 1'])'
+     現在の段落にデータが予期せず追加されたことを formatter
+     に知らせます。 このメソッドは writer
+     を直接操作した際に使わなければなりません。 writer
+     操作の結果、出力の末尾が強制改行となった場合、オプションの FLAG
+     引数を偽に設定することができます。
+
+
+File: python-lib-jp.info,  Node: formatter 実装,  Next: writer インタフェース,  Prev: formatter インタフェース,  Up: formatter
+
+33.1.2 formatter 実装
+---------------------
+
+このモジュールでは、formatter オブジェクトに関して二つの実装を
+提供しています。ほとんどのアプリケーションではこれらのクラスを
+変更したりサブクラス化することなく使うことができます。
+
+`NullFormatter([writer])'
+     何も行わない formatter です。WRITER を省略すると、 `NullWriter'
+     インスタンスが生成されます。 `NullFormatter'
+     インスタンスは、writer のメソッドを 全く呼び出しません。writer
+     へのインタフェースを実装する場合には
+     このクラスのインタフェースを継承する必要がありますが、実装を
+     継承する必要は全くありません。
+
+`AbstractFormatter(writer)'
+     標準の formatter です。この formatter 実装は広範な writer
+     で適用できることが実証されており、ほとんどの状況で直接使うことが
+     できます。高機能の WWW
+     ブラウザを実装するために使われたこともあります。
+
+
+File: python-lib-jp.info,  Node: writer インタフェース,  Next: writer 実装,  Prev: formatter 実装,  Up: formatter
+
+33.1.3 writer インタフェース
+----------------------------
+
+writer を作成するためのインタフェースは、インスタンス化しようと
+する個々の writer クラスに依存します。以下で解説するのは、
+インスタンス化された全ての writer がサポートしなければならない
+インタフェースです。 ほとんどのアプリケーションでは `AbstractFormatter'
+クラスを formatter として使うことができますが、通常 writer
+はアプリケーション 側で与えなければならないので注意してください。
+
+`flush()'
+     バッファに蓄積されている出力データやデバイス制御イベントを
+     フラッシュします。
+
+`new_alignment(align)'
+     字揃えのスタイルを設定します。ALIGN の値は任意のオブジェクト
+     を取りえますが、慣習的な値は文字列または `None' で、 `None' は
+     writer の "好む" 字揃えを使うことを表します。 慣習的な ALIGN
+     の値は `'left''、 `'center''、 `'right''、および `'justify'' です。
+
+`new_font(font)'
+     フォントスタイルを設定します。FONT は、デバイスの標準のフォント
+     が使われることを示す `None' か、 `('SIZE, ITALIC, BOLD,TELETYPE`)'
+     の形式をとるタプルになります。size はフォントサイズを示す文字列
+     になります;
+     特定の文字列やその解釈はアプリケーション側で定義します。
+     ITALIC、BOLD、および TELETYPE といった値は
+     ブール値で、それらの属性を使うかどうかを指定します。
+
+`new_margin(margin, level)'
+     マージンレベルを整数値 LEVEL に設定し、論理タグ (logical tag) を
+     MARGIN に設定します。論理タグの解釈は writer の判断に 任されます;
+     論理タグの値に対する唯一の制限は LEVEL が
+     非ゼロの値の際に偽であってはならないということです。
+
+`new_spacing(spacing)'
+     割り付けスタイル (spacing style) を SPACING に設定します。 Set the
+     spacing style to SPACING.
+
+`new_styles(styles)'
+     追加のスタイルを設定します。STYLES の値は任意の値からなる
+     タプルです; `AS_IS' 値は無視されます。 STYLES
+     タプルはアプリケーションや writer の実装上の都合に
+     より、集合としても、スタックとしても解釈され得ます。
+
+`send_line_break()'
+     現在の行を改行します。
+
+`send_paragraph(blankline)'
+     少なくとも BLANKLINE 空行分の間隔か、空行そのもので段落を
+     分割します。BLANKLINE の値は整数になります。 writer
+     の実装では、改行を行う必要がある場合、このメソッドの呼び出しに
+     先立って `send_line_break()' の呼び出しを受ける必要あります;
+     このメソッドには段落の最後の行を閉じる機能は含まれておらず、
+     段落間に垂直スペースを空ける役割しかありません。
+
+`send_hor_rule(*args, **kw)'
+     水平罫線を出力デバイスに表示します。このメソッドへの引数は
+     全てアプリケーションおよび writer 特有のものなので、注意して
+     解釈する必要があります。このメソッドの実装では、すでに改行が
+     `send_line_break()' によってなされているものと仮定しています。
+
+`send_flowing_data(data)'
+     行端が折り返され、必要に応じて再割り付け解析を行った (re-flowed)
+     文字データを出力します。このメソッドを連続して呼び出す上では、
+     writer は複数の空白文字は単一のスペース文字に縮約されていると
+     仮定することがあります。
+
+`send_literal_data(data)'
+     すでに表示用に書式化された文字データを出力します。
+     これは通常、改行文字で表された改行を保存し、新たに改行を持ち込
+     まないことを意味します。 `send_formatted_data()'
+     インタフェースと違って、
+     データには改行やタブ文字が埋め込まれていてもかまいません。
+
+`send_label_data(data)'
+     可能ならば、DATA を現在の左マージンの左側に設定します。 DATA
+     の値には制限がありません; 文字列でない値の扱い方は
+     アプリケーションや writer に完全に依存します。このメソッドは
+     行の先頭でのみ呼び出されます。
+
+
+File: python-lib-jp.info,  Node: writer 実装,  Prev: writer インタフェース,  Up: formatter
+
+33.1.4 writer 実装
+------------------
+
+このモジュールでは、3 種類の writer オブジェクトインタフェース実装を
+提供しています。ほとんどのアプリケーションでは、 `NullWriter'
+から新しい writer クラスを導出する必要があるでしょう。
+
+`NullWriter()'
+     インタフェース定義だけを提供する writer クラスです; どのメソッドも
+     何ら処理を行いません。このクラスは、メソッド実装をまったく継承する
+     必要のない writer 全ての基底クラスになります。
+
+`AbstractWriter()'
+     この writer は formatter をデバッグするのに利用できますが、それ以外
+     に利用できるほどのものではありません。各メソッドを呼び出すと、
+     メソッド名と引数を標準出力に印字して呼び出されたことを示します。
+
+`DumbWriter([file[, maxcol` = 72']])'
+     単純な writer クラスで FILE に渡されたファイルオブジェクトか FILE
+     が省略された場合には標準出力に出力を書き込みます。 出力は MAXCOL
+     で指定されたカラム数で単純な行端折り返しが行われます。
+     このクラスは連続した段落を再割り付けするのに適しています。
+
+
+File: python-lib-jp.info,  Node: SGI IRIX 特有のサービス,  Next: SunOS 特有のサービス,  Prev: 各種サービス,  Up: Top
+
+34 SGI IRIX 特有のサービス
+**************************
+
+この章で記述されているモジュールは、SGI の IRIX オペレーティングシステム
+(バージョン4と5) 特有の機能へのインターフェイスを提供します。
+
+* Menu:
+
+* al::
+* AL::
+* cd::
+* fl::
+* FL::
+* flp::
+* fm::
+* gl::
+* DEVICE::
+* GL::
+* imgfile::
+* jpeg::
+
+
+File: python-lib-jp.info,  Node: al,  Next: AL,  Prev: SGI IRIX 特有のサービス,  Up: SGI IRIX 特有のサービス
+
+34.1 SGIのオーディオ機能
+========================
+
+SGIのオーディオ機能。
+
+このモジュールを使うと、SGI IndyとIndigoワークステーションのオーディオ装
+置にアクセスできます。
+詳しくはIRIXのmanページのセクション3Aを参照してください。
+ここに書かれた関数が何をするかを理解するには、manページを読む必要が
+あります！ IRIXのリリース4.0.5より前のものでは使えない関数もあります。
+お使いのプラットフォームで特定の関数が使えるかどうか、マニュアルで確認し
+てください。
+
+このモジュールで定義された関数とメソッドは全て、名前に`AL'の接頭辞
+を付けたCの関数と同義です。
+
+Cのヘッダーファイル`<audio.h>'のシンボル定数は標準モジュール `AL' に定義されています。
+下記を参照してください。
+
+_
+オーディオライブラリの現在のバージョンは、不正な引数が渡されるとエラース
+テイタスが返るのではなく、coreを吐き出すことがあります。
+残念ながら、この現象が確実に起こる環境は述べられていないし、確認する
+ことは難しいので、Pythonインターフェースでこの種の問題に対して防御する
+ことはできません。 （一つの例は過大なキューサイズを特定することです --
+上限については記載 されていません。）_
+
+このモジュールには、以下の関数が定義されています：
+
+`openport(name, direction[, config])'
+     引数NAMEとDIRECTIONは文字列です。
+     省略可能な引数CONFIGは、`newconfig()'で返されるコンフィ
+     ギュレーションオブジェクトです。 返り値は"audio port
+     object"です；オーディオポートオブジェクトの
+     メソッドは下に書かれています。
+
+`newconfig()'
+     返り値は新しい"audio configuration object"です；オーディオコンフィ
+     ギュレーションオブジェクトのメソッドは下に書かれています。
+
+`queryparams(device)'
+     引数DEVICEは整数です。
+     返り値は`ALqueryparams()'で返されるデータを含む整数のリストで す。
+
+`getparams(device, list)'
+     引数DEVICEは整数です。
+     引数LISTは`queryparams()'で返されるようなリストです；
+     `queryparams()'を適切に（！）修正して使うことができます。
+
+`setparams(device, list)'
+     引数DEVICEは整数です。
+     引数LISTは`queryparams()'で返されるようなリストです。
+
+* Menu:
+
+* コンフィギュレーションオブジェクト::
+* ポートオブジェクト::
+
+
+File: python-lib-jp.info,  Node: コンフィギュレーションオブジェクト,  Next: ポートオブジェクト,  Prev: al,  Up: al
+
+34.1.1 コンフィギュレーションオブジェクト
+-----------------------------------------
+
+`newconfig()'で返されるコンフィギュレーションオブジェクト
+には以下のメソッドがあります：
+
+`getqueuesize()'
+     キューサイズを返します。
+
+`setqueuesize(size)'
+     キューサイズを設定します。
+
+`getwidth()'
+     サンプルサイズを返します。
+
+`setwidth(width)'
+     サンプルサイズを設定します。
+
+`getchannels()'
+     チャンネル数を返します。
+
+`setchannels(nchannels)'
+     チャンネル数を設定します。
+
+`getsampfmt()'
+     サンプルのフォーマットを返します。
+
+`setsampfmt(sampfmt)'
+     サンプルのフォーマットを設定します。
+
+`getfloatmax()'
+     浮動小数点数でサンプルデータの最大値を返します。
+
+`setfloatmax(floatmax)'
+     浮動小数点数でサンプルデータの最大値を設定します。
+
+
+File: python-lib-jp.info,  Node: ポートオブジェクト,  Prev: コンフィギュレーションオブジェクト,  Up: al
+
+34.1.2 ポートオブジェクト
+-------------------------
+
+`openport()'で返されるポートオブジェクトには以下のメソッドがあ ります：
+
+`closeport()'
+     ポートを閉じます。
+
+`getfd()'
+     ファイルディスクリプタを整数で返します。
+
+`getfilled()'
+     バッファに存在するサンプルの数を返します。
+
+`getfillable()'
+     バッファの空きに入れることのできるサンプルの数を返します。
+
+`readsamps(nsamples)'
+     必要ならブロックして、キューから指定のサンプル数を読み込みます。
+     生データを文字列として
+     （例えば、サンプルサイズが2バイトならサンプル当たり2バイトがbig-endian
+     （high byte、low byte）で）返します。
+
+`writesamps(samples)'
+     必要ならブロックして、キューにサンプルを書き込みます。
+     サンプルは`readsamps()'で返される値のようにエンコードされていなけ
+     ればなりません。
+
+`getfillpoint()'
+     `fill point'を返します。
+
+`setfillpoint(fillpoint)'
+     `fill point'を設定します。
+
+`getconfig()'
+     現在のポートのコンフィギュレーションを含んだコンフィギュレーションオブ
+     ジェクトを返します。
+
+`setconfig(config)'
+     コンフィギュレーションを引数に取り、そのコンフィギュレーションに設定しま
+     す。
+
+`getstatus(list)'
+     最後のエラーについてのステイタスの情報を返します。
+
+
+File: python-lib-jp.info,  Node: AL,  Next: cd,  Prev: al,  Up: SGI IRIX 特有のサービス
+
+34.2 `al'モジュールで使われる定数
+=================================
+
+`al'モジュールで使われる定数。
+
+このモジュールには、組み込みモジュール`al'（上記参照）を使用す
+るのに必要とされるシンボリック定数が定義されています。
+定数の名前はCのincludeファイル`<audioio.h>'で
+接頭辞`AL_'を除いたものと同じです。
+
+定義されている名前の完全なリストについてはモジュールのソースを参照してく
+ださい。 お勧めの使い方は以下の通りです：
+
+     import al
+     from AL import *
+
+
+File: python-lib-jp.info,  Node: cd,  Next: fl,  Prev: AL,  Up: SGI IRIX 特有のサービス
+
+34.3 SGIシステムのCD-ROMへのアクセス
+====================================
+
+Silicon GraphicsシステムのCD-ROMへのインターフェース
+
+このモジュールはSilicon Graphics CD ライブラリへのインターフェースを提供
+します。 Silicon Graphics システムだけで利用可能です。
+
+ライブラリは以下のように使われます。
+
+CD-ROMデバイスを`open()'で開き、
+`createparser()'でCDからデータをパースするためのパーザを作りま す。
+`open()'で返されるオブジェクトはCDからデータを読み込むのに使わ
+れますが、CD-ROMデバイスのステータス情報や、CDの情報、たとえば目次などを
+得るのにも使われます。
+CDから得たデータはパーザに渡され、パーザはフレームをパースし、あらかじめ
+加えられたコールバック関数を呼び出します。
+
+オーディオCDはトラック"tracks"あるいはプログラム"programs"（同じ
+意味で、どちらかの用語が使われます）に分けられます。
+トラックはさらにインデックス"indices"に分けられます。
+オーディオCDは、CD上の各トラックのスタート位置を示す 目次"table of
+contents"を持っています。
+インデックス0は普通、トラックの始まりの前のポーズです。
+目次から得られるトラックのスタート位置は通常、インデックス1のスタート位
+置です。
+
+CD上の位置は2通りの方法で得ることができます。
+それはフレームナンバーと、分、秒、フレームの3つの値からなるタプ
+ルの2つです。 ほとんどの関数は後者を使います。
+位置はCDの開始位置とトラックの開始位置の両方に相対的になります。
+
+モジュール`cd'は、以下の関数と定数を定義しています：
+
+`createparser()'
+     不透明なパーザオブジェクトを作って返します。
+     パーザオブジェクトのメソッドは下に記載されています。
+
+`msftoframe(minutes, seconds, frames)'
+     絶対的なタイムコードである`(MINUTES, SECONDS,
+     FRAMES)'の3つ組の表現を、相当するCDのフレームナンバーに変換しま
+     す。
+
+`open([device[, mode]])'
+     CD-ROMデバイスを開きます。
+     不透明なプレーヤーオブジェクトを返します；
+     プレーヤーオブジェクトのメソッドは下に記載されています。
+     デバイスDEVICEはSCSIデバイスファイルの名前で、例えば
+     `'/dev/scsi/sc0d4l0''あるいは`None'です。
+     もし省略したり、`None'なら、ハードウエアが検索されてCD-ROMデバイス
+     を割り当てます。 MODEは、省略しないなら`'r''にすべきです。
+
+このモジュールでは以下の変数を定義しています：
+
+`error'
+     様々なエラーについて発生する例外です。
+
+`DATASIZE'
+     オーディオデータの1フレームのサイズです。
+     これは`audio'タイプのコールバックへ渡されるオーディオデータのサイ
+     ズです。
+
+`BLOCKSIZE'
+     オーディオデータが読み取られていないフレーム1つのサイズです。
+
+以下の変数は`getstatus()'で返されるステータス情報です：
+
+`READY'
+     オーディオCDがロードされて、ドライブが操作可能であることを示します。
+
+`NODISC'
+     ドライブにCDがロードされていないことを示します。
+
+`CDROM'
+     ドライブにCD-ROMがロードされていることを示します。
+     続いてplayあるいはreadの操作をすると、I/Oエラーを返します。
+
+`ERROR'
+     ディスクや目次を読み込もうとしているときに起こるエラー。
+
+`PLAYING'
+     ドライブがオーディオCDをCDプレーヤーモードでオーディオ端子から再生
+     していることを示します。
+
+`PAUSED'
+     ドライブがCDプレーヤーモードで、再生を一時停止していることを示します。
+
+`STILL'
+     `PAUSED'と同じですが、古いモデル（non 3301）である Toshiba
+     CD-ROMドライブのものです。
+     このドライブはもうSGIから出荷されていません。
+
+`audio'
+
+`pnum'
+
+`index'
+
+`ptime'
+
+`atime'
+
+`catalog'
+
+`ident'
+
+`control'
+     これらは整数の定数で、パーザのいろいろなタイプのコールバックを示していま
+     す。コールバックはCDパーザオブジェクトの`addcallback()'で設定でき
+     ます（下記参照）。
+
+* Menu:
+
+* プレーヤーオブジェクト::
+* パーザオブジェクト::
+
+
+File: python-lib-jp.info,  Node: プレーヤーオブジェクト,  Next: パーザオブジェクト,  Prev: cd,  Up: cd
+
+34.3.1 プレーヤーオブジェクト
+-----------------------------
+
+プレーヤーオブジェクト（`open()'で返されます）には以下のメソッ
+ドがあります：
+
+`allowremoval()'
+     CD-ROMドライブのイジェクトボタンのロックを解除して、ユーザがCDキャディを
+     排出するのを許可します。
+
+`bestreadsize()'
+     メソッド`readda()'のパラメータNUM_FRAMESとして最適の値を返 します。
+     最適値はCD-ROMドライブからの連続したデータフローが許可される値が定義され
+     ます。
+
+`close()'
+     プレーヤーオブジェクトと関連付けられたリソースを解放します。
+     `close()'を呼び出したあとでは、そのオブジェクトに対するメソッドは
+     使用できません。
+
+`eject()'
+     CD-ROMドライブからキャディを排出します。
+
+`getstatus()'
+     CD-ROMドライブの現在の状態に関する情報を返します。
+     返される情報は以下の値からなるタプルです：
+     STATE、TRACK、RTIME、ATIME、TTIME、
+     FIRST、LAST、SCSI_AUDIO、CUR_BLOCK。
+     RTIMEは現在のトラックの初めからの相対的な時間；
+     ATIMEはディスクの初めからの相対的な時間；
+     TTIMEはディスクの全時間です。
+     それぞれの値の詳細については、マニュアルページ
+     `CDgetstatus(3dm)'を参照してください。
+     STATEの値は以下のうちのどれか一つです：
+     `ERROR'、`NODISC'、`READY'、 `PLAYING'、`PAUSED'、`STILL'、
+     `CDROM'。
+
+`gettrackinfo(track)'
+     特定のトラックについての情報を返します。
+     返される情報は、トラックの開始時刻とトラックの時間の長さの二つの要素から
+     なるタプルです。
+
+`msftoblock(min, sec, frame)'
+     分、秒、フレームの3つからなる絶対的なタイムコードを、与えられたCD-ROMド
+     ライブの相当する論理ブロック番号に変換します。
+     時刻を比較するには`msftoblock()'よりも`msftoframe()'を
+     使うべきです。
+     論理ブロック番号は、CD-ROMドライブによって必要とされるオフセット値が違う
+     ため、フレームナンバーと異なります。
+
+`play(start, play)'
+     CD-ROMドライブのオーディオCDの特定のトラックから再生を開始します。
+     CD-ROMドライブのヘッドフォン端子と（備えているなら）オーディオ端子から出
+     力されます。 ディスクの最後で再生は停止します。
+     STARTは再生を開始するCDのトラックナンバーです；
+     PLAYが0なら、CDは最初の一時停止状態になります。
+     その状態からメソッド`togglepause()'で再生を開始できます。
+
+`playabs(minutes, seconds, frames, play)'
+     `play()'と似ていますが、開始位置をトラックナンバーの代わりに分、
+     秒、フレームで与えます。
+
+`playtrack(start, play)'
+     `play()'と似ていますが、トラックの終わりで再生を停止します。
+
+`playtrackabs(track, minutes, seconds, frames, play)'
+     `play()'と似ていますが、指定した絶対的な時刻から再生を開始して、
+     指定したトラックで終了します。
+
+`preventremoval()'
+     CD-ROMドライブのイジェクトボタンをロックして、ユーザがCDキャディを排出で
+     きないようにします。
+
+`readda(num_frames)'
+     CD-ROMドライブにマウントされたオーディオCDから、指定したフレーム数を読み
+     込みます。 オーディオフレームのデータを示す文字列を返します。
+     この文字列はそのままパーザオブジェクトのメソッド`parseframe()'へ
+     渡すことができます。
+
+`seek(minutes, seconds, frames)'
+     CD-ROMから次にデジタルオーディオデータを読み込む開始位置のポインタを設定
+     します。 ポインタはMINUTES、SECONDS、FRAMESで指定した絶対的なタ
+     イムコードの位置に設定されます。
+     返される値はポインタが設定された論理ブロック番号です。
+
+`seekblock(block)'
+     CD-ROMから次にデジタルオーディオデータを読み込む開始位置のポインタを設定
+     します。 ポインタは指定した論理ブロック番号に設定されます。
+     返される値はポインタが設定された論理ブロック番号です。
+
+`seektrack(track)'
+     CD-ROMから次にデジタルオーディオデータを読み込む開始位置のポインタを設定
+     します。 ポインタは指定したトラックに設定されます。
+     返される値はポインタが設定された論理ブロック番号です。
+
+`stop()'
+     現在実行中の再生を停止します。
+
+`togglepause()'
+     再生中ならCDを一時停止し、一時停止中なら再生します。
+
+
+File: python-lib-jp.info,  Node: パーザオブジェクト,  Prev: プレーヤーオブジェクト,  Up: cd
+
+34.3.2 パーザオブジェクト
+-------------------------
+
+パーザオブジェクト（`createparser()'で返されます）には以下のメ
+ソッドがあります：
+
+`addcallback(type, func, arg)'
+     パーザにコールバックを加えます。
+     デジタルオーディオストリームの8つの異なるデータタイプのためのコールバッ
+     クをパーザは持っています。
+     これらのタイプのための定数は`cd'モジュールのレベルで定義されてい
+     ます（上記参照）。 コールバックは以下のように呼び出されます：
+     `FUNC(ARG, type, data)'、ここでARGはユーザが与え
+     た引数、TYPEはコールバックの特定のタイプ、DATAはこの
+     TYPEのコールバックに渡されるデータです。
+     データのタイプは以下のようにコールバックのタイプによって決まります：
+
+     Type                               Value
+     ------                             -----
+     audio                              `al.writesamps()'へそのまま渡すことのできる文字列。
+     pnum                               プログラム（トラック）ナンバーを示す整数。
+     index                              インデックスナンバーを示す整数。
+     ptime                              プログラムの時間を示す分、秒、フレームからなるタプル。
+     atime                              絶対的な時刻を示す分、秒、フレームからなるタプル。
+     catalog                            CDのカタログナンバーを示す13文字の文字列。
+     ident                              録音のISRC識別番号を示す12文字の文字列。
+                                        文字列は2文字の国別コード、3文字の所有者コード、2文字の年号、5文字のシリ
+                                        アルナンバーからなります。
+     control                            CDのサブコードデータのコントロールビットを示す整数。
+
+
+`deleteparser()'
+     パーザを消去して、使用していたメモリを解放します。
+     この呼び出しのあと、オブジェクトは使用できません。
+     オブジェクトへの最後の参照が削除されると、自動的にこのメソッドが呼び出さ
+     れます。
+
+`parseframe(frame)'
+     `readda()'などから返されたデジタルオーディオCDのデータの1つあるい
+     はそれ以上のフレームをパースします。
+     データ内にどういうサブコードがあるかを決定します。
+     その前のフレームからサブコードが変化していたら、`parseframe()'
+     は対応するタイプのコールバックを起動して、フレーム内のサブコードデータを
+     コールバックに渡します。
+     Cの関数とは違って、1つ以上のデジタルオーディオデータのフレームをこの
+     メソッドに渡すことができます。
+
+`removecallback(type)'
+     指定したTYPEのコールバックを削除します。
+
+`resetparser()'
+     サブコードを追跡しているパーザのフィールドをリセットして、初期状態にしま
+     す。
+     ディスクを交換したあと、`resetparser()'を呼び出さなければなりませ
+     ん。
+
+
+File: python-lib-jp.info,  Node: fl,  Next: FL,  Prev: cd,  Up: SGI IRIX 特有のサービス
+
+34.4 グラフィカルユーザーインターフェースのためのFORMSライブラリ
+================================================================
+
+グラフィカルユーザーインターフェースのためのFORMSライブラリ。
+
+このモジュールは、Mark Overmars によるFORMS Library へのインターフェースを提供します。
+FORMSライブラリのソースはanonymous ftp `ftp.cs.ruu.nl'の
+`SGI/FORMS'ディレクトリから入手できます。
+最新のテストはバージョン2.0bで行いました。
+
+ほとんどの関数は接頭辞の`fl_'を取ると、対応するCの関数名になりま す。
+ライブラリで使われる定数は後述の`FL'モジュールで 定義されています。
+
+Pythonでこのオブジェクトを作る方法はCとは少し違っています：
+ライブラリに保持された`現在のフォーム'に新しいFORMSオブジェクトを加える
+のではなく、フォームにFORMSオブジェクトを加えるには、フォームを示す
+Pythonオブジェクトのメソッドで全て行います。
+したがって、Cの関数の`fl_addto_form()'と
+`fl_end_form()'に相当するものはPythonにはありませんし、
+`fl_bgn_form()'に相当するものとしては`fl.make_form()' を呼び出します。
+
+用語のちょっとした混乱に注意してください：
+FORMSではフォームの中に置くことができるボタン、スライダーなどに
+"object"の用語を使います。 Pythonでは全ての値が`オブジェクト'です。
+FORMSへのPythonのインターフェースによって、2つの新しいタイプのPythonオブ
+ジェクト：フォームオブジェクト（フォーム全体を示します）とFORMSオブジェ
+クト（ボタン、スライダーなどの一つひとつを示します）を作ります。
+おそらく、混乱するほどのことではありません。
+
+FORMSへのPythonインターフェースに`フリーオブジェクト'はありませんし、
+Pythonでオブジェクトクラスを書いて加える簡単な方法もありません。
+しかし、GLイベントハンドルへのFORMSインターフェースが利用可能で、純粋な
+GLウィンドウにFORMSを組み合わせることができます。
+
+* 注意：* `fl'をインポートすると、GLの関数`foreground()'と
+FORMSのルーチン`fl_init()'を呼び出します。
+
+* Menu:
+
+* FL Functions::
+* フォームオブジェクト::
+* FORMSオブジェクト::
+
+
+File: python-lib-jp.info,  Node: FL Functions,  Next: フォームオブジェクト,  Prev: fl,  Up: fl
+
+34.4.1 `fl'モジュールに定義されている関数
+-----------------------------------------
+
+`fl'モジュールには以下の関数が定義されています。
+これらの関数の働きに関する詳しい情報については、FORMSドキュメントで対応
+するCの関数の説明を参照してください。
+
+`make_form(type, width, height)'
+     与えられたタイプ、幅、高さでフォームを作ります。
+     これは"form"オブジェクトを返します。このオブジェクトは後述のメソッド
+     を持ちます。
+
+`do_forms()'
+     標準のFORMSのメインループです。
+     ユーザからの応答が必要なFORMSオブジェクトを示すPythonオブジェクト、ある
+     いは特別な値`FL.EVENT'を返します。
+
+`check_forms()'
+     FORMSイベントを確認します。
+     `do_forms()'が返すもの、あるいはユーザからの応答をすぐに必要と
+     するイベントがないなら`None'を返します。
+
+`set_event_call_back(function)'
+     イベントのコールバック関数を設定します。
+
+`set_graphics_mode(rgbmode, doublebuffering)'
+     グラフィックモードを設定します。
+
+`get_rgbmode()'
+     現在のRGBモードを返します。
+     これはCのグローバル変数`fl_rgbmode'の値です。
+
+`show_message(str1, str2, str3)'
+     3行のメッセージとOKボタンのあるダイアログボックスを表示します。
+
+`show_question(str1, str2, str3)'
+     3行のメッセージとYES、NOのボタンのあるダイアログボックスを表示します。
+     ユーザによってYESが押されたら`1'、NOが押されたら`0'を返しま す。
+
+`show_choice(str1, str2, str3, but1[, but2[, but3]])'
+     3行のメッセージと最大3つまでのボタンのあるダイアログボックスを表示しま
+     す。 ユーザによって押されたボタンの数値を返します（それぞれ`1'、`2'
+     、`3'）。
+
+`show_input(prompt, default)'
+     1行のプロンプトメッセージと、ユーザが入力できるテキストフィールドを持つ
+     ダイアログボックスを表示します。
+     2番目の引数はデフォルトで表示される入力文字列です。
+     ユーザが入力した文字列が返されます。
+
+`show_file_selector(message, directory, pattern,  default)'
+     ファイル選択ダイアログを表示します。
+     ユーザによって選択されたファイルの絶対パス、あるいはユーザがCancelボタン
+     を押した場合は`None'を返します。
+
+`get_directory()'
+
+`get_pattern'
+
+`get_filename'
+     これらの関数は最後にユーザが`show_file_selector()'で選択した
+     ディレクトリ、パターン、ファイル名（パスの末尾のみ）を返します。
+
+`qdevice(dev)'
+
+`unqdevice dev'
+
+`isqueued dev'
+
+`qtest'
+
+`qread'
+
+`qreset'
+
+`qenter dev, val'
+
+`get_mouse'
+
+`tie button, valuator1, valuator2'
+     これらの関数は対応するGL関数へのFORMSのインターフェースです。
+     `fl.do_events()'を使っていて、自分で何かGLイベントを操作したい
+     ときにこれらを使います。
+     FORMSが扱うことのできないGLイベントが検出されたら
+     `fl.do_forms()'が特別の値`FL.EVENT'を返すので、
+     `fl.qread()'を呼び出して、キューからイベントを読み込むべきで す。
+     対応するGLの関数は使わないでください！
+
+`color()'
+
+`mapcolor'
+
+`getmcolor'
+     FORMSドキュメントにある`fl_color()'、
+     `fl_mapcolor()'、`fl_getmcolor()' の記述を参照してください。
+
+
+File: python-lib-jp.info,  Node: フォームオブジェクト,  Next: FORMSオブジェクト,  Prev: FL Functions,  Up: fl
+
+34.4.2 フォームオブジェクト
+---------------------------
+
+フォームオブジェクト（上で述べた`make_form()'で返されます）には
+下記のメソッドがあります。
+各メソッドは名前の接頭辞に`fl_'を付けたCの関数に対応します；また、
+最初の引数はフォームのポインタです；
+説明はFORMSの公式文書を参照してください。
+
+全ての`add_*()'メソッドは、FORMSオブジェクトを示すPythonオブジェ
+クトを返します。 FORMSオブジェクトのメソッドを以下に記載します。
+ほとんどのFORMSオブジェクトは、そのオブジェクトの種類ごとに特有のメソッ
+ドもいくつか持っています。
+
+`show_form(placement, bordertype, name)'
+     フォームを表示します。
+
+`hide_form()'
+     フォームを隠します。
+
+`redraw_form()'
+     フォームを再描画します。
+
+`set_form_position(x, y)'
+     フォームの位置を設定します。
+
+`freeze_form()'
+     フォームを固定します。
+
+`unfreeze_form()'
+     固定したフォームの固定を解除します。
+
+`activate_form()'
+     フォームをアクティベートします。
+
+`deactivate_form()'
+     フォームをディアクティベートします。
+
+`bgn_group()'
+     新しいオブジェクトのグループを作ります；グループオブジェクトを返します。
+
+`end_group()'
+     現在のオブジェクトのグループを終了します。
+
+`find_first()'
+     フォームの中の最初のオブジェクトを見つけます。
+
+`find_last()'
+     フォームの中の最後のオブジェクトを見つけます。
+
+`add_box(type, x, y, w, h, name)'
+     フォームにボックスオブジェクトを加えます。
+     特別な追加のメソッドはありません。
+
+`add_text(type, x, y, w, h, name)'
+     フォームにテキストオブジェクトを加えます。
+     特別な追加のメソッドはありません。
+
+`add_clock(type, x, y, w, h, name)'
+     フォームにクロックオブジェクトを加えます。\ メソッド：
+     `get_clock()'。
+
+`add_button(type, x, y, w, h,  name)'
+     フォームにボタンオブジェクトを加えます。\ メソッド：
+     `get_button()'、 `set_button()'。
+
+`add_lightbutton(type, x, y, w, h, name)'
+     フォームにライトボタンオブジェクトを加えます。\ メソッド：
+     `get_button()'、 `set_button()'。
+
+`add_roundbutton(type, x, y, w, h, name)'
+     フォームにラウンドボタンオブジェクトを加えます。\ メソッド：
+     `get_button()'、 `set_button()'。
+
+`add_slider(type, x, y, w, h, name)'
+     フォームにスライダーオブジェクトを加えます。\ メソッド：
+     `set_slider_value()'、 `get_slider_value()'、
+     `set_slider_bounds()'、 `get_slider_bounds()'、
+     `set_slider_return()'、 `set_slider_size()'、
+     `set_slider_precision()'、 `set_slider_step()'。
+
+`add_valslider(type, x, y, w, h, name)'
+     フォームにバリュースライダーオブジェクトを加えます。\ メソッド：
+     `set_slider_value()'、 `get_slider_value()'、
+     `set_slider_bounds()'、 `get_slider_bounds()'、
+     `set_slider_return()'、 `set_slider_size()'、
+     `set_slider_precision()'、 `set_slider_step()'。
+
+`add_dial(type, x, y, w, h, name)'
+     フォームにダイアルオブジェクトを加えます。\ メソッド：
+     `set_dial_value()'、 `get_dial_value()'、 `set_dial_bounds()'、
+     `get_dial_bounds()'。
+
+`add_positioner(type, x, y, w, h, name)'
+     フォームに2次元ポジショナーオブジェクトを加えます。\ メソッド：
+     `set_positioner_xvalue()'、 `set_positioner_yvalue()'、
+     `set_positioner_xbounds()'、 `set_positioner_ybounds()'、
+     `get_positioner_xvalue()'、 `get_positioner_yvalue()'、
+     `get_positioner_xbounds()'、 `get_positioner_ybounds()'。
+
+`add_counter(type, x, y, w, h, name)'
+     フォームにカウンタオブジェクトを加えます。\ メソッド：
+     `set_counter_value()'、 `get_counter_value()'、
+     `set_counter_bounds()'、 `set_counter_step()',
+     `set_counter_precision()'、 `set_counter_return()'。
+
+`add_input(type, x, y, w, h, name)'
+     フォームにインプットオブジェクトを加えます。\ メソッド：
+     `set_input()'、 `get_input()'、 `set_input_color()'、
+     `set_input_return()'。
+
+`add_menu(type, x, y, w, h, name)'
+     フォームにメニューオブジェクトを加えます。\ メソッド：
+     `set_menu()'、 `get_menu()'、 `addto_menu()'。
+
+`add_choice(type, x, y, w, h, name)'
+     フォームにチョイスオブジェクトを加えます。\ メソッド：
+     `set_choice()'、 `get_choice()'、 `clear_choice()'、
+     `addto_choice()'、 `replace_choice()'、 `delete_choice()'、
+     `get_choice_text()'、 `set_choice_fontsize()'、
+     `set_choice_fontstyle()'。
+
+`add_browser(type, x, y, w, h, name)'
+     フォームにブラウザオブジェクトを加えます。\ メソッド：
+     `set_browser_topline()'、 `clear_browser()'、
+     `add_browser_line()'、 `addto_browser()'、
+     `insert_browser_line()'、 `delete_browser_line()'、
+     `replace_browser_line()'、 `get_browser_line()'、
+     `load_browser()'、 `get_browser_maxline()'、
+     `select_browser_line()'、 `deselect_browser_line()'、
+     `deselect_browser()'、 `isselected_browser_line()'、
+     `get_browser()'、 `set_browser_fontsize()'、
+     `set_browser_fontstyle()'、 `set_browser_specialkey()'。
+
+`add_timer(type, x, y, w, h, name)'
+     フォームにタイマーオブジェクトを加えます。\ メソッド：
+     `set_timer()'、 `get_timer()'。
+
+フォームオブジェクトには以下のデータ属性があります；FORMSドキュメントを
+参照してください：
+
+名称                     Cの型                    意味
+------                   -----                    -----
+window                   int (read-only)          GLウィンドウのid
+w                        float                    フォームの幅
+h                        float                    フォームの高さ
+x                        float                    フォーム左肩のx座標
+y                        float                    フォーム左肩のy座標
+deactivated              int                      フォームがディアクティベートされているなら非ゼロ
+visible                  int                      フォームが可視なら非ゼロ
+frozen                   int                      フォームが固定されているなら非ゼロ
+doublebuf                int                      ダブルバッファリングがオンなら非ゼロ
+
+
+File: python-lib-jp.info,  Node: FORMSオブジェクト,  Prev: フォームオブジェクト,  Up: fl
+
+34.4.3 FORMSオブジェクト
+------------------------
+
+FORMSオブジェクトの種類ごとに特有のメソッドの他に、全てのFORMSオブジェク
+トは以下のメソッドも持っています：
+
+`set_call_back(function, argument)'
+     オブジェクトのコールバック関数と引数を設定します。
+     オブジェクトがユーザからの応答を必要とするときには、コールバック関数は2
+     つの引数、オブジェクトとコールバックの引数とともに呼び出されます。
+     （コールバック関数のないFORMSオブジェクトは、ユーザからの応答を必要とす
+     るときには`fl.do_forms()'あるいは`fl.check_forms()'に
+     よって返されます。）
+     引数なしにこのメソッドを呼び出すと、コールバック関数を削除します。
+
+`delete_object()'
+     オブジェクトを削除します。
+
+`show_object()'
+     オブジェクトを表示します。
+
+`hide_object()'
+     オブジェクトを隠します。
+
+`redraw_object()'
+     オブジェクトを再描画します。
+
+`freeze_object()'
+     オブジェクトを固定します。
+
+`unfreeze_object()'
+     固定したオブジェクトの固定を解除します。
+
+FORMSオブジェクトには以下のデータ属性があります；FORMSドキュメントを参照
+してください。
+
+名称                     Cの型                    意味
+------                   -----                    -----
+objclass                 int (read-only)          オブジェクトクラス
+type                     int (read-only)          オブジェクトタイプ
+boxtype                  int                      ボックスタイプ
+x                        float                    左肩のx座標
+y                        float                    左肩のy座標
+w                        float                    幅
+h                        float                    高さ
+col1                     int                      第1の色
+col2                     int                      第2の色
+align                    int                      配置
+lcol                     int                      ラベルの色
+lsize                    float                    ラベルのフォントサイズ
+label                    string                   ラベルの文字列
+lstyle                   int                      ラベルのスタイル
+pushed                   int (read-only)          （FORMSドキュメント参照）
+focus                    int (read-only)          （FORMSドキュメント参照）
+belowmouse               int (read-only)          （FORMSドキュメント参照）
+frozen                   int (read-only)          （FORMSドキュメント参照）
+active                   int (read-only)          （FORMSドキュメント参照）
+input                    int (read-only)          （FORMSドキュメント参照）
+visible                  int (read-only)          （FORMSドキュメント参照）
+radio                    int (read-only)          （FORMSドキュメント参照）
+automatic                int (read-only)          （FORMSドキュメント参照）
+
+
+File: python-lib-jp.info,  Node: FL,  Next: flp,  Prev: fl,  Up: SGI IRIX 特有のサービス
+
+34.5 `fl'モジュールで使用される定数
+===================================
+
+`fl'モジュールで使用される定数。
+
+このモジュールには、組み込みモジュール`fl'を使うのに必要なシン
+ボル定数が定義されています（上記参照）；これらは名前の接頭辞`FL_'が
+省かれていることを除いて、Cのヘッダファイル`<forms.h>'に定義されて
+いるものと同じです。
+定義されている名称の完全なリストについては、モジュールのソースをご覧くだ
+さい。 お勧めする使い方は以下の通りです：
+
+     import fl
+     from FL import *
+
+
+File: python-lib-jp.info,  Node: flp,  Next: fm,  Prev: FL,  Up: SGI IRIX 特有のサービス
+
+34.6 保存されたFORMSデザインをロードする関数
+============================================
+
+保存されたFORMSデザインをロードする関数。
+
+このモジュールには、FORMSライブラリ（上記の`fl'モジュールを参
+照してください）とともに配布される`フォームデザイナー'
+（`fdesign'）プログラムで作られたフォームの定義を読み込む関数が
+定義されています。
+
+詳しくはPythonライブラリソースのディレクトリの中の`flp.doc'を参照し
+てください。
+
+XXX　完全な説明をここに書いて！
+
+
+File: python-lib-jp.info,  Node: fm,  Next: gl,  Prev: flp,  Up: SGI IRIX 特有のサービス
+
+34.7 _Font Manager_ インターフェース
+====================================
+
+SGIワークステーションの _Font Manager_ インターフェース。
+
+このモジュールはIRIS _Font Manager_ライブラリへのアクセスを提供しま す。 Silicon
+Graphics マシン上だけで利用可能です。 次も参照してください：_4Sight
+User's Guide_, section 1, chapter 5: "Using the IRIS Font Manager"。
+このモジュールは、まだ IRIS Font Managerへの完全なインターフェースではあ
+りません。 サポートされていない機能は次のものです： matrix operations;
+cache operations; character operations（代わりに string operations
+を使ってく ださい）; font info のうちのいくつか; individual glyph
+metrics; printer matching。
+
+以下の操作をサポートしています：
+
+`init()'
+     関数を初期化します。 `fminit()'を呼び出します。 この関数は
+     `fm'モジュールを最初にインポートすると自動的に呼び出さ
+     れるので、普通、呼び出す必要はありません。
+
+`findfont(fontname)'
+     フォントハンドルオブジェクトを返します。
+     `fmfindfont(FONTNAME)'を呼び出します。
+
+`enumerate()'
+     利用可能なフォント名のリストを返します。
+     この関数は`fmenumerate()'へのインターフェースです。
+
+`prstr(string)'
+     現在のフォントを使って文字列をレンダリングします（下のフォントハンドルメ
+     ソッド`setfont()'を参照）。 `fmprstr(STRING)'を呼び出します。
+
+`setpath(string)'
+     フォントの検索パスを設定します。
+     `fmsetpath(STRING)'を呼び出します。 （XXX 機能しない！？！）
+
+`fontpath()'
+     現在のフォント検索パスを返します。
+
+フォントハンドルオブジェクトは以下の操作をサポートします：
+
+`scalefont(factor)'
+     このフォントを拡大／縮小したハンドルを返します。 `fmscalefont(FH,
+     FACTOR)'を呼び出します。
+
+`setfont()'
+     このフォントを現在のフォントに設定します。
+     注意：フォントハンドルオブジェクトが削除されると、設定は告知なしに元に戻
+     ります。 `fmsetfont(FH)'を呼び出します。
+
+`getfontname()'
+     このフォントの名前を返します。 `fmgetfontname(FH)'を呼び出します。
+
+`getcomment()'
+     このフォントに関連付けられたコメント文字列を返します。
+     コメント文字列が何もなければ例外を返します。
+     `fmgetcomment(FH)'を呼び出します。
+
+`getfontinfo()'
+     このフォントに関連したデータを含むタプルを返します。
+     これは`fmgetfontinfo()'へのインターフェースです。
+     以下の数値を含むタプルを返します：
+     `('PRINTERMATCHED、FIXED_WIDTH、XORIG、
+     YORIG、XSIZE、YSIZE、HEIGHT、 NGLYPHS`)'。
+
+`getstrwidth(string)'
+     このフォントでSTRINGを描いたときの幅をピクセル数で返します。
+     `fmgetstrwidth(FH, STRING)'を呼び出します。
+
+
+File: python-lib-jp.info,  Node: gl,  Next: DEVICE,  Prev: fm,  Up: SGI IRIX 特有のサービス
+
+34.8 _Graphics Library_ インターフェース
+========================================
+
+Silicon Graphics の_Graphics Library_ の関数。
+
+このモジュールはSilicon Graphicsの_Graphics Library_へのアクセスを
+提供します。 Silicon Graphicsマシン上だけで利用可能です。
+
+_
+GLライブラリの不適切な呼び出しによっては、Pythonインタープリタがコアを吐
+き出すことがあります。
+特に、GLのほとんどの関数では最初のウィンドウを開く前に呼び出すのは安全で
+はありません。 _
+
+このモジュールはとても大きいので、ここに全てを記述することはできません
+が、以下の説明で出発点としては十分でしょう。
+Cの関数のパラメータは、以下のような決まりに従ってPythonに翻訳されます：
+
+   *
+     全て（short、long、unsigned）の整数値（int）はPythonの整数に相当します。
+
+   *
+     全ての浮動小数点数と倍精度浮動小数点数はPythonの浮動小数点数に相当しま
+     す。 たいていの場合、Pythonの整数も使えます。
+
+   * 全ての配列はPythonの一次元のリストに相当します。
+     たいていの場合、タプルも使えます。
+
+   * 全ての文字列と文字の引数は、Pythonの文字列に相当します。例えば、
+     `winopen('Hi There!')' と `rotate(900, 'z')'。
+
+   * 配列である引数の長さを特定するためだけに使われる全て
+     （short、long、unsigned）の整数値の引数あるいは返り値は、無視されます。
+     例えば、Cの呼び出しで、
+
+          lmdef(deftype, index, np, props)
+
+     これはPythonでは、こうなります。
+
+          lmdef(deftype, index, props)
+
+   * 出力のための引数は、引数のリストから省略されています；
+     代わりにこれらは関数の返り値として渡されます。
+     もし１つ以上の値が返されるのなら、返り値はタプルです。
+     もしCの関数が通常の返り値（先のルールによって省略されません）と、出力の
+     ための引数の両方を取るなら、返り値はタプルの最初に来ます。
+     例：Cの呼び出しで、
+
+          getmcolor(i, &red, &green, &blue)
+
+     これはPythonではこうなります。
+
+          red, green, blue = getmcolor(i)
+
+
+以下の関数は一般的でないか、引数に特別な決まりを持っています：
+
+`varray(argument)'
+     `v3d()'の呼び出しに相当しますが、それよりも速いです。
+     ARGUMENTは座標のリスト（あるいはタプル）です。 各座標は`(X, Y,
+     Z)'あるいは `(X, Y)'のタプルでなければなりません。
+     座標は２次元あるいは３次元が可能ですが、全て同次元でなければなりません。
+     ですが、浮動小数点数と整数を混合して使えます。
+     座標は（マニュアルページにあるように）必要であれば`Z = 0.0'と
+     仮定して、常に３次元の精密な座標に変換され、各座標について`v3d()'が
+     呼び出されます。
+
+`nvarray()'
+     `n3f'と`v3f'の呼び出しに相当しますが、それらよりも速いです。
+     引数は法線と座標とのペアからなるシーケンス（リストあるいはタプル）です。
+     各ペアは座標と、その座標からの法線とのタプルです。
+     各座標と各法線は`(X, Y, Z)'からなるタプルでなけれ ばなりません。
+     ３つの座標が渡されなければなりません。
+     浮動小数点数と整数を混合して使えます。
+     各ペアについて、法線に対して`n3f()'が呼び出され、座標に対して
+     `v3f()'が呼び出されます。
+
+`vnarray()'
+     `nvarray()'と似ていますが、各ペアは始めに座標を、２番目に法線を持っ
+     ています。
+
+`nurbssurface(s_k, t_k, ctl, s_ord, t_ord, type)'
+     nurbs（非均一有理Bスプライン）曲面を定義します。
+     `CTL[][]'の次元は以下のように計算されます： `[len(S_K) - S_ORD]'、
+     `[len(T_K) - T_ORD]'。
+
+`nurbscurve(knots, ctlpoints, order, type)'
+     nurbs（非均一有理Bスプライン）曲線を定義します。
+     ctlpointsの長さは、`len(KNOTS) - ORDER'です。
+
+`pwlcurve(points, type)'
+     区分線形曲線（piecewise-linear curve）を定義します。
+     POINTSは座標のリストです。 TYPEは`N_ST'でなければなりません。
+
+`pick(n)'
+
+`select n'
+     これらの関数はただ一つの引数を取り、pick/selectに使うバッファのサイズを
+     設定します。
+
+`endpick()'
+
+`endselect'
+     これらの関数は引数を取りません。
+     pick/selectに使われているバッファの大きさを示す整数のリストを返します。
+     バッファがあふれているのを検出するメソッドはありません。
+
+小さいですが完全なPythonのGLプログラムの例をここに挙げます：
+
+     import gl, GL, time
+
+     def main():
+         gl.foreground()
+         gl.prefposition(500, 900, 500, 900)
+         w = gl.winopen('CrissCross')
+         gl.ortho2(0.0, 400.0, 0.0, 400.0)
+         gl.color(GL.WHITE)
+         gl.clear()
+         gl.color(GL.RED)
+         gl.bgnline()
+         gl.v2f(0.0, 0.0)
+         gl.v2f(400.0, 400.0)
+         gl.endline()
+         gl.bgnline()
+         gl.v2f(400.0, 0.0)
+         gl.v2f(0.0, 400.0)
+         gl.endline()
+         time.sleep(5)
+
+     main()
+
+See also:
+     `PyOpenGL: PythonのOpenGLとの結合' {OpenGL 
+
+
+File: python-lib-jp.info,  Node: DEVICE,  Next: GL,  Prev: gl,  Up: SGI IRIX 特有のサービス
+
+34.9 `gl'モジュールで使われる定数
+=================================
+
+`gl'モジュールで使われる定数。
+
+このモジュールには、Silicon Graphicsの_Graphics Library_で使われる
+定数が定義されています。これらはCのプログラマーがヘッダーファイル
+`<gl/device.h>'の中から使っているものです。
+詳しくはモジュールのソースファイルをご覧ください。
+
+
+File: python-lib-jp.info,  Node: GL,  Next: imgfile,  Prev: DEVICE,  Up: SGI IRIX 特有のサービス
+
+34.10 `gl'モジュールで使われる定数
+==================================
+
+`gl'モジュールで使われる定数。
+
+このモジュールにはSilicon Graphicsの_Graphics Library_で使われる
+Cのヘッダーファイル`<gl/gl.h>'の定数が定義されています。
+詳しくはモジュールのソースファイルをご覧ください。
+
+
+File: python-lib-jp.info,  Node: imgfile,  Next: jpeg,  Prev: GL,  Up: SGI IRIX 特有のサービス
+
+34.11 SGI imglib ファイルのサポート
+===================================
+
+SGI imglib ファイルのサポート。
+
+`imgfile' モジュールは、Python プログラムが SGI imglib 画像 ファイル
+(`.rgb' ファイルとしても知られています) にアクセスできる
+ようにします。このモジュールは完全なものにはほど遠いですが、その機能
+はある状況で十分役に立つものなので、ライブラリで提供されています。
+現在、カラーマップ形式のファイルはサポートされていません。
+
+このモジュールでは以下の変数および関数が定義されています:
+
+`error'
+     この例外は、サポートされていないファイル形式の場合のような全てのエラーで
+     送出されます。
+
+`getsizes(file)'
+     この関数はタプル `(X, Y, Z)' を返します。 X および Y
+     は画像のサイズをピクセルで表したもので、 Z
+     はピクセルあたりのバイト長です。3 バイトの RGB ピクセルと 1
+     バイトのグレイスケールピクセルのみが現在サポートされています。
+
+`read(file)'
+     この関数は指定されたファイル上の画像を読み出して復号化し、Python
+     文字列として返します。この文字列は 1 バイトのグレイスケールピクセル
+     か、4 バイトの RGBA ピクセルによるものです。左下のピクセルが文字列
+     中の最初のピクセルになります。これは `gl.lrectwrite()'
+     に渡すのに適した形式です。
+
+`readscaled(file, x, y, filter[, blur])'
+     この関数は read と同じですが、X および Y のサイズに
+     スケールされた画像を返します。FILTER および BLUR
+     パラメタが省略された場合、単にピクセルデータを捨てたり複製したりする
+     ことによってスケール操作が行われるので、処理結果は、特に計算機上で
+     合成した画像の場合にはおよそ完璧とはいえないものになります。
+
+     そうする代わりに、スケール操作後に画像を平滑化するために用いる
+     フィルタを指定することができます。サポートされているフィルタの
+     形式は `'impulse''、`'box''、 `'triangle''、 `'quadratic''、および
+     `'gaussian'' です。フィルタを 指定する場合、BLUR
+     はオプションのパラメタで、フィルタの
+     不明瞭化度を指定します。標準の値は `1.0' です。
+
+     `readscaled()' は正しいアスペクト比をまったく維持しようと
+     しないので、それはユーザの責任になります。
+
+`ttob(flag)'
+     この関数は画像のスキャンラインの読み書きを下から上に向かって 行う
+     (フラグがゼロの場合で、SGI GL 互換です) か、上から下に向かって
+     行う (フラグが 1 の場合で、X 互換です) かを決定する大域的なフラグを
+     設定します。標準の値はゼロです。
+
+`write(file, data, x, y, z)'
+     この関数は DATA 中の RGB またはグレイスケールのデータ
+     を画像ファイル FILE に書き込みます。X および Y
+     には画像のサイズを与え、Z は 1 バイトグレイスケール画像 の場合には
+     1 で、RGB 画像の場合には 3 (4 バイトの値として記憶され、 下位 3
+     バイトが使われます) です。これらは `gl.lrectread()'
+     が返すデータの形式です。
+
+
+File: python-lib-jp.info,  Node: jpeg,  Prev: imgfile,  Up: SGI IRIX 特有のサービス
+
+34.12 JPEGファイルの読み書きを行う
+==================================
+
+JPEGファイルの読み書きを行います。
+
+この`jpeg'モジュールはIndependent JPEG Group (IJG)
+によって書かれたJEPG圧縮及び展開アルゴリズムを提供します。
+JPEG形式は写真等の画像圧縮で標準的に利用され、ISO
+10918で定義されてます。 JPEG、あるいはIndependent JPEG
+Groupソフトウェアの詳細は、
+標準JPEG、若しくは提供されるソフトウェアのドキュメントを参照してください。
+
+JPEGファイルを扱うポータブルなインタフェースはFredrik Lundhによる
+Python Imaging Library (PIL)があります。また、PILの情報は
+`http://www.pythonware.com/products/pil/'で見つけることができます。 
+
+モジュール`jpeg'では、一つの例外といくつかの関数を定義しています。
+
+`error'
+     関数`compress()'または`decompress()'のエラーで 上げられる例外です。
+
+`compress(data, w, h, b)'
+     イメージファイルの幅W、高さH、1ピクセルあたりのバイト数Bを
+     引数として扱います。データはSGI GL順になっていて、
+     最初のピクセルは左下端になります。
+     また、これは`gl.lrectread()'が返す値をすぐに`compress()'に
+     かけるためです。現在は、1バイト若しくは4バイトのピクセルを
+     取り扱うことができます、前者はグレースケール、後者はRGBカラーを扱います。
+     `compress()'は、圧縮されたJFIF 形式のイメージが
+     含まれた文字列を返します。
+
+`decompress(data)'
+     データは圧縮されたJFIF 形式のイメージが含まれた文字列で、
+     この関数はタプル`(DATA, WIDTH, HEIGHT,
+     BYTESPERPIXEL)'を返します。また、そのデータは
+     `gl.lrectwrite()'を通過します。
+
+`setoption(name, value)'
+     `compress()'と`decompress()'を呼ぶための様々な
+     オプションをセットします。次のオプションが利用できます:
+
+     オプション                         効果
+     ------                             -----
+     'forcegray'                        入力がRGBでも強制的にグレースケールを出力します。
+     'quality'                          圧縮後イメージの品質を`0'から`100'の間の値で指定します
+                                        (デフォルトは`75'です)。これは圧縮にのみ影響します。
+     'optimize'                         ハフマンテーブルを最適化します。時間がかかりますが、高圧縮になります。
+                                        これは圧縮にのみ影響します。
+     'smooth'                           圧縮されていないイメージ上でインターブロックスムーシングを行います。
+                                        低品質イメージに役立ちます。これは展開にのみ影響します。
+
+
+See also:
+     `JPEG Still Image Data Compression Standard'{The  canonical
+     reference for the JPEG image format, by Pennebaker and Mitchell.}
+
+     `Information Technology - Digital Compression and Coding of
+     Continuous-tone Still Images - Requirements and Guidelines'{The
+     ISO standard for JPEG is also published as ITU T.81.  This is
+     available online in PDF form.}
+
+
+File: python-lib-jp.info,  Node: SunOS 特有のサービス,  Next: MS Windows 特有のサービス,  Prev: SGI IRIX 特有のサービス,  Up: Top
+
+35 SunOS 特有のサービス
+***********************
+
+この章では、SunOSオペレーティングシステム
+バージョン5(Solarisバージョン2)に固有の機能を解説します。
+
+* Menu:
+
+* sunaudiodev::
+* SUNAUDIODEV::
+
+
+File: python-lib-jp.info,  Node: sunaudiodev,  Next: SUNAUDIODEV,  Prev: SunOS 特有のサービス,  Up: SunOS 特有のサービス
+
+35.1 Sunオーディオハードウェアへのアクセス
+==========================================
+
+Sunオーディオハードウェアへのアクセス
+
+このモジュールを使うと、Sunのオーディオインターフェースにアクセスでき
+ます。 Sunオーディオハードウェアは、 1秒あたり8kのサンプリングレート、
+u-LAW フォーマットでオーディオデータを録音、再生できます。
+完全な説明文書はマニュアルページ`audio(7I)'にあります。
+
+モジュール `SUNAUDIODEV' には、このモジュールで使われる定数が定義されています。
+
+このモジュールには、以下の変数と関数が定義されています：
+
+`error'
+     この例外は、全てのエラーについて発生します。
+     引数は誤りを説明する文字列です。
+
+`open(mode)'
+     この関数はオーディオデバイスを開き、Sunオーディオデバイスのオブジェクト
+     を返します。
+     こうすることで、オブジェクトがI/Oに使用できるようになります。
+     パラメータMODEは次のうちのいずれか一つで、
+     録音のみには`'r''、再生のみには`'w''、
+     録音と再生両方には`'rw''、コントロールデバイスへのアクセスには
+     `'control''です。
+     レコーダーやプレーヤーには同時に１つのプロセスしかアクセスが許されていな
+     いので、必要な動作についてだけデバイスをオープンするのがいい考えです。
+     詳しくは`audio(7I)'を参照してください。
+     マニュアルページにあるように、このモジュールは環境変数
+     `AUDIODEV'の中のベースオーディオデバイスファイルネームを初めに参照
+     します。 見つからない場合は`/dev/audio'を参照します。
+     コントロールデバイスについては、ベースオーディオデバイスに"ctl"を
+     加えて扱われます。
+
+* Menu:
+
+* オーディオデバイスオブジェクト 2::
+
+
+File: python-lib-jp.info,  Node: オーディオデバイスオブジェクト 2,  Prev: sunaudiodev,  Up: sunaudiodev
+
+35.1.1 オーディオデバイスオブジェクト
+-------------------------------------
+
+オーディオデバイスオブジェクトは`open()'で返され、このオブジェ
+クトには以下のメソッドが定義されています
+（`control'オブジェクトは除きます。これには`getinfo()'、
+`setinfo()'、`fileno()'、`drain()'だけが定義されて います）：
+
+`close()'
+     このメソッドはデバイスを明示的に閉じます。
+     オブジェクトを削除しても、それを参照しているものがあって、すぐに閉じてく
+     れない場合に便利です。 閉じられたデバイスを使うことはできません。
+
+`fileno()'
+     デバイスに関連づけられたファイルディスクリプタを返します。
+     これは、後述の`SIGPOLL'の通知を組み立てるのに使われます。
+
+`drain()'
+     このメソッドは全ての出力中のプロセスが終了するまで待って、それから制御が
+     戻ります。 このメソッドの呼び出しはそう必要ではありません：
+     オブジェクトを削除すると自動的にオーディオデバイスを閉じて、暗黙のうちに
+     吐き出します。
+
+`flush()'
+     このメソッドは全ての出力中のものを捨て去ります。
+     ユーザの停止命令に対する反応の遅れ（1秒までの音声のバッファリングによっ
+     て起こります）を避けるのに使われます。
+
+`getinfo()'
+     このメソッドは入出力のボリューム値などの情報を引き出して、オーディオス
+     テータスのオブジェクト形式で返します。
+     このオブジェクトには何もメソッドはありませんが、現在のデバイスの状態を示
+     す多くの属性が含まれます。
+     属性の名称と意味は`<sun/audioio.h>'と`audio(7I)'に記載があ ります。
+     メンバー名は相当するCのものとは少し違っています：
+     ステータスオブジェクトは１つの構造体です。
+     その中の構造体である`play'のメンバーには名前の初めに`o_'がつ
+     いていて、`record'には`i_'がついています。
+     そのため、Cのメンバーである`play.sample_rate'は
+     `o_sample_rate'として、`record.gain'は`i_gain'として 参照され、
+     `monitor_gain'はそのまま`monitor_gain'で参照されます。
+
+`ibufcount()'
+     このメソッドは録音側でバッファリングされるサンプル数を返します。
+     つまり、プログラムは同じ大きさのサンプルに対する`read()'の
+     呼び出しをブロックしません。
+
+`obufcount()'
+     このメソッドは再生側でバッファリングされるサンプル数を返します。
+     残念ながら、この数値はブロックなしに書き込めるサンプル数を調べるのには
+     使えません。というのは、カーネルの出力キューの長さは可変だからです。
+
+`read(size)'
+     このメソッドはオーディオ入力からSIZEのサイズのサンプルを読み込ん
+     で、Pythonの文字列として返します。
+     この関数は必要なデータが得られるまで他の操作をブロックします。
+
+`setinfo(status)'
+     このメソッドはオーディオデバイスのステータスパラメータを設定します。
+     パラメータSTATUSは`getinfo()'で返されたり、
+     プログラムで変更されたオーディオステータスオブジェクトです。
+
+`write(samples)'
+     パラメータとしてオーディオサンプルをPython文字列を受け取り、再生します。
+     もし十分なバッファの空きがあればすぐに制御が戻り、そうでないならブロック
+     されます。
+
+オーディオデバイスはSIGPOLLを介して様々なイベントの非同期通知に対応して
+います。 Pythonでこれをどのようにしたらできるか、例を挙げます：
+
+     def handle_sigpoll(signum, frame):
+         print 'I got a SIGPOLL update'
+
+     import fcntl, signal, STROPTS
+
+     signal.signal(signal.SIGPOLL, handle_sigpoll)
+     fcntl.ioctl(audio_obj.fileno(), STROPTS.I_SETSIG, STROPTS.S_MSG)
+
+
+File: python-lib-jp.info,  Node: SUNAUDIODEV,  Prev: sunaudiodev,  Up: SunOS 特有のサービス
+
+35.2 `sunaudiodev'で使われる定数
+================================
+
+`sunaudiodev'で使われる定数。
+
+これは`sunaudiodev' に付随する モジュールで、`MIN_GAIN'、`MAX_GAIN'、
+`SPEAKER'などの便利なシンボル定数を定義しています。
+定数の名前はCのincludeファイル`<sun/audioio.h>'のものと同じで、
+初めの文字列 `AUDIO_'を除いたものです。
+
+
+File: python-lib-jp.info,  Node: MS Windows 特有のサービス,  Next: ドキュメント化されていないモジュール,  Prev: SunOS 特有のサービス,  Up: Top
+
+36 MS Windows 特有のサービス
+****************************
+
+この章では、MS Windows プラットフォーム上でのみ利用可能な
+モジュール群について記述します。
+
+* Menu:
+
+* msilib::
+* msvcrt - MS VC++実行時システムの有用なルーチン群::
+* _winreg - Windows レジストリへのアクセス::
+* winsound::
+
+
+File: python-lib-jp.info,  Node: msilib,  Next: msvcrt - MS VC++実行時システムの有用なルーチン群,  Prev: MS Windows 特有のサービス,  Up: MS Windows 特有のサービス
+
+36.1 Microsoft インストーラーファイルの読み書き
+===============================================
+
+Creation of Microsoft Installer files, and CAB files.
+
+_Added in Python version 2.5_
+
+`msilib' モジュールは Microdoft インストーラー(`.msi')の
+作成を支援します。このファイルはしばしば埋め込まれた「キャビネット」ファイル
+(`.cab') を含むので、CAB ファイル作成用の API も暴露します。現在の
+ところ `.cab' ファイルの読み出しはサポートしていませんが、`.msi'
+データベースの読み出しサポートは可能です。
+
+このパッケージの目的は `.msi' ファイルにある全てのテーブルへの完全な
+アクセスの提供なので、提供されているものは正直に言って低レベルな API
+です。 このパッケージの二つの主要な応用は `distutils' の `bdist_msi'
+コマンドと、Python
+インストーラーパッケージそれ自体(と言いつつ現在は別バージョン の
+`msilib' を使っているのですが)です。
+
+パッケージの内容は大きく四つのパートに分けられます。 低レベル CAB
+ルーチン、低レベル MSI ルーチン、少し高レベルの MSI ルーチン、
+標準的なテーブル構造、の四つです。
+
+`FCICreate(cabname, files)'
+     新しい CAB ファイルを CABNAME という名前で作ります。 FILES
+     はタプルのリストで、それぞれのタプルがディスク上のファイル名と CAB
+     ファイルで付けられるファイル名とからなるものでなければなりません。
+
+     ファイルはリストに現れた順番で CAB
+     ファイルに追加されます。全てのファイルは MSZIP
+     圧縮アルゴリズムを使って一つの CAB ファイルに追加されます。
+
+     MSI 作成の様々なステップに対する Python
+     コールバックは現在暴露されていません。
+
+`UUIDCreate()'
+     新しい一意識別子の文字列表現を返します。この関数は Windows API
+     の関数 `UuidCreate' と `UuidToString' をラップしたものです。
+
+`OpenDatabase(path, persist)'
+     MsiOpenDatabase
+     を呼び出して新しいデータベースオブジェクトを返します。 PATH は MSI
+     ファイルのファイル名です。 PERSIST は五つの定数
+     `MSIDBOPEN_CREATEDIRECT', `MSIDBOPEN_CREATE', `MSIDBOPEN_DIRECT',
+     `MSIDBOPEN_READONLY', `MSIDBOPEN_TRANSACT' のどれか一つで、 フラグ
+     `MSIDBOPEN_PATCHFILE' を含めても構いません。
+     これらのフラグの意味は Microsoft のドキュメントを参照してください。
+     フラグに依って既存のデータベースを開いたり新しいのを作ったりします。
+
+`CreateRecord(count)'
+     `MSICreateRecord'
+     を呼び出して新しいレコードオブジェクトを返します。 COUNT
+     はレコードのフィールドの数です。
+
+`init_database(name, schema, ProductName, ProductCode, ProductVersion, Manufacturer)'
+     NAME という名前の新しいデータベースを作り、 SCHEMA で初期化し、
+     プロパティ PRODUCTNAME, PRODUCTCODE, PRODUCTVERSION, MANUFACTURER
+     をセットして、 返します
+
+     SCHEMA は `tables' と `_Validation_records' という属性を
+     もったモジュールオブジェクトでなければなりません。典型的には、`msilib.schema'
+     を使うべきです。
+
+     データベースはこの関数から返された時点でスキーマとバリデーションレコードだけが
+     収められています。
+
+`add_data(database, records)'
+     全ての RECORDS を DATABASE に追加します。 RECORDS
+     はタプルのリストで、それぞれのタプルにはテーブルのスキーマに従った
+     レコードの全てのフィールドを含んでいるものでなければなりません。オプションの
+     フィールドには `None' を渡すことができます。
+
+     フィールドの値には、整数・長整数・文字列・Binary
+     クラスのインスタンスが使えます。
+
+`Binary(filename)'
+     Binary テーブル中のエントリーを表わします。 `add_data'
+     を使ってこのクラスのオブジェクトを挿入する ときには FILENAME
+     という名前のファイルをテーブルに読み込みます。
+
+`add_tables(database, module)'
+     MODULE の全てのテーブルの内容を DATABASE に追加します。 MODULE は
+     TABLES という内容が追加されるべき全てのテーブルの
+     リストと、テーブルごとに一つある実際の内容を持っている属性とを含んで
+     いなければなりません。
+
+     この関数は典型的にシーケンステーブルをインストールするのに使われます。
+
+`add_stream(database, name, path)'
+     DATABASE の `_Stream' テーブルに、ファイル PATH を NAME
+     というストリーム名で追加します。
+
+`gen_uuid()'
+     新しい UUID を、 MSI
+     が通常要求する形式(すなわち、中括弧に入れ、16進数は
+     大文字)で返します。
+
+See also:
+     `FCICreateFile'{} `UuidCreate'{} `UuidToString'{}
+
+* Menu:
+
+* データベースオブジェクト 2::
+* ビューオブジェクト::
+* サマリー情報オブジェクト::
+* レコードオブジェクト::
+* エラー::
+* CAB オブジェクト::
+* ディレクトリオブジェクト::
+* フィーチャー::
+* GUI クラス::
+* 事前に計算されたテーブル::
+
+
+File: python-lib-jp.info,  Node: データベースオブジェクト 2,  Next: ビューオブジェクト,  Prev: msilib,  Up: msilib
+
+36.1.1 データベースオブジェクト
+-------------------------------
+
+`OpenView(sql)'
+     `MSIDatabaseOpenView' を呼び出してビューオブジェクトを返します。
+     SQL は実行される SQL 命令です。
+
+`Commit()'
+     `MSIDatabaseCommit' を呼び出して
+     現在のトランザクションで保留されている変更をコミットします。
+
+`GetSummaryInformation(count)'
+     `MsiGetSummaryInformation' を呼び出して
+     新しいサマリー情報オブジェクトを返します。 COUNT
+     は更新された値の最大数です。
+
+See also:
+     `MSIOpenView'{} `MSIDatabaseCommit'{} `MSIGetSummaryInformation'{}
+
+
+File: python-lib-jp.info,  Node: ビューオブジェクト,  Next: サマリー情報オブジェクト,  Prev: データベースオブジェクト 2,  Up: msilib
+
+36.1.2 ビューオブジェクト
+-------------------------
+
+`Execute([params=None])'
+     `MSIViewExecute' を通してビューに対する SQL
+     問い合わせを実行します。 PARAMS
+     はオプションのレコードでクエリ中のパラメータトークンの実際の値を
+     与えるものです。
+
+`GetColumnInfo(kind)'
+     `MsiViewGetColumnInfo' の呼び出しを通してビューのカラムを
+     説明するレコードを返します。KIND は `MSICOLINFO_NAMES' または
+     `MSICOLINFO_TYPES' です。
+
+`Fetch()'
+     `MsiViewFetch' の呼び出しを通してクエリの結果レコードを返します。
+
+`Modify(kind, data)'
+     `MsiViewModify' を呼び出してビューを変更します。 KIND は
+     `MSIMODIFY_SEEK', `MSIMODIFY_REFRESH', `MSIMODIFY_INSERT',
+     `MSIMODIFY_UPDATE', `MSIMODIFY_ASSIGN', `MSIMODIFY_REPLACE',
+     `MSIMODIFY_MERGE', `MSIMODIFY_DELETE',
+     `MSIMODIFY_INSERT_TEMPORARY', `MSIMODIFY_VALIDATE',
+     `MSIMODIFY_VALIDATE_NEW', `MSIMODIFY_VALIDATE_FIELD',
+     `MSIMODIFY_VALIDATE_DELETE' のいずれかです。
+
+     DATA は新しいデータを表わすレコードでなければなりません。
+
+`Close()'
+     `MsiViewClose' を通してビューを閉じます。
+
+See also:
+     `MsiViewExecute'{} `MSIViewGetColumnInfo'{} `MsiViewFetch'{}
+     `MsiViewModify'{} `MsiViewClose'{}
+
+
+File: python-lib-jp.info,  Node: サマリー情報オブジェクト,  Next: レコードオブジェクト,  Prev: ビューオブジェクト,  Up: msilib
+
+36.1.3 サマリー情報オブジェクト
+-------------------------------
+
+`GetProperty(field)'
+     `MsiSummaryInfoGetProperty'
+     を通してサマリーのプロパティを返します。 FIELD
+     はプロパティ名で、定数 `PID_CODEPAGE', `PID_TITLE', `PID_SUBJECT',
+     `PID_AUTHOR', `PID_KEYWORDS', `PID_COMMENTS', `PID_TEMPLATE',
+     `PID_LASTAUTHOR', `PID_REVNUMBER', `PID_LASTPRINTED',
+     `PID_CREATE_DTM', `PID_LASTSAVE_DTM', `PID_PAGECOUNT',
+     `PID_WORDCOUNT', `PID_CHARCOUNT', `PID_APPNAME', `PID_SECURITY'
+     のいずれかです。
+
+`GetPropertyCount()'
+     `MsiSummaryInfoGetPropertyCount' を通してサマリープロパティの
+     個数を返します。
+
+`SetProperty(field, value)'
+     `MsiSummaryInfoSetProperty' を通してプロパティをセットします。
+     FIELD は `GetProperty' におけるものと同じ値をとります。 VALUE
+     はプロパティの新しい値です。許される値の型は整数と文字列です。
+
+`Persist()'
+     `MsiSummaryInfoPersist' を使って変更されたプロパティを
+     サマリー情報ストリームに書き込みます。
+
+See also:
+     `MsiSummaryInfoGetProperty'{} `MsiSummaryInfoGetPropertyCount'{}
+     `MsiSummaryInfoSetProperty'{} `MsiSummaryInfoPersist'{}
+
+
+File: python-lib-jp.info,  Node: レコードオブジェクト,  Next: エラー,  Prev: サマリー情報オブジェクト,  Up: msilib
+
+36.1.4 レコードオブジェクト
+---------------------------
+
+`GetFieldCount()'
+     `MsiRecordGetFieldCount' を通してレコードのフィールド数を返します。
+
+`SetString(field, value)'
+     `MsiRecordSetString' を通して FIELD を VALUE にセットします。
+     FIELD は整数、VALUE は文字列でなければなりません。
+
+`SetStream(field, value)'
+     `MsiRecordSetStream' を通して FIELD を VALUE
+     という名のファイルの内容にセットします。 FIELD は整数、VALUE
+     は文字列でなければなりません。
+
+`SetInteger(field, value)'
+     `MsiRecordSetInteger' を通して FIELD を VALUE にセットします。
+     FIELD も VALUE も整数でなければなりません。
+
+`ClearData()'
+     `MsiRecordClearData' を通してレコードの全てのフィールドを 0 に
+     セットします。
+
+See also:
+     `MsiRecordGetFieldCount'{} `MsiRecordSetString'{}
+     `MsiRecordSetStream'{} `MsiRecordSetInteger'{} `MsiRecordClear'{}
+
+
+File: python-lib-jp.info,  Node: エラー,  Next: CAB オブジェクト,  Prev: レコードオブジェクト,  Up: msilib
+
+36.1.5 エラー
+-------------
+
+全ての MSI 関数のラッパーは `MsiError' を送出します。
+例外の内部の文字列がより詳細な情報を含んでいます。
+
+
+File: python-lib-jp.info,  Node: CAB オブジェクト,  Next: ディレクトリオブジェクト,  Prev: エラー,  Up: msilib
+
+36.1.6 CAB オブジェクト
+-----------------------
+
+`CAB(name)'
+     `CAB' クラスは CAB ファイルを表わすものです。MSI 構築中、ファイルは
+     `Files' テーブルと CAB
+     ファイルとに同時に追加されます。そして、全ての
+     ファイルを追加し終えたら、CAB
+     ファイルは書き込まれることが可能になり、MSI
+     ファイルに追加されます。
+
+     NAME は MSI ファイル中の CAB ファイルの名前です。
+
+`append(full, logical)'
+     パス名 FULL のファイルを CAB ファイルに LOGICAL という名で
+     追加します。LOGICAL
+     という名が既に存在したならば、新しいファイル名が 作られます。
+
+     ファイルの CAB ファイル中のインデクスと新しいファイル名を返します。
+
+`append(database)'
+     CAB ファイルを作り、MSI ファイルにストリームとして追加し、`Media'
+     テーブルに送り込み、作ったファイルはディスクから削除します。
+
+
+File: python-lib-jp.info,  Node: ディレクトリオブジェクト,  Next: フィーチャー,  Prev: CAB オブジェクト,  Up: msilib
+
+36.1.7 ディレクトリオブジェクト
+-------------------------------
+
+`Directory(database, cab, basedir, physical,  logical, default, component, [componentflags])'
+     新しいディレクトリを Directory
+     テーブルに作成します。ディレクトリには各時点で
+     現在のコンポーネントがあり、それは `start_component'
+     を使って明ら様に
+     作成されたかまたは最初にファイルが追加された際に暗黙裡に作成されたものです。
+     ファイルは現在のコンポーネントと cab
+     ファイルに追加されます。ディレクトリを
+     作成するには親ディレクトリオブジェクト(`None' でも可)、
+     物理的ディレクトリへのパス、論理的ディレクトリ名を指定する必要があります。
+     DEFAULT はディレクトリテーブルの DefaultDir スロットを指定します。
+     COMPONENTFLAGS
+     は新しいコンポーネントが得るデフォルトのフラグを指定します。
+
+`start_component([component[, feature[, flags[, keyfile[, uuid]]]]])'
+     エントリを Component
+     テーブルに追加し、このコンポーネントをこのディレクトリの
+     現在のコンポーネントにします。もしコンポーネント名が与えられなければディレクトリ名が
+     使われます。FEATURE
+     が与えられなければ、ディレクトリのデフォルトフラグが
+     使われます。KEYFILE が与えられなければ、Component テーブルの
+     KeyPath は null のままになります。
+
+`add_file(file[, src[, version[, language]]])'
+     ファイルをディレクトリの現在のコンポーネントに追加します。このとき現在のコンポーネントが
+     なければ新しいものを開始します。デフォルトではソースとファイルテーブルのファイル名は
+     同じになります。SRC
+     ファイルが与えられたならば、それば現在のディレクトリから
+     相対的に解釈されます。オプションで VERSION と LANGUAGE を File
+     テーブルのエントリ用に指定することができます。
+
+`glob(pattern[, exclude])'
+     現在のコンポーネントに glob
+     パターンで指定されたファイルのリストを追加します。
+     個々のファイルを EXCLUDE リストで除外することができます。
+
+`remove_pyc()'
+     アンインストールの際に `.pyc'/`.pyo' を削除します。
+
+See also:
+     `Directory Table'{} `File Table'{} `Component Table'{}
+     `FeatureComponents Table'{}
+
+
+File: python-lib-jp.info,  Node: フィーチャー,  Next: GUI クラス,  Prev: ディレクトリオブジェクト,  Up: msilib
+
+36.1.8 フィーチャー
+-------------------
+
+`Feature(database, id, title, desc, display[, level=1[, parent[, directory[,  attributes=0]]]])'
+     ID, PARENT.ID, TITLE, DESC, DISPLAY, LEVEL, DIRECTORY, ATTRIBUTES
+     の値を使って、 新しいレコードを `Feature'
+     テーブルに追加します。出来上がった フィーチャーオブジェクトは
+     `Directory' の `start_component' メソッドに渡すことができます。
+
+`set_current()'
+     このフィーチャーを `msilib' の現在のフィーチャーにします。
+     フィーチャーが明ら様に指定されない限り、
+     新しいコンポーネントが自動的にデフォルトのフィーチャーに追加されます。
+
+See also:
+     `Feature Table'{}
+
+
+File: python-lib-jp.info,  Node: GUI クラス,  Next: 事前に計算されたテーブル,  Prev: フィーチャー,  Up: msilib
+
+36.1.9 GUI クラス
+-----------------
+
+`msilib' モジュールは MSI データベースの中の GUI テーブルをラップする
+幾つかのクラスを提供しています。しかしながら、標準で提供されるユーザーインタフェースは
+ありません。インストールする Python
+パッケージに対するユーザーインタフェース付きの MSI
+ファイルを作成するには `bdist_msi' を使ってください。
+
+`Control(dlg, name)'
+     ダイアログコントロールの基底クラス。DLG はコントロールの属する
+     ダイアログオブジェクト、NAME はコントロールの名前です。
+
+`event(event, argument[,  condition = ``1''[, ordering]])'
+     このコントロールの `ControlEvent' テーブルにエントリを作ります。
+
+`mapping(event, attribute)'
+     このコントロールの `EventMapping' テーブルにエントリを作ります。
+
+`condition(action, condition)'
+     このコントロールの `ControlCondition'
+     テーブルにエントリを作ります。
+
+`RadioButtonGroup(dlg, name, property)'
+     NAME という名前のラジオボタンコントロールを作成します。 PROPERTY
+     はラジオボタンが選ばれたときにセットされる
+     インストーラープロパティです。
+
+`add(name, x, y, width, height, text [, value])'
+     グループに NAME という名前で、座標 X, Y に 大きさが WIDTH, HEIGHT
+     で TEXT というラベルの付いた ラジオボタンを追加します。VALUE
+     が省略された場合、デフォルトは NAME になります。
+
+`Dialog(db, name, x, y, w, h, attr, title, first,  default, cancel)'
+     新しい `Dialog' オブジェクトを返します。`Dialog' テーブルの中に
+     指定された座標、ダイアログ属性、タイトル、最初とデフォルトとキャンセルコントロールの
+     名前を持ったエントリが作られます。
+
+`control(name, type, x, y, width, height,  attributes, property, text, control_next, help)'
+     新しい `Control' オブジェクトを返します。`Control' テーブルに
+     指定されたパラメータのエントリが作られます。
+
+     これは汎用のメソッドで、特定の型に対しては特化したメソッドが提供されています。
+
+`text(name, x, y, width, height, attributes, text)'
+     `Text' コントロールを追加して返します。
+
+`bitmap(name, x, y, width, height, text)'
+     `Bitmap' コントロールを追加して返します。
+
+`line(name, x, y, width, height)'
+     `Line' コントロールを追加して返します。
+
+`pushbutton(name, x, y, width, height, attributes,  text, next_control)'
+     `PushButton' コントロールを追加して返します。
+
+`radiogroup(name, x, y, width, height,  attributes, property, text, next_control)'
+     `RadioButtonGroup' コントロールを追加して返します。
+
+`checkbox(name, x, y, width, height,  attributes, property, text, next_control)'
+     `CheckBox' コントロールを追加して返します。
+
+See also:
+     `Dialog Table'{} `Control Table'{} `Control Types'{}
+     `ControlCondition Table'{} `ControlEvent Table'{} `EventMapping
+     Table'{} `RadioButton Table'{}
+
+
+File: python-lib-jp.info,  Node: 事前に計算されたテーブル,  Prev: GUI クラス,  Up: msilib
+
+36.1.10 事前に計算されたテーブル
+--------------------------------
+
+`msilib' はスキーマとテーブル定義だけから成るサブパッケージをいくつか
+提供しています。現在のところ、これらの定義は MSI バージョン 2.0
+に基づいています。
+
+`schema'
+     これは MSI 2.0 用の標準 MSI
+     スキーマで、テーブル定義のリストを提供する TABLES 変数と、MSI
+     バリデーション用のデータを提供する _VALIDATION_RECORDS
+     変数があります。
+
+`sequence'
+     このモジュールは標準シーケンステーブルのテーブル内容を含んでいます。
+     ADMINEXECUTESEQUENCE, ADMINUISEQUENCE, ADVTEXECUTESEQUENCE,
+     INSTALLEXECUTESEQUENCE, INSTALLUISEQUENCE が含まれています。
+
+`text'
+     このモジュールは標準的なインストーラーのアクションのための UIText
+     および ActionText テーブルの定義を含んでいます。
+
+
+File: python-lib-jp.info,  Node: msvcrt - MS VC++実行時システムの有用なルーチン群,  Next: _winreg - Windows レジストリへのアクセス,  Prev: msilib,  Up: MS Windows 特有のサービス
+
+36.2 `msvcrt' - MS VC++実行時システムの有用なルーチン群
+=======================================================
+
+MS VC++実行時システムの雑多な有用ルーチン群。
+
+このモジュールの関数は、 Windows プラットフォームの便利な機能の
+いくつかに対するアクセス機構を提供しています。高レベルモジュール
+のいくつかは、提供するサービスを Windows で実装するために、これらの
+関数を使っています。例えば、 `getpass' モジュールは 関数 `getpass()'
+を実装するためにこのモジュールの関数を 使います。
+
+ここに挙げた関数の詳細なドキュメントについては、プラットフォーム API
+ドキュメントで見つけることができます。
+
+* Menu:
+
+* ファイル操作関連::
+* コンソール I/O 関連::
+* その多の関数::
+
+
+File: python-lib-jp.info,  Node: ファイル操作関連,  Next: コンソール I/O 関連,  Prev: msvcrt - MS VC++実行時システムの有用なルーチン群,  Up: msvcrt - MS VC++実行時システムの有用なルーチン群
+
+36.2.1 ファイル操作関連
+-----------------------
+
+`locking(fd, mode, nbytes)'
+     C 言語による実行時システムにおけるファイル記述子 FD に基づいて、
+     ファイルの一部にロックをかけます。ロックされるファイルの領域は、
+     現在のファイル位置から NBYTES バイトで、ファイルの末端まで
+     延長することができます。MODE は 以下に列挙する `LK_*'
+     のいずれか一つでなければなりません。
+     一つのファイルの複数の領域を同時にロックすることは可能ですが、
+     領域が重複してはなりません。連接する領域をまとめて指定することは
+     できません; それらの領域は個別にロック解除しなければなりません。
+
+`LK_LOCK'
+
+`LK_RLCK'
+     指定されたバイト列にロックをかけます。指定領域がロックできなかった
+     場合、プログラムは 1 秒後に再度ロックを試みます。10 回
+     再試行した後でもロックをかけられない場合、`IOError'
+     が送出されます。
+
+`LK_NBLCK'
+
+`LK_NBRLCK'
+     指定されたバイト列にロックをかけます。指定領域がロックできなかった
+     場合、`IOError' が送出されます。
+
+`LK_UNLCK'
+     指定されたバイト列のロックを解除します。指定領域はあらかじめロック
+     されていなければなりません。
+
+`setmode(fd, flags)'
+     ファイル記述子 FD に対して、行末文字の変換モードを設定します。
+     テキストモードに設定するには、FLAGS を `os.O_TEXT' にします;
+     バイナリモードにするには `os.O_BINARY' にします。
+
+`open_osfhandle(handle, flags)'
+     C 言語による実行時システムにおけるファイル記述子をファイルハンドル
+     HANDLE から生成します。FLAGS パラメタは `os.O_APPEND'、
+     `os.O_RDONLY'、および `os.O_TEXT' をビット単位で OR
+     したものになります。 返されるファイル記述子は `os.fdopen()'
+     でファイルオブジェクト を生成するために使うことができます。
+
+`get_osfhandle(fd)'
+     ファイル記述子 FD のファイルハンドルを返します。FD
+     が認識できない場合、 IOERROR を送出します。
+
+
+File: python-lib-jp.info,  Node: コンソール I/O 関連,  Next: その多の関数,  Prev: ファイル操作関連,  Up: msvcrt - MS VC++実行時システムの有用なルーチン群
+
+36.2.2 コンソール I/O 関連
+--------------------------
+
+`kbhit()'
+     読み出し待ちの打鍵イベントが存在する場合に真を返します。
+
+`getch()'
+     打鍵を読み取り、読み出された文字を返します。コンソールには
+     何もエコーバックされません。この関数呼び出しは読み出し可能な
+     打鍵がない場合にはブロックしますが、文字を読み出せるように
+     するために <Enter> の打鍵を待つ必要はありません。
+     打鍵されたキーが特殊機能キー (function key) である場合、この
+     関数は `'\000'' または `'\xe0'' を返します;
+     キーコードは次に関数を呼び出した際に返されます。この関数で
+     <Control-C> の打鍵を読み出すことはできません。
+
+`getche()'
+     `getch()' に似ていますが、打鍵した字が印字可能な文字の
+     場合エコーバックされます。
+
+`putch(char)'
+     キャラクタ CHAR をバッファリングを行わないでコンソールに
+     出力します。
+
+`ungetch(char)'
+     キャラクタ CHAR をコンソールバッファに "押し戻し (push back)"
+     ます; これにより、押し戻された 文字は `getch()' や `getche()'
+     で次に 読み出される文字になります。
+
+
+File: python-lib-jp.info,  Node: その多の関数,  Prev: コンソール I/O 関連,  Up: msvcrt - MS VC++実行時システムの有用なルーチン群
+
+36.2.3 その多の関数
+-------------------
+
+`heapmin()'
+     `malloc()' されたヒープ領域を強制的に消去させて、未使用の
+     メモリブロックをオペレーティングシステムに返します。この関数は
+     Windows NT 上でのみ動作します。失敗した場合、 `IOError'
+     を送出します。
+
+
+File: python-lib-jp.info,  Node: _winreg - Windows レジストリへのアクセス,  Next: winsound,  Prev: msvcrt - MS VC++実行時システムの有用なルーチン群,  Up: MS Windows 特有のサービス
+
+36.3 `_winreg' - Windows レジストリへのアクセス
+===============================================
+
+Windows レジストリを操作するためのルーチンおよびオブジェクト。
+
+_Added in Python version 2.0_
+
+これらの関数は Windows レジストリ API を Python で使えるようにします。
+プログラマがレジストリハンドルのクローズを失念した場合でも、確実に
+ハンドルがクローズされるようにするために、整数値をレジストリハンドル
+として使う代わりにハンドルオブジェクトが使われます。
+
+このモジュールは Windows レジストリ操作のための非常に低レベルの
+インタフェースを使えるようにします; 将来、より高レベルの レジストリ API
+インタフェースを提供するような、新たな `winreg'
+モジュールが作られるよう期待します。
+
+このモジュールでは以下の関数を提供します:
+
+`CloseKey(hkey)'
+     以前開かれたレジストリキーを閉じます。 HKEY
+     引数には以前開かれたレジストリキーを特定します。
+
+     このメソッドを使って (または `handle.Close()' によって) HKEY
+     が閉じられなかった場合、Python が HKEY オブジェクトを破壊
+     する際に閉じられるので注意してください。
+
+`ConnectRegistry(computer_name, key)'
+     他の計算機上にある既定のレジストリハンドル接続を確立し、
+     "ハンドルオブジェクト (handle object)" を返します。
+
+     COMPUTER_NAME はリモートコンピュータの名前で、 `r"\\computername"'
+     の形式をとります。`None' の場合、ローカルの計算機が使われます。
+
+     KEY は接続したい既定のハンドルです。
+
+     戻り値は開かれたキーのハンドルです。
+     関数が失敗した場合、`EnvironmentError' 例外が 送出されます。
+
+`CreateKey(key, sub_key)'
+     特定のキーを生成するか開き、"ハンドルオブジェクト" を返します。
+
+     KEY はすでに開かれたキーか、既定の `HKEY_*' 定数の うちの一つです。
+
+     SUB_KEY はこのメソッドが開く、または新規作成するキーの 名前です。
+
+     KEY が既定のキーの一つなら、SUB_KEY は `None'
+     でかまいません。この場合、返されるハンドルは関数に渡されたのと
+     同じキーハンドルです。
+
+     キーがすでに存在する場合、この関数は既に存在するキーを開きます。
+
+     戻り値は開かれたキーのハンドルです。この関数が失敗した場合、
+     `EnvironmentError' 例外が送出されます。
+
+`DeleteKey(key, sub_key)'
+     特定のキーを削除します。
+
+     KEY はすでに開かれたキーか、既定の `HKEY_*' 定数 のうちの一つです。
+
+     SUB_KEY  は文字列で、KEY パラメタによって特定された
+     キーのサブキーでなければなりません。この値は `None' で
+     あってはならず、キーはサブキーを持っていてはなりません。
+
+     _このメソッドはサブキーをもつキーを削除することはできません。_
+
+     このメソッドの実行が成功すると、キー全体が、その値すべてを含めて
+     削除されます。このメソッドが失敗した場合、 `EnvironmentError'
+     例外が送出されます。
+
+`DeleteValue(key, value)'
+     レジストリキーから指定された名前つきの値を削除します。
+
+     KEY はすでに開かれたキーか、既定の `HKEY_*' 定数
+     のうちの一つでなければなりません。
+
+     VALUE は削除したい値を指定するための文字列です。
+
+`EnumKey(key, index)'
+     開かれているレジストリキーのサブキーを列挙し、文字列で返します。
+
+     KEY はすでに開かれたキーか、既定の `HKEY_*' 定数
+     のうちの一つでなければなりません。
+
+     INDEX は整数値で、取得するキーのインデクスを特定します。
+
+     この関数は呼び出されるたびに一つのサブキーの名前を取得します。
+     この関数は通常、これ以上サブキーがないことを示す
+     `EnvironmentError' 例外が送出されるまで繰り返し呼び 出されます。
+
+`EnumValue(key, index)'
+     開かれているレジストリキーの値を列挙し、タプルで返します。
+
+     KEY はすでに開かれたキーか、既定の `HKEY_*' 定数
+     のうちの一つでなければなりません。
+
+     INDEX は整数値で、取得する値のインデクスを特定します。
+
+     この関数は呼び出されるたびに一つの値の名前を取得します。
+     この関数は通常、これ以上値がないことを示す `EnvironmentError'
+     例外が送出されるまで繰り返し呼び 出されます。
+
+     結果は 3 要素のタプルになります:
+
+     Index                              Meaning
+     ------                             -----
+     0                                  値の名前を特定する文字列
+     1                                  値のデータを保持するためのオブジェクトで、その型は背後の
+                                        レジストリ型に依存します
+     2                                  値のデータ型を特定する整数です
+
+
+`FlushKey(key)'
+     キーのすべての属性をレジストリに書き込みます。
+
+     KEY はすでに開かれたキーか、既定の `HKEY_*' 定数
+     のうちの一つでなければなりません。
+
+     キーを変更するために RegFlushKey を呼ぶ必要はありません。
+     レジストリの変更は怠惰なフラッシュ機構 (lazy flusher) を使って
+     フラッシュされます。また、システムの遮断時にもディスクにフラッシュ
+     されます。`CloseKey()' と違って、`FlushKey()'
+     メソッドはレジストリに全てのデータを書き終えたときにのみ返ります。
+     アプリケーションは、レジストリへの変更を絶対に確実にディスク上に
+     反映させる必要がある場合にのみ、`FlushKey()' を呼ぶべきです。
+
+     _Note:_  `FlushKey()' を呼び出す必要があるかどうか分からない場合、
+     おそらくその必要はありません。
+
+
+`RegLoadKey(key, sub_key, file_name)'
+     指定されたキーの下にサブキーを生成し、サブキーに指定されたファイル
+     のレジストリ情報を記録します。
+
+     KEY はすでに開かれたキーか、既定の `HKEY_*' 定数 のうちの一つです。
+
+     SUB_KEY は記録先のサブキーを指定する文字列です。
+
+     FILE_NAME はレジストリデータを読み出すためのファイル名です。
+     このファイルは `SaveKey()' 関数で生成されたファイルでなくては
+     なりません。ファイル割り当てテーブル (FAT) ファイルシステム下では、
+     ファイル名は拡張子を持っていてはなりません。
+
+     この関数を呼び出しているプロセスが `SE_RESTORE_PRIVILEGE'
+     特権を持たない場合には LoadKey() は失敗します。
+     この特権はファイル許可とは違うので注意してください - 詳細は Win32
+     ドキュメンテーションを参照してください。
+
+     KEY が `ConnectRegistry()' によって返されたハンドル
+     の場合、FILENAME に指定されたパスは遠隔計算機に対する相対パス
+     名になります。
+
+     Win32 ドキュメンテーションでは、KEY は `HKEY_USER' または
+     `HKEY_LOCAL_MACHINE' ツリー内になければならない
+     とされています。これは正しいかもしれないし、そうでないかもしれません。
+
+`OpenKey(key, sub_key[, res` = 0'][, sam` = `KEY_READ''])'
+     指定されたキーを開き、"ハンドルオブジェクト" を返します。
+
+     KEY はすでに開かれたキーか、既定の `HKEY_*' 定数 のうちの一つです。
+
+     SUB_KEY は開きたいサブキーを特定する文字列です。
+
+     RES 予約されている整数値で、ゼロでなくてはなりません。
+     標準の値はゼロです。
+
+     SAM は必要なキーへのセキュリティアクセスを記述する、
+     アクセスマスクを指定する整数です。標準の値は `KEY_READ' です。
+
+     指定されたキーへの新しいハンドルが返されます。
+
+     この関数が失敗すると 、`EnvironmentError' が送出されます。
+
+`OpenKeyEx()'
+     `OpenKeyEx()' の機能は `OpenKey()'
+     を標準の引数で使うことで提供されています。
+
+`QueryInfoKey(key)'
+     キーに関数情報をタプルとして返します。
+
+     KEY はすでに開かれたキーか、既定の `HKEY_*' 定数 のうちの一つです。
+
+     結果は以下の 3 要素からなるタプルです:
+
+     インデクス                         意味
+     ------                             -----
+     0                                  このキーが持つサブキーの数を表す整数。
+     1                                  このキーが持つ値の数を表す整数。
+     2                                  最後のキーの変更が (あれば)
+                                        いつだったかを表す長整数で、 1600
+                                        年 1 月 1 日からの 100
+                                        ナノ秒単位で数えたもの。
+
+
+`QueryValue(key, sub_key)'
+     キーに対する、名前付けられていない値を文字列で取得します。
+
+     KEY はすでに開かれたキーか、既定の `HKEY_*' 定数 のうちの一つです。
+
+     SUB_KEY は値が関連付けられているサブキーの名前を保持する文字列
+     です。この引数が `None' または空文字列の場合、この関数は KEY
+     で特定されるキーに対して `SetValue()' メソッドで
+     設定された値を取得します。
+
+     レジストリ中の値は名前、型、およびデータから構成されています。
+     このメソッドはあるキーのデータ中で、名前 NULL
+     をもつ最初の値を取得します。 しかし背後の API
+     呼び出しは型情報を返しません。非常に、非常に、非常に
+     不完全な実装です。この関数を使うべきではありません！！！
+
+`QueryValueEx(key, value_name)'
+     開かれたレジストリキーに関連付けられている、指定した名前の値に対して、
+     型およびデータを取得します。
+
+     KEY はすでに開かれたキーか、既定の `HKEY_*' 定数 のうちの一つです。
+
+     VALUE_NAME は要求する値を指定する文字列です。
+
+     結果は 2 つの要素からなるタプルです:
+
+     インデクス                         意味
+     ------                             -----
+     0                                  レジストリ要素の名前。
+     1                                  この値のレジストリ型を表す整数。
+
+
+`SaveKey(key, file_name)'
+     指定されたキーと、そのサブキー全てを指定したファイルに保存します。
+
+     KEY はすでに開かれたキーか、既定の `HKEY_*' 定数 のうちの一つです。
+
+     FILE_NAME はレジストリデータを保存するファイルの名前です、
+     このファイルはすでに存在していてはいけません。このファイル名が
+     拡張子を含んでいる場合、`LoadKey()'、 `ReplaceKey()' または
+     `RestoreKey()' メソッドは、ファイル割り当てテーブル (FAT)
+     型ファイルシステムを使うことができません。
+
+     KEY が遠隔の計算機上にあるキーを表す場合、FILE_NAME
+     で記述されているパスは遠隔の計算機に対して相対的なパスになります。
+     このメソッドの呼び出し側は `SeBackupPrivilege'
+     セキュリティ特権を保有していなければなりません。この特権は
+     ファイルパーミッションとは異なります - 詳細は Win32
+     ドキュメンテーションを参照してください。
+
+     この関数は SECURITY_ATTRIBUTES を NULL にして API に渡します。
+
+`SetValue(key, sub_key, type, value)'
+     値を指定したキーに関連付けます。
+
+     KEY はすでに開かれたキーか、既定の `HKEY_*' 定数 のうちの一つです。
+
+     SUB_KEY は値が関連付けられているサブキーの名前を表す文字列です。
+
+     TYPE はデータの型を指定する整数です。現状では、この値は `REG_SZ'
+     でなければならず、これは文字列だけが
+     サポートされていることを示します。他のデータ型をサポートするには
+     `SetValueEx()' を使ってください。
+
+     VALUE は新たな値を指定する文字列です。
+
+     SUB_KEY 引数で指定されたキーが存在しなければ、 SetValue
+     関数で生成されます。
+
+     値の長さは利用可能なメモリによって制限されます。(2048 バイト以上の)
+     長い値はファイルに保存して、そのファイル名を設定レジストリに保存
+     するべきです。そうすればレジストリを効率的に動作させる役に立ちます。
+
+     KEY 引数に指定されたキーは `KEY_SET_VALUE'
+     アクセスで開かれていなければなりません。
+
+`SetValueEx(key, value_name, reserved, type, value)'
+     開かれたレジストリキーの値フィールドにデータを記録します。
+
+     KEY はすでに開かれたキーか、既定の `HKEY_*' 定数 のうちの一つです。
+
+     SUB_KEY は値が関連付けられているサブキーの名前を表す文字列です。
+
+     TYPE はデータの型を指定する整数です。
+     値はこのモジュールで定義されている以下の定数のうちの一つでなければ
+     なりません:
+
+     定数                               意味
+     ------                             -----
+     REG_BINARY                         何らかの形式のバイナリデータ。
+     REG_DWORD                          32 ビットの数。
+     REG_DWORD_LITTLE_ENDIAN            32
+                                        ビットのリトルエンディアン形式の数。
+     REG_DWORD_BIG_ENDIAN               32
+                                        ビットのビッグエンディアン形式の数。
+     REG_EXPAND_SZ                      環境変数を参照している、ヌル文字で終端された文字列。
+                                        (`%PATH%')。
+     REG_LINK                           Unicode のシンボリックリンク。
+     REG_MULTI_SZ                       ヌル文字で終端された文字列からなり、二つのヌル文字で終端されている配列
+                                        (Python
+                                        はこの終端の処理を自動的に行います)。
+     REG_NONE                           定義されていない値の形式。
+     REG_RESOURCE_LIST                  デバイスドライバリソースのリスト。
+     REG_SZ                             ヌルで終端された文字列。
+
+     RESERVED は何もしません - API には常にゼロが渡されます。
+
+     VALUE は新たな値を指定する文字列です。
+
+     このメソッドではまた、指定されたキーに対して、さらに別の値や型情報を
+     設定することができます。KEY 引数で指定されたキーは `KEY_SET_VALUE'
+     アクセスで開かれていなければなりません。
+
+     キーを開くには、 `CreateKeyEx()' または `OpenKey()'
+     メソッドを使ってください。
+
+     値の長さは利用可能なメモリによって制限されます。(2048 バイト以上の)
+     長い値はファイルに保存して、そのファイル名を設定レジストリに保存
+     するべきです。そうすればレジストリを効率的に動作させる役に立ちます。
+
+
+* Menu:
+
+* レジストリハンドルオブジェクト::
+
+
+File: python-lib-jp.info,  Node: レジストリハンドルオブジェクト,  Prev: _winreg - Windows レジストリへのアクセス,  Up: _winreg - Windows レジストリへのアクセス
+
+36.3.1 レジストリハンドルオブジェクト
+-------------------------------------
+
+このオブジェクトは Windows の HKEY オブジェクトをラップし、
+オブジェクトが破壊されたときに自動的にハンドルを閉じます。
+オブジェクトの `Close()' メソッドと `CloseKey()' 関数
+のどちらも、後始末がきちんと行われることを保証するために呼び出す
+ことができます。
+
+このモジュールのレジストリ関数は全て、これらのハンドル
+オブジェクトの一つを返します。
+
+このモジュールのレジストリ関数でハンドルオブジェクトを受理する
+ものは全て整数も受理しますが、ハンドルオブジェクトを利用する
+ことを推奨します。
+
+ハンドルオブジェクトは `__nonzero__()' の意味構成を持ちます - すなわち、
+         if handle:
+             print "Yes"
+
+は、ハンドルが現在有効な (閉じられたり切り離されたりしていない) 場合
+には `Yes' となります。
+
+ハンドルオブジェクトはまた、比較の意味構成もサポートしています。
+このため、背後の Windows
+ハンドル値が同じものを複数のハンドルオブジェクト
+が参照している場合、それらの比較は真になります。
+
+ハンドルオブジェクトは (例えば組み込みの `int()' 関数を 使って)
+整数に変換することができます。この場合、背後の Windows
+ハンドル値が返されます、また、 `Detach()' メソッド
+を使って整数のハンドル値を返させると同時に、ハンドルオブジェクト から
+Windows ハンドルを切り離すこともできます。
+
+`Close()'
+     背後の Windows ハンドルを閉じます。
+
+     ハンドルがすでに閉じられていてもエラーは送出されません。
+
+`Detach()'
+     ハンドルオブジェクトから Windows ハンドルを切り離します。
+
+     切り離される以前にそのハンドルを保持していた整数 (または 64 ビット
+     Windows の場合には長整数) オブジェクトが返されます。
+     ハンドルがすでに切り離されていたり閉じられていたりした場合、
+     ゼロが返されます。
+
+     この関数を呼び出した後、ハンドルは確実に無効化されますが、
+     閉じられるわけではありません。背後の Win32 ハンドルがハンドル
+     オブジェクトよりも長く維持される必要がある場合にはこの
+     関数を呼び出すとよいでしょう。
+
+
+File: python-lib-jp.info,  Node: winsound,  Prev: _winreg - Windows レジストリへのアクセス,  Up: MS Windows 特有のサービス
+
+36.4 Windows 用の音声再生インタフェース
+=======================================
+
+Windows の音声再生機構へのアクセス。
+
+_Added in Python version 1.5.2_
+
+`winsound' モジュールは Windows プラットフォーム上で提供されて
+いる基本的な音声再生機構へのアクセス手段を提供します。このモジュールでは
+いくつかの関数と定数が定義されています。
+
+`Beep(frequency, duration)'
+     PC のスピーカを鳴らします。 引数 FREQUENCY
+     は鳴らす音の周波数の指定で、単位は Hz です。 値は 37 から 32.767
+     でなくてはなりません。 引数 DURATION
+     は音を何ミリ秒鳴らすかの指定です。
+     システムがスピーカを鳴らすことができない場合、例外 `RuntimeError'
+     が送出されます。 _Note:_ Windows 95 および 98 では、Windows の関数
+     `Beep()' は存在しますが役に立ちません
+     (この関数は引数を無視します)。これらの ケースでは、Python
+     はポートを直接操作して `Beep()'  をシミュレートします (バージョン
+     2.1 で追加されました) 。この機能が
+     全てのシステムで動作するかどうかはわかりません。 _Added in Python
+     version 1.6_
+
+`PlaySound(sound, flags)'
+     プラットフォームの API から関数 `PlaySound()' を呼び出します。
+     引数 SOUND はファイル名、音声データの文字列、または `None'
+     をとり得ます。SOUND の解釈は FLAGS の値に依存します。この値は
+     以下に述べる定数をビット単位で OR して組み合わせたものになります。
+     システムのエラーが発生した場合、例外 `RuntimeError'
+     が送出されます。
+
+
+`MessageBeep([type=`MB_OK'])'
+     根底にある `MessageBeep()' 関数をプラットフォームの API から
+     呼び出します。この関数は音声をレジストリの指定に従って再生します。
+     TYPE 引数はどの音声を再生するかを指定します; とり得る値は `-1' 、
+     `MB_ICONASTERISK' 、 `MB_ICONEXCLAMATION' 、 `MB_ICONHAND' 、
+     `MB_ICONQUESTION' 、および `MB_OK' で、
+     全て以下に記述されています。 値 `-1' は "単純なビープ音"
+     を再生します; この値は他の場合で音声を再生することができなかった
+     際の最終的な代替音です。 _Added in Python version 2.3_
+
+`SND_FILENAME'
+     SOUND パラメタが WAV ファイル名であることを示します。 `SND_ALIAS'
+     と同時に使ってはいけません。
+
+`SND_ALIAS'
+     引数 SOUND はレジストリにある音声データに関連付けられた名前で
+     あることを示します。指定した名前がレジストリ上にない場合、定数
+     `SND_NODEFAULT' が同時に指定されていない限り、システム標準の
+     音声データが再生されます。標準の音声データが登録されていない場合、
+     例外 `RuntimeError' が送出されます。 `SND_FILENAME'
+     と同時に使ってはいけません。
+
+     全ての Win32 システムは少なくとも以下の名前をサポートします;
+     ほとんどの システムでは他に多数あります:
+
+     `PlaySound()' NAME                 対応するコントロールパネルでの音声名
+     ------                             -----
+     'SystemAsterisk'                   Asterisk
+     'SystemExclamation'                Exclamation
+     'SystemExit'                       Exit Windows
+     'SystemHand'                       Critical Stop
+     'SystemQuestion'                   Question
+
+     例えば以下のように使います:
+
+          import winsound
+          # Play Windows exit sound.
+          winsound.PlaySound("SystemExit", winsound.SND_ALIAS)
+
+          # Probably play Windows default sound, if any is registered (because
+          # "*" probably isn't the registered name of any sound).
+          winsound.PlaySound("*", winsound.SND_ALIAS)
+
+
+`SND_LOOP'
+     音声データを繰り返し再生します。システムがブロックしないようにするため、
+     `SND_ASYNC' フラグを同時に使わなくてはなりません。 `SND_MEMORY'
+     と同時に使うことはできません。
+
+`SND_MEMORY'
+     `PlaySound()' の引数 SOUND が文字列の形式をとった WAV
+     ファイルのメモリ上のイメージであることを示します。 _Note:_
+     このモジュールはメモリ上のイメージを非同期に再生する機能をサポート
+     していません。従って、このフラグと `SND_ASYNC' を組み合わせると
+     例外 `RuntimeError' が送出されます。
+
+`SND_PURGE'
+     指定した音声の全てのインスタンスについて再生処理を停止します。
+
+`SND_ASYNC'
+     音声を非同期に再生するようにして、関数呼び出しを即座に返します。
+
+`SND_NODEFAULT'
+     指定した音声が見つからなかった場合にシステム標準の音声を鳴らさないように
+     します。
+
+`SND_NOSTOP'
+     現在鳴っている音声を中断させないようにします。
+
+`SND_NOWAIT'
+     サウンドドライバがビジー状態にある場合、関数がすぐ返るようにします。
+
+`MB_ICONASTERISK'
+     音声 `SystemDefault' を再生します。
+
+`MB_ICONEXCLAMATION'
+     音声 `SystemExclamation' を再生します。
+
+`MB_ICONHAND'
+     音声 `SystemHand' を再生します。
+
+`MB_ICONQUESTION'
+     音声 `SystemQuestion' を再生します。
+
+`MB_OK'
+     音声 `SystemDefault' を再生します。
+
+
+File: python-lib-jp.info,  Node: ドキュメント化されていないモジュール,  Next: バグ報告,  Prev: MS Windows 特有のサービス,  Up: Top
+
+Appendix A ドキュメント化されていないモジュール
+***********************************************
+
+現在ドキュメント化されていないが、ドキュメント化すべきモジュールを
+以下にざっと列挙します。どうぞこれらのドキュメントを寄稿してください！
+(電子メールで <docs@python.org> に送ってください)。
+
+この章のアイデアと元の文章内容は Fredrik Lundh のポストによる ものです;
+この章の特定の内容は実際には改訂されてきています。
+
+* Menu:
+
+* フレームワーク::
+* 雑多な有用ユーティリティ::
+* プラットフォーム特有のモジュール::
+* マルチメディア関連::
+* 撤廃されたもの::
+* SGI 特有の拡張モジュール::
+
+
+File: python-lib-jp.info,  Node: フレームワーク,  Next: 雑多な有用ユーティリティ,  Prev: ドキュメント化されていないモジュール,  Up: ドキュメント化されていないモジュール
+
+A.1 フレームワーク
+==================
+
+フレームワークは記述するのが難しくなりがちですが、そうする価値は
+あります。
+
+`'
+     ドキュメント化されていないフレームワークはありません。
+
+
+File: python-lib-jp.info,  Node: 雑多な有用ユーティリティ,  Next: プラットフォーム特有のモジュール,  Prev: フレームワーク,  Up: ドキュメント化されていないモジュール
+
+A.2 雑多な有用ユーティリティ
+============================
+
+以下のいくつかは非常に古く、かつ／またはあまり頑健ではありません。
+"hmm." マーク付きです。
+
+``bdb''
+     -- 汎用の Python デバッガ基底クラスです (pdb で使われています)。
+
+``ihooks''
+     -- import フックのサポートです (`rexec' のためのものです;
+     撤廃されるかもしれません)。
+
+
+
+File: python-lib-jp.info,  Node: プラットフォーム特有のモジュール,  Next: マルチメディア関連,  Prev: 雑多な有用ユーティリティ,  Up: ドキュメント化されていないモジュール
+
+A.3 プラットフォーム特有のモジュール
+====================================
+
+これらのモジュールは `os.path' モジュールを実装するために
+用いられていますが、ここで触れる内容を超えてドキュメントされていません。
+これらはもう少しドキュメント化する必要があります。
+
+``ntpath''
+     -- Win32、 Win64、 WinCE、 および OS/2 プラットフォームにおける
+     `os.path' 実装です。
+
+``posixpath''
+     -- POSIXにおける `os.path' 実装です。
+
+``bsddb185''
+     -- まだBerkeleyDB
+     1.85を使用しているシステムで後方互換性を保つためのモ
+     ジュール。通常、特定のBSD
+     Unixベースのシステムでのみ利用可能。直接使用し ないで下さい。
+
+
+File: python-lib-jp.info,  Node: マルチメディア関連,  Next: 撤廃されたもの,  Prev: プラットフォーム特有のモジュール,  Up: ドキュメント化されていないモジュール
+
+A.4 マルチメディア関連
+======================
+
+``audiodev''
+     -- 音声データを再生するためのプラットフォーム非依存の API です。
+
+``linuxaudiodev''
+     -- Linux 音声デバイスで音声データを再生します。Python 2.3 では
+     `ossaudiodev' モジュールと置き換えられました。
+
+``sunaudio''
+     -- Sun 音声データヘッダを解釈します (撤廃されるか、ツール/デモに
+     なるかもしれません)。
+
+``toaiff''
+     -- "任意の" 音声ファイルを AIFF ファイルに変換します; おそらく
+     ツールかデモになるはずです。外部プログラム `sox' が必要です。
+
+``ossaudiodev''
+     -- Open Sound System API を介して音声データを再生します。
+     このモジュールは Linux、いくつかの BSD 系、およびいくつかの 商用
+     UNIX プラットフォームで利用できます。
+
+
+
+File: python-lib-jp.info,  Node: 撤廃されたもの,  Next: SGI 特有の拡張モジュール,  Prev: マルチメディア関連,  Up: ドキュメント化されていないモジュール
+
+A.5 撤廃されたもの
+==================
+
+これらのモジュールは通常 import して利用できません; 利用できるように
+するには作業を行わなければなりません。
+
+これらの拡張モジュールのうち C で書かれたものは、標準の設定では
+ビルドされません。UNIXでこれらのモジュールを有効にするには、
+ビルドツリー内の `Modules/Setup' の適切な行のコメントアウトを
+外して、モジュールを静的リンクするなら Python をビルドしなおし、
+動的にロードされる拡張を使うなら共有オブジェクトをビルドして
+インストールする必要があります。
+
+``timing''
+     -- 高い精度で経過時間を計測します (`time.clock()' を使って
+     ください)。 (拡張モジュールです。)
+
+
+File: python-lib-jp.info,  Node: SGI 特有の拡張モジュール,  Prev: 撤廃されたもの,  Up: ドキュメント化されていないモジュール
+
+A.6 SGI 特有の拡張モジュール
+============================
+
+以下は SGI 特有のモジュールで、現在のバージョンの SGI の実情が
+反映されていないかもしれません。
+
+``cl''
+     -- SGI 圧縮ライブラリへのインタフェースです。
+
+``sv''
+     -- SGI Indigo 上の "simple video" ボード(旧式のハードウェアです)
+     へのインタフェースです。
+
+
+File: python-lib-jp.info,  Node: バグ報告,  Next: 歴史とライセンス,  Prev: ドキュメント化されていないモジュール,  Up: Top
+
+Appendix B バグ報告
+*******************
+
+Python is a mature programming language which has established a
+reputation for stability.  In order to maintain this reputation, the
+developers would like to know of any deficiencies you find in Python or
+its documentation.
+
+Before submitting a report, you will be required to log into
+SourceForge; this will make it possible for the developers to contact
+you for additional information if needed.  It is not possible to submit
+a bug report anonymously.
+
+All bug reports should be submitted via the Python Bug Tracker on
+SourceForge (`http://sourceforge.net/bugs/?group_id=5470').  The bug
+tracker offers a Web form which allows pertinent information to be
+entered and submitted to the developers.
+
+The first step in filing a report is to determine whether the problem
+has already been reported.  The advantage in doing so, aside from
+saving the developers time, is that you learn what has been done to fix
+it; it may be that the problem has already been fixed for the next
+release, or additional information is needed (in which case you are
+welcome to provide it if you can!).  To do this, search the bug
+database using the search box on the left side of the page.
+
+If the problem you're reporting is not already in the bug tracker, go
+back to the Python Bug Tracker
+(`http://sourceforge.net/bugs/?group_id=5470').  Select the "Submit a
+Bug" link at the top of the page to open the bug reporting form.
+
+The submission form has a number of fields.  The only fields that are
+required are the "Summary" and "Details" fields.  For the summary,
+enter a _very_ short description of the problem; less than ten words is
+good.  In the Details field, describe the problem in detail, including
+what you expected to happen and what did happen.  Be sure to include
+the version of Python you used, whether any extension modules were
+involved, and what hardware and software platform you were using
+(including version information as appropriate).
+
+The only other field that you may want to set is the "Category" field,
+which allows you to place the bug report into a broad category (such as
+"Documentation" or "Library").
+
+Each bug report will be assigned to a developer who will determine what
+needs to be done to correct the problem.  You will receive an update
+each time action is taken on the bug.
+
+See also:
+     `How to Report Bugs Effectively'{Article which goes into some
+     detail about how to create a useful bug report.  This describes
+     what kind of information is useful and why it is useful.}
+
+     `Bug Writing Guidelines'{Information about writing a good bug
+     report.  Some of this is specific to the Mozilla project, but
+     describes general good practices.}
+
+
+File: python-lib-jp.info,  Node: 歴史とライセンス,  Next: 日本語訳について,  Prev: バグ報告,  Up: Top
+
+Appendix C 歴史とライセンス
+***************************
+
+* Menu:
+
+* Python の歴史::
+* Terms and conditions for accessing or otherwise using Python::
+* Licenses and Acknowledgements for Incorporated Software::
+
+
+File: python-lib-jp.info,  Node: Python の歴史,  Next: Terms and conditions for accessing or otherwise using Python,  Prev: 歴史とライセンス,  Up: 歴史とライセンス
+
+C.1 Python の歴史
+=================
+
+Python は 1990 年代の始め、オランダにある Stichting Mathematisch
+Centrum (CWI, `http://www.cwi.nl/' 参照) で Guido van Rossum によって
+ABC と呼ばれる言語の後継言語として生み 出されました。その後多くの人々が
+Python に貢献していますが、 Guido は今日でも Python
+製作者の先頭に立っています。
+
+1995 年、 Guido は米国ヴァージニア州レストンにある Corporation for
+National Reserch Initiatives (CNRI, `http://www.cnri.reston.va.us/'
+参照) で Python の開発に携わり、
+いくつかのバージョンをリリースしました。
+
+2000 年 3 月、 Guido と Python のコア開発チームは BeOpen.com に 移り、
+BeOpen PythonLabs チームを結成しました。同年 10 月、 PythonLabs
+チームは Digital Creations (現在の Zope Corporation,
+`http://www.zope.com/' 参照) に移りました。 そして 2001 年、 Python
+に関する知的財産を保有するための非営利組織 Python Software Foundation
+(PSF、 `http://www.python.org/psf/' 参照) を立ち上げました。このとき
+Zope Corporation は PSF の賛助会員に なりました。
+
+Python のリリースは全てオープンソース (オープンソースの定義は
+`http://www.opensource.org/' を参照してください) です。
+歴史的にみて、ごく一部を除くほとんどの Python リリースは GPL
+互換になっています; 各リリースについては下表にまとめてあります。
+
+リリース       ベース         年             権利           GPL 互換
+------         ------         ------         ------         ------
+0.9.0 thru     n/a            1991-1995      CWI            yes
+1.2                                                         
+1.3 thru       1.2            1995-1999      CNRI           yes
+1.5.2                                                       
+1.6            1.5.2          2000           CNRI           no
+2.0            1.6            2000           BeOpen.com     no
+1.6.1          1.6            2001           CNRI           no
+2.1            2.0+1.6.1      2001           PSF            no
+2.0.1          2.0+1.6.1      2001           PSF            yes
+2.1.1          2.1+2.0.1      2001           PSF            yes
+2.2            2.1.1          2001           PSF            yes
+2.1.2          2.1.1          2002           PSF            yes
+2.1.3          2.1.2          2002           PSF            yes
+2.2.1          2.2            2002           PSF            yes
+2.2.2          2.2.1          2002           PSF            yes
+2.2.3          2.2.2          2002-2003      PSF            yes
+2.3            2.2.2          2002-2003      PSF            yes
+2.3.1          2.3            2002-2003      PSF            yes
+2.3.2          2.3.1          2003           PSF            yes
+2.3.3          2.3.2          2003           PSF            yes
+2.3.4          2.3.3          2004           PSF            yes
+2.3.5          2.3.4          2005           PSF            yes
+2.4            2.3            2004           PSF            yes
+2.4.1          2.4            2005           PSF            yes
+2.4.2          2.4.1          2005           PSF            yes
+2.4.3          2.4.2          2006           PSF            yes
+2.5            2.4            2006           PSF            yes
+
+_Note:_ 「GPL 互換」という表現は、Python が GPL で配布されていると
+いう意味ではありません。Python のライセンスは全て、 GPL と違い、
+変更したバージョンを配布する際に変更をオープンソースにしなくても
+かまいません。 GPL 互換のライセンスの下では、GPL でリリースされて
+いる他のソフトウェアと Python を組み合わせられますが、それ以外の
+ライセンスではそうではありません。
+
+Guido の指示の下、これらのリリースを可能にしてくださった多くの
+ボランティアのみなさんに感謝します。
+
+
+File: python-lib-jp.info,  Node: Terms and conditions for accessing or otherwise using Python,  Next: Licenses and Acknowledgements for Incorporated Software,  Prev: Python の歴史,  Up: 歴史とライセンス
+
+C.2 Terms and conditions for accessing or otherwise using Python
+================================================================
+
+                *PSF LICENSE AGREEMENT FOR PYTHON 2.5*
+
+  1. This LICENSE AGREEMENT is between the Python Software Foundation
+     ("PSF"), and the Individual or Organization ("Licensee") accessing
+     and otherwise using Python 2.5 software in source or binary form
+     and its associated documentation.
+
+  2. Subject to the terms and conditions of this License Agreement, PSF
+     hereby grants Licensee a nonexclusive, royalty-free, world-wide
+     license to reproduce, analyze, test, perform and/or display
+     publicly, prepare derivative works, distribute, and otherwise use
+     Python 2.5 alone or in any derivative version, provided, however,
+     that PSF's License Agreement and PSF's notice of copyright, i.e.,
+     "Copyright (C) 2001-2006 Python Software Foundation; All Rights
+     Reserved" are retained in Python 2.5 alone or in any derivative
+     version prepared by Licensee.
+
+  3. In the event Licensee prepares a derivative work that is based on
+     or incorporates Python 2.5 or any part thereof, and wants to make
+     the derivative work available to others as provided herein, then
+     Licensee hereby agrees to include in any such work a brief summary
+     of the changes made to Python 2.5.
+
+  4. PSF is making Python 2.5 available to Licensee on an "AS IS"
+     basis.  PSF MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
+     IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, PSF MAKES NO AND
+     DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR
+     FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON 2.5
+     WILL NOT INFRINGE ANY THIRD PARTY RIGHTS.
+
+  5. PSF SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON
+     2.5 FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS
+     AS A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON
+     2.5, OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY
+     THEREOF.
+
+  6. This License Agreement will automatically terminate upon a material
+     breach of its terms and conditions.
+
+  7. Nothing in this License Agreement shall be deemed to create any
+     relationship of agency, partnership, or joint venture between PSF
+     and Licensee.  This License Agreement does not grant permission to
+     use PSF trademarks or trade name in a trademark sense to endorse
+     or promote products or services of Licensee, or any third party.
+
+  8. By copying, installing or otherwise using Python 2.5, Licensee
+     agrees to be bound by the terms and conditions of this License
+     Agreement.
+
+             *BEOPEN.COM LICENSE AGREEMENT FOR PYTHON 2.0*
+
+        *BEOPEN PYTHON OPEN SOURCE LICENSE AGREEMENT VERSION 1*
+
+  1. This LICENSE AGREEMENT is between BeOpen.com ("BeOpen"), having an
+     office at 160 Saratoga Avenue, Santa Clara, CA 95051, and the
+     Individual or Organization ("Licensee") accessing and otherwise
+     using this software in source or binary form and its associated
+     documentation ("the Software").
+
+  2. Subject to the terms and conditions of this BeOpen Python License
+     Agreement, BeOpen hereby grants Licensee a non-exclusive,
+     royalty-free, world-wide license to reproduce, analyze, test,
+     perform and/or display publicly, prepare derivative works,
+     distribute, and otherwise use the Software alone or in any
+     derivative version, provided, however, that the BeOpen Python
+     License is retained in the Software, alone or in any derivative
+     version prepared by Licensee.
+
+  3. BeOpen is making the Software available to Licensee on an "AS IS"
+     basis.  BEOPEN MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
+     IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, BEOPEN MAKES NO
+     AND DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR
+     FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF THE SOFTWARE
+     WILL NOT INFRINGE ANY THIRD PARTY RIGHTS.
+
+  4. BEOPEN SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF THE
+     SOFTWARE FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR
+     LOSS AS A RESULT OF USING, MODIFYING OR DISTRIBUTING THE SOFTWARE,
+     OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE POSSIBILITY
+     THEREOF.
+
+  5. This License Agreement will automatically terminate upon a material
+     breach of its terms and conditions.
+
+  6. This License Agreement shall be governed by and interpreted in all
+     respects by the law of the State of California, excluding conflict
+     of law provisions.  Nothing in this License Agreement shall be
+     deemed to create any relationship of agency, partnership, or joint
+     venture between BeOpen and Licensee.  This License Agreement does
+     not grant permission to use BeOpen trademarks or trade names in a
+     trademark sense to endorse or promote products or services of
+     Licensee, or any third party.  As an exception, the "BeOpen
+     Python" logos available at http://www.pythonlabs.com/logos.html
+     may be used according to the permissions granted on that web page.
+
+  7. By copying, installing or otherwise using the software, Licensee
+     agrees to be bound by the terms and conditions of this License
+     Agreement.
+
+               *CNRI LICENSE AGREEMENT FOR PYTHON 1.6.1*
+
+  1. This LICENSE AGREEMENT is between the Corporation for National
+     Research Initiatives, having an office at 1895 Preston White Drive,
+     Reston, VA 20191 ("CNRI"), and the Individual or Organization
+     ("Licensee") accessing and otherwise using Python 1.6.1 software in
+     source or binary form and its associated documentation.
+
+  2. Subject to the terms and conditions of this License Agreement, CNRI
+     hereby grants Licensee a nonexclusive, royalty-free, world-wide
+     license to reproduce, analyze, test, perform and/or display
+     publicly, prepare derivative works, distribute, and otherwise use
+     Python 1.6.1 alone or in any derivative version, provided,
+     however, that CNRI's License Agreement and CNRI's notice of
+     copyright, i.e., "Copyright (C) 1995-2001 Corporation for National
+     Research Initiatives; All Rights Reserved" are retained in Python
+     1.6.1 alone or in any derivative version prepared by Licensee.
+     Alternately, in lieu of CNRI's License Agreement, Licensee may
+     substitute the following text (omitting the quotes): "Python 1.6.1
+     is made available subject to the terms and conditions in CNRI's
+     License Agreement.  This Agreement together with Python 1.6.1 may
+     be located on the Internet using the following unique, persistent
+     identifier (known as a handle): 1895.22/1013.  This Agreement may
+     also be obtained from a proxy server on the Internet using the
+     following URL: `http://hdl.handle.net/1895.22/1013'."
+
+  3. In the event Licensee prepares a derivative work that is based on
+     or incorporates Python 1.6.1 or any part thereof, and wants to make
+     the derivative work available to others as provided herein, then
+     Licensee hereby agrees to include in any such work a brief summary
+     of the changes made to Python 1.6.1.
+
+  4. CNRI is making Python 1.6.1 available to Licensee on an "AS IS"
+     basis.  CNRI MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
+     IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, CNRI MAKES NO AND
+     DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR
+     FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF PYTHON 1.6.1
+     WILL NOT INFRINGE ANY THIRD PARTY RIGHTS.
+
+  5. CNRI SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON
+     1.6.1 FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR
+     LOSS AS A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING
+     PYTHON 1.6.1, OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF THE
+     POSSIBILITY THEREOF.
+
+  6. This License Agreement will automatically terminate upon a material
+     breach of its terms and conditions.
+
+  7. This License Agreement shall be governed by the federal
+     intellectual property law of the United States, including without
+     limitation the federal copyright law, and, to the extent such U.S.
+     federal law does not apply, by the law of the Commonwealth of
+     Virginia, excluding Virginia's conflict of law provisions.
+     Notwithstanding the foregoing, with regard to derivative works
+     based on Python 1.6.1 that incorporate non-separable material that
+     was previously distributed under the GNU General Public License
+     (GPL), the law of the Commonwealth of Virginia shall govern this
+     License Agreement only as to issues arising under or with respect
+     to Paragraphs 4, 5, and 7 of this License Agreement.  Nothing in
+     this License Agreement shall be deemed to create any relationship
+     of agency, partnership, or joint venture between CNRI and
+     Licensee.  This License Agreement does not grant permission to use
+     CNRI trademarks or trade name in a trademark sense to endorse or
+     promote products or services of Licensee, or any third party.
+
+  8. By clicking on the "ACCEPT" button where indicated, or by copying,
+     installing or otherwise using Python 1.6.1, Licensee agrees to be
+     bound by the terms and conditions of this License Agreement.
+
+                                ACCEPT
+
+         *CWI LICENSE AGREEMENT FOR PYTHON 0.9.0 THROUGH 1.2*
+
+Copyright (C) 1991 - 1995, Stichting Mathematisch Centrum Amsterdam,
+The Netherlands.  All rights reserved.
+
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
+provided that the above copyright notice appear in all copies and that
+both that copyright notice and this permission notice appear in
+supporting documentation, and that the name of Stichting Mathematisch
+Centrum or CWI not be used in advertising or publicity pertaining to
+distribution of the software without specific, written prior permission.
+
+STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO
+THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE FOR
+ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+
+File: python-lib-jp.info,  Node: Licenses and Acknowledgements for Incorporated Software,  Prev: Terms and conditions for accessing or otherwise using Python,  Up: 歴史とライセンス
+
+C.3 Licenses and Acknowledgements for Incorporated Software
+===========================================================
+
+This section is an incomplete, but growing list of licenses and
+acknowledgements for third-party software incorporated in the Python
+distribution.
+
+* Menu:
+
+* Mersenne Twister::
+* Sockets::
+* Floating point exception control::
+* MD5 message digest algorithm::
+* Asynchronous socket services::
+* Cookie management::
+* Profiling::
+* Execution tracing::
+* UUencode and UUdecode functions::
+* XML Remote Procedure Calls::
+
+
+File: python-lib-jp.info,  Node: Mersenne Twister,  Next: Sockets,  Prev: Licenses and Acknowledgements for Incorporated Software,  Up: Licenses and Acknowledgements for Incorporated Software
+
+C.3.1 Mersenne Twister
+----------------------
+
+The `_random' module includes code based on a download from
+`http://www.math.keio.ac.jp/~matumoto/MT2002/emt19937ar.html'.  The
+following are the verbatim comments from the original code:
+
+     A C-program for MT19937, with initialization improved 2002/1/26.
+     Coded by Takuji Nishimura and Makoto Matsumoto.
+
+     Before using, initialize the state by using init_genrand(seed)
+     or init_by_array(init_key, key_length).
+
+     Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura,
+     All rights reserved.
+
+     Redistribution and use in source and binary forms, with or without
+     modification, are permitted provided that the following conditions
+     are met:
+
+      1. Redistributions of source code must retain the above copyright
+         notice, this list of conditions and the following disclaimer.
+
+      2. Redistributions in binary form must reproduce the above copyright
+         notice, this list of conditions and the following disclaimer in the
+         documentation and/or other materials provided with the distribution.
+
+      3. The names of its contributors may not be used to endorse or promote
+         products derived from this software without specific prior written
+         permission.
+
+     THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+     "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+     LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+     A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+     CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+     EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+     PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+     PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+     LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+     NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+     Any feedback is very welcome.
+     http://www.math.keio.ac.jp/matumoto/emt.html
+     email: matumoto@math.keio.ac.jp
+
+
+File: python-lib-jp.info,  Node: Sockets,  Next: Floating point exception control,  Prev: Mersenne Twister,  Up: Licenses and Acknowledgements for Incorporated Software
+
+C.3.2 Sockets
+-------------
+
+The `socket' module uses the functions, `getaddrinfo', and
+`getnameinfo', which are coded in separate source files from the WIDE
+Project, `http://www.wide.ad.jp/about/index.html'.
+
+     Copyright (C) 1995, 1996, 1997, and 1998 WIDE Project.
+     All rights reserved.
+
+     Redistribution and use in source and binary forms, with or without
+     modification, are permitted provided that the following conditions
+     are met:
+     1. Redistributions of source code must retain the above copyright
+        notice, this list of conditions and the following disclaimer.
+     2. Redistributions in binary form must reproduce the above copyright
+        notice, this list of conditions and the following disclaimer in the
+        documentation and/or other materials provided with the distribution.
+     3. Neither the name of the project nor the names of its contributors
+        may be used to endorse or promote products derived from this software
+        without specific prior written permission.
+
+     THIS SOFTWARE IS PROVIDED BY THE PROJECT AND CONTRIBUTORS ``AS IS'' AND
+     GAI_ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+     IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+     ARE DISCLAIMED.  IN NO EVENT SHALL THE PROJECT OR CONTRIBUTORS BE LIABLE
+     FOR GAI_ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+     DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+     OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+     HOWEVER CAUSED AND ON GAI_ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+     LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN GAI_ANY WAY
+     OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+     SUCH DAMAGE.
+
+
+File: python-lib-jp.info,  Node: Floating point exception control,  Next: MD5 message digest algorithm,  Prev: Sockets,  Up: Licenses and Acknowledgements for Incorporated Software
+
+C.3.3 Floating point exception control
+--------------------------------------
+
+The source for the `fpectl' module includes the following notice:
+
+          ---------------------------------------------------------------------
+         /                       Copyright (c) 1996.                           \
+        |          The Regents of the University of California.                 |
+        |                        All rights reserved.                           |
+        |                                                                       |
+        |   Permission to use, copy, modify, and distribute this software for   |
+        |   any purpose without fee is hereby granted, provided that this en-   |
+        |   tire notice is included in all copies of any software which is or   |
+        |   includes  a  copy  or  modification  of  this software and in all   |
+        |   copies of the supporting documentation for such software.           |
+        |                                                                       |
+        |   This  work was produced at the University of California, Lawrence   |
+        |   Livermore National Laboratory under  contract  no.  W-7405-ENG-48   |
+        |   between  the  U.S.  Department  of  Energy and The Regents of the   |
+        |   University of California for the operation of UC LLNL.              |
+        |                                                                       |
+        |                              DISCLAIMER                               |
+        |                                                                       |
+        |   This  software was prepared as an account of work sponsored by an   |
+        |   agency of the United States Government. Neither the United States   |
+        |   Government  nor the University of California nor any of their em-   |
+        |   ployees, makes any warranty, express or implied, or  assumes  any   |
+        |   liability  or  responsibility  for the accuracy, completeness, or   |
+        |   usefulness of any information,  apparatus,  product,  or  process   |
+        |   disclosed,   or  represents  that  its  use  would  not  infringe   |
+        |   privately-owned rights. Reference herein to any specific  commer-   |
+        |   cial  products,  process,  or  service  by trade name, trademark,   |
+        |   manufacturer, or otherwise, does not  necessarily  constitute  or   |
+        |   imply  its endorsement, recommendation, or favoring by the United   |
+        |   States Government or the University of California. The views  and   |
+        |   opinions  of authors expressed herein do not necessarily state or   |
+        |   reflect those of the United States Government or  the  University   |
+        |   of  California,  and shall not be used for advertising or product   |
+         \  endorsement purposes.                                              /
+          ---------------------------------------------------------------------
+
+
+File: python-lib-jp.info,  Node: MD5 message digest algorithm,  Next: Asynchronous socket services,  Prev: Floating point exception control,  Up: Licenses and Acknowledgements for Incorporated Software
+
+C.3.4 MD5 message digest algorithm
+----------------------------------
+
+The source code for the `md5' module contains the following notice:
+
+       Copyright (C) 1999, 2002 Aladdin Enterprises.  All rights reserved.
+
+       This software is provided 'as-is', without any express or implied
+       warranty.  In no event will the authors be held liable for any damages
+       arising from the use of this software.
+
+       Permission is granted to anyone to use this software for any purpose,
+       including commercial applications, and to alter it and redistribute it
+       freely, subject to the following restrictions:
+
+       1. The origin of this software must not be misrepresented; you must not
+          claim that you wrote the original software. If you use this software
+          in a product, an acknowledgment in the product documentation would be
+          appreciated but is not required.
+       2. Altered source versions must be plainly marked as such, and must not be
+          misrepresented as being the original software.
+       3. This notice may not be removed or altered from any source distribution.
+
+       L. Peter Deutsch
+       ghost@aladdin.com
+
+       Independent implementation of MD5 (RFC 1321).
+
+       This code implements the MD5 Algorithm defined in RFC 1321, whose
+       text is available at
+     	http://www.ietf.org/rfc/rfc1321.txt
+       The code is derived from the text of the RFC, including the test suite
+       (section A.5) but excluding the rest of Appendix A.  It does not include
+       any code or documentation that is identified in the RFC as being
+       copyrighted.
+
+       The original and principal author of md5.h is L. Peter Deutsch
+       <ghost@aladdin.com>.  Other authors are noted in the change history
+       that follows (in reverse chronological order):
+
+       2002-04-13 lpd Removed support for non-ANSI compilers; removed
+     	references to Ghostscript; clarified derivation from RFC 1321;
+     	now handles byte order either statically or dynamically.
+       1999-11-04 lpd Edited comments slightly for automatic TOC extraction.
+       1999-10-18 lpd Fixed typo in header comment (ansi2knr rather than md5);
+     	added conditionalization for C++ compilation from Martin
+     	Purschke <purschke@bnl.gov>.
+       1999-05-03 lpd Original version.
+
+
+File: python-lib-jp.info,  Node: Asynchronous socket services,  Next: Cookie management,  Prev: MD5 message digest algorithm,  Up: Licenses and Acknowledgements for Incorporated Software
+
+C.3.5 Asynchronous socket services
+----------------------------------
+
+The `asynchat' and `asyncore' modules contain the following notice:
+
+      Copyright 1996 by Sam Rushing
+
+                              All Rights Reserved
+
+      Permission to use, copy, modify, and distribute this software and
+      its documentation for any purpose and without fee is hereby
+      granted, provided that the above copyright notice appear in all
+      copies and that both that copyright notice and this permission
+      notice appear in supporting documentation, and that the name of Sam
+      Rushing not be used in advertising or publicity pertaining to
+      distribution of the software without specific, written prior
+      permission.
+
+      SAM RUSHING DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
+      INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN
+      NO EVENT SHALL SAM RUSHING BE LIABLE FOR ANY SPECIAL, INDIRECT OR
+      CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
+      OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+      NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+      CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+
+File: python-lib-jp.info,  Node: Cookie management,  Next: Profiling,  Prev: Asynchronous socket services,  Up: Licenses and Acknowledgements for Incorporated Software
+
+C.3.6 Cookie management
+-----------------------
+
+The `Cookie' module contains the following notice:
+
+      Copyright 2000 by Timothy O'Malley <timo@alum.mit.edu>
+
+                     All Rights Reserved
+
+      Permission to use, copy, modify, and distribute this software
+      and its documentation for any purpose and without fee is hereby
+      granted, provided that the above copyright notice appear in all
+      copies and that both that copyright notice and this permission
+      notice appear in supporting documentation, and that the name of
+      Timothy O'Malley  not be used in advertising or publicity
+      pertaining to distribution of the software without specific, written
+      prior permission.
+
+      Timothy O'Malley DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS
+      SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+      AND FITNESS, IN NO EVENT SHALL Timothy O'Malley BE LIABLE FOR
+      ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+      WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+      WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
+      ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+      PERFORMANCE OF THIS SOFTWARE.
+
+
+File: python-lib-jp.info,  Node: Profiling,  Next: Execution tracing,  Prev: Cookie management,  Up: Licenses and Acknowledgements for Incorporated Software
+
+C.3.7 Profiling
+---------------
+
+The `profile' and `pstats' modules contain the following notice:
+
+      Copyright 1994, by InfoSeek Corporation, all rights reserved.
+      Written by James Roskind
+
+      Permission to use, copy, modify, and distribute this Python software
+      and its associated documentation for any purpose (subject to the
+      restriction in the following sentence) without fee is hereby granted,
+      provided that the above copyright notice appears in all copies, and
+      that both that copyright notice and this permission notice appear in
+      supporting documentation, and that the name of InfoSeek not be used in
+      advertising or publicity pertaining to distribution of the software
+      without specific, written prior permission.  This permission is
+      explicitly restricted to the copying and modification of the software
+      to remain in Python, compiled Python, or other languages (such as C)
+      wherein the modified or derived code is exclusively imported into a
+      Python module.
+
+      INFOSEEK CORPORATION DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS
+      SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+      FITNESS. IN NO EVENT SHALL INFOSEEK CORPORATION BE LIABLE FOR ANY
+      SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
+      RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
+      CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+      CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+
+File: python-lib-jp.info,  Node: Execution tracing,  Next: UUencode and UUdecode functions,  Prev: Profiling,  Up: Licenses and Acknowledgements for Incorporated Software
+
+C.3.8 Execution tracing
+-----------------------
+
+The `trace' module contains the following notice:
+
+      portions copyright 2001, Autonomous Zones Industries, Inc., all rights...
+      err...  reserved and offered to the public under the terms of the
+      Python 2.2 license.
+      Author: Zooko O'Whielacronx
+      http://zooko.com/
+      mailto:zooko@zooko.com
+
+      Copyright 2000, Mojam Media, Inc., all rights reserved.
+      Author: Skip Montanaro
+
+      Copyright 1999, Bioreason, Inc., all rights reserved.
+      Author: Andrew Dalke
+
+      Copyright 1995-1997, Automatrix, Inc., all rights reserved.
+      Author: Skip Montanaro
+
+      Copyright 1991-1995, Stichting Mathematisch Centrum, all rights reserved.
+
+      Permission to use, copy, modify, and distribute this Python software and
+      its associated documentation for any purpose without fee is hereby
+      granted, provided that the above copyright notice appears in all copies,
+      and that both that copyright notice and this permission notice appear in
+      supporting documentation, and that the name of neither Automatrix,
+      Bioreason or Mojam Media be used in advertising or publicity pertaining to
+      distribution of the software without specific, written prior permission.
+
+
+File: python-lib-jp.info,  Node: UUencode and UUdecode functions,  Next: XML Remote Procedure Calls,  Prev: Execution tracing,  Up: Licenses and Acknowledgements for Incorporated Software
+
+C.3.9 UUencode and UUdecode functions
+-------------------------------------
+
+The `uu' module contains the following notice:
+
+      Copyright 1994 by Lance Ellinghouse
+      Cathedral City, California Republic, United States of America.
+                             All Rights Reserved
+      Permission to use, copy, modify, and distribute this software and its
+      documentation for any purpose and without fee is hereby granted,
+      provided that the above copyright notice appear in all copies and that
+      both that copyright notice and this permission notice appear in
+      supporting documentation, and that the name of Lance Ellinghouse
+      not be used in advertising or publicity pertaining to distribution
+      of the software without specific, written prior permission.
+      LANCE ELLINGHOUSE DISCLAIMS ALL WARRANTIES WITH REGARD TO
+      THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+      FITNESS, IN NO EVENT SHALL LANCE ELLINGHOUSE CENTRUM BE LIABLE
+      FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+      WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+      ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+      OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+      Modified by Jack Jansen, CWI, July 1995:
+      - Use binascii module to do the actual line-by-line conversion
+        between ascii and binary. This results in a 1000-fold speedup. The C
+        version is still 5 times faster, though.
+      - Arguments more compliant with python standard
+
+
+File: python-lib-jp.info,  Node: XML Remote Procedure Calls,  Prev: UUencode and UUdecode functions,  Up: Licenses and Acknowledgements for Incorporated Software
+
+C.3.10 XML Remote Procedure Calls
+---------------------------------
+
+The `xmlrpclib' module contains the following notice:
+
+          The XML-RPC client interface is
+
+      Copyright (c) 1999-2002 by Secret Labs AB
+      Copyright (c) 1999-2002 by Fredrik Lundh
+
+      By obtaining, using, and/or copying this software and/or its
+      associated documentation, you agree that you have read, understood,
+      and will comply with the following terms and conditions:
+
+      Permission to use, copy, modify, and distribute this software and
+      its associated documentation for any purpose and without fee is
+      hereby granted, provided that the above copyright notice appears in
+      all copies, and that both that copyright notice and this permission
+      notice appear in supporting documentation, and that the name of
+      Secret Labs AB or the author not be used in advertising or publicity
+      pertaining to distribution of the software without specific, written
+      prior permission.
+
+      SECRET LABS AB AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD
+      TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANT-
+      ABILITY AND FITNESS.  IN NO EVENT SHALL SECRET LABS AB OR THE AUTHOR
+      BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY
+      DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+      WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
+      ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
+      OF THIS SOFTWARE.
+
+
+File: python-lib-jp.info,  Node: 日本語訳について,  Next: Module Index,  Prev: 歴史とライセンス,  Up: Top
+
+Appendix D 日本語訳について
+***************************
+
+* Menu:
+
+* このドキュメントについて::
+* 翻訳者一覧 敬称略::
+* 24 差分翻訳者一覧 敬称略::
+* 25 差分翻訳者一覧 敬称略::
+
+
+File: python-lib-jp.info,  Node: このドキュメントについて,  Next: 翻訳者一覧 敬称略,  Prev: 日本語訳について,  Up: 日本語訳について
+
+D.1 このドキュメントについて
+============================
+
+この文書は、Pythonドキュメント翻訳プロジェクトによる Python Library
+Reference Release 2.3.3
+の日本語訳版です。日本語訳に対する質問や提案などが
+ありましたら、Pythonドキュメント翻訳プロジェクトのメーリングリスト
+
+`http://www.python.jp/mailman/listinfo/python-doc-jp'
+
+または、プロジェクトのバグ管理ページ
+
+`http://sourceforge.jp/tracker/?atid=116&group_id=11&func=browse'
+
+までご報告ください。
+
+
+File: python-lib-jp.info,  Node: 翻訳者一覧 敬称略,  Next: 24 差分翻訳者一覧 敬称略,  Prev: このドキュメントについて,  Up: 日本語訳について
+
+D.2 翻訳者一覧 (敬称略)
+=======================
+
+Akihiro Takizawa, Aoki Nobuaki, Atsuo Ishimoto, G.Yoshida,
+Hiroyuki Yoshimura, Minami Masanori, Shinsei Nakano, Sumiya Sakoda,
+YASOZUMI Daisuke, Yasushi Iwata, Yasushi MASUDA, Hiroshi Ayukawa,
+ippei-at-mbd.nifty.com, sakito, umi-at-venus.dti.ne.jp, ふるかわとおる,
+浦郷圭介, 梶山大輔, 根岸史郎, 山中裕史, 山本昇, 新山祐介, 森若和雄
+
+
+File: python-lib-jp.info,  Node: 24 差分翻訳者一覧 敬称略,  Next: 25 差分翻訳者一覧 敬称略,  Prev: 翻訳者一覧 敬称略,  Up: 日本語訳について
+
+D.3 2.4 差分翻訳者一覧 (敬称略)
+===============================
+
+Akihiro Takizawa, G.Yoshida, Yasushi MASUDA, 新山祐介, 森若和雄
+
+
+File: python-lib-jp.info,  Node: 25 差分翻訳者一覧 敬称略,  Prev: 24 差分翻訳者一覧 敬称略,  Up: 日本語訳について
+
+D.4 2.5 差分翻訳者一覧 (敬称略)
+===============================
+
+Kazuo Moriwaka, TAKAGI Masahiro, MATSUI Tetsushi, Minami Masanori,
+Hiroshi Okagawa, hkurosawa, Naoki INADA, Keisuke Urago, Shinya Okano,
+Toshiyuki Kawanishi
+
+
+File: python-lib-jp.info,  Node: Module Index,  Next: Class-Exception-Object Index,  Prev: 日本語訳について,  Up: Top
+
+Module Index
+************
+
+ [index ]
+* Menu:
+
+* __contains__:                          Mailbox オブジェクト.
+                                                              (line 152)
+* __delitem__ <1>:                       MH.                  (line  71)
+* __delitem__:                           Mailbox オブジェクト.
+                                                              (line  56)
+* __getitem__:                           Mailbox オブジェクト.
+                                                              (line 118)
+* __iter__:                              Mailbox オブジェクト.
+                                                              (line  92)
+* __setitem__:                           Maildir.             (line  90)
+* _locale:                               locale.              (line  14)
+* AL:                                    al.                  (line  19)
+* base64:                                binascii.            (line  10)
+* bdb:                                   Pythonデバッガ.      (line  10)
+* binhex:                                binascii.            (line  10)
+* bsddb <1>:                             dbhash.              (line  11)
+* bsddb <2>:                             anydbm.              (line   8)
+* bsddb:                                 制限事項.            (line  14)
+* CGIHTTPServer:                         BaseHTTPServer.      (line  12)
+* cmd:                                   Pythonデバッガ.      (line  10)
+* copy:                                  copy_reg.            (line   8)
+* cPickle:                               copy_reg.            (line   8)
+* crypt:                                 pwd.                 (line  29)
+* dbhash:                                anydbm.              (line   8)
+* dbm <1>:                               gdbm.                (line   8)
+* dbm <2>:                               anydbm.              (line   9)
+* dbm:                                   制限事項.            (line  14)
+* discard <1>:                           MH.                  (line  73)
+* discard:                               Mailbox オブジェクト.
+                                                              (line  58)
+* dumbdbm:                               anydbm.              (line  10)
+* end:                                   MatchObject オブジェクト.
+                                                              (line  61)
+* errno <1>:                             socket.              (line  78)
+* errno:                                 os.                  (line  40)
+* failIfAlmostEqual:                     TestCase オブジェクト.
+                                                              (line  82)
+* failIfEqual:                           TestCase オブジェクト.
+                                                              (line  64)
+* failUnless:                            TestCase オブジェクト.
+                                                              (line  49)
+* failUnlessAlmostEqual:                 TestCase オブジェクト.
+                                                              (line  73)
+* failUnlessEqual:                       TestCase オブジェクト.
+                                                              (line  55)
+* failUnlessRaises:                      TestCase オブジェクト.
+                                                              (line  91)
+* fcntl:                                 ファイルオブジェクト.
+                                                              (line  63)
+* formatter:                             htmllib.             (line  21)
+* gdbm <1>:                              anydbm.              (line   9)
+* gdbm:                                  制限事項.            (line  14)
+* glob:                                  fnmatch.             (line  21)
+* htmllib:                               urllib.              (line 325)
+* ihooks:                                組み込み関数.        (line  14)
+* imp:                                   組み込み関数.        (line  15)
+* items:                                 Mailbox オブジェクト.
+                                                              (line 106)
+* keys:                                  Mailbox オブジェクト.
+                                                              (line  85)
+* knee:                                  例 16.               (line  31)
+* mailbox:                               rfc822.              (line  21)
+* math <1>:                              cmath.               (line  92)
+* math:                                  数値型 int.          (line  83)
+* mimetools:                             urllib.              (line  53)
+* os <1>:                                posix.               (line  22)
+* os:                                    ファイルオブジェクト.
+                                                              (line  11)
+* pickle <1>:                            marshal.             (line  27)
+* pickle <2>:                            shelve.              (line  13)
+* pickle <3>:                            copy_reg.            (line   8)
+* pickle <4>:                            cPickle.             (line   9)
+* pickle:                                copy.                (line  64)
+* pstats:                                リファレンス・マニュアル - profile と cProfile.
+                                                              (line  73)
+* pty:                                   ファイル記述子の操作.
+                                                              (line 115)
+* pwd:                                   ospath.              (line  56)
+* pyexpat:                               xmlparsersexpat.     (line  18)
+* re <1>:                                fnmatch.             (line   9)
+* re <2>:                                string.              (line  10)
+* re:                                    文字列フォーマット操作.
+                                                              (line 155)
+* rexec:                                 組み込み関数.        (line  14)
+* rfc822:                                mimetools.           (line  11)
+* sgmllib:                               htmllib.             (line  17)
+* shelve:                                marshal.             (line  27)
+* signal:                                thread.              (line 121)
+* SimpleHTTPServer:                      BaseHTTPServer.      (line  12)
+* sitecustomize:                         site.                (line  45)
+* socket <1>:                            インターネットプロトコルとその支援.
+                                                              (line   8)
+* socket:                                ファイルオブジェクト.
+                                                              (line  11)
+* stat:                                  ファイルとディレクトリ.
+                                                              (line 337)
+* statvfs:                               ファイルとディレクトリ.
+                                                              (line 385)
+* string <1>:                            ロケールの背景、詳細、ヒント、助言および補足説明.
+                                                              (line  31)
+* string <2>:                            locale.              (line 230)
+* string:                                文字列フォーマット操作.
+                                                              (line 155)
+* struct:                                socket オブジェクト. (line  76)
+* sunaudiodev:                           SUNAUDIODEV.         (line   8)
+* SUNAUDIODEV:                           sunaudiodev.         (line  13)
+* types:                                 型オブジェクト.      (line   9)
+* unlock <1>:                            MMDF.                (line  36)
+* unlock <2>:                            Babyl.               (line  55)
+* unlock <3>:                            MH.                  (line  79)
+* unlock <4>:                            mbox.                (line  38)
+* unlock:                                Maildir.             (line 103)
+* update:                                Maildir.             (line  92)
+* urllib:                                httplib.             (line  10)
+* urlparse:                              urllib.              (line 350)
+* uu:                                    binascii.            (line  10)
+* values:                                Mailbox オブジェクト.
+                                                              (line  94)
+
+
+File: python-lib-jp.info,  Node: Class-Exception-Object Index,  Next: Function-Method-Variable Index,  Prev: Module Index,  Up: Top
+
+Class, Exception, and Object Index
+**********************************
+
+ [index ]
+* Menu:
+
+* _CData:                                データ型 2.          (line   7)
+* _FuncPtr:                              外部関数.            (line  14)
+* _SimpleCData:                          基本データ型.        (line   7)
+* AbstractBasicAuthHandler:              urllib2.             (line 166)
+* AbstractDigestAuthHandler:             urllib2.             (line 188)
+* AbstractFormatter:                     formatter 実装.      (line  19)
+* AbstractWriter:                        writer 実装.         (line  16)
+* AddressList:                           rfc822.              (line  64)
+* ArgumentError():                       外部関数.            (line  73)
+* ArithmeticError:                       組み込み例外.        (line  87)
+* AssertionError:                        組み込み例外.        (line 122)
+* ASTVisitor:                            Visitor を使って AST をわたり歩く.
+                                                              (line  22)
+* async_chat:                            asynchat.            (line  22)
+* AttributeError:                        組み込み例外.        (line 125)
+* AttributesImpl:                        xmlsaxxmlreader.     (line  69)
+* AttributesNSImpl:                      xmlsaxxmlreader.     (line  78)
+* Babyl:                                 Babyl.               (line   7)
+* BabylMailbox:                          撤廃されたクラスとメソッド.
+                                                              (line  91)
+* BabylMessage:                          BabylMessage.        (line   7)
+* BadStatusLine:                         httplib.             (line  80)
+* Balloon:                               基本ウィジェット.    (line   7)
+* BaseCGIHandler:                        wsgirefhandlers - サーバ／ゲートウェイのベースクラス.
+                                                              (line  25)
+* BaseCookie:                            Cookie.              (line  23)
+* BaseException:                         組み込み例外.        (line  62)
+* BaseHandler <1>:                       urllib2.             (line 134)
+* BaseHandler:                           wsgirefhandlers - サーバ／ゲートウェイのベースクラス.
+                                                              (line  54)
+* BaseHTTPRequestHandler:                BaseHTTPServer.      (line  33)
+* BaseResult:                            urlparse および urlsplit の結果.
+                                                              (line  35)
+* BasicContext:                          Context オブジェクト.
+                                                              (line  46)
+* BastionClass:                          Bastion.             (line  43)
+* BigEndianStructure:                    標準データ型.        (line  10)
+* Binary:                                msilib.              (line  80)
+* Boolean:                               数値型 int.          (line  16)
+* BoundaryError:                         例外および障害クラス.
+                                                              (line  32)
+* BsdDbShelf:                            制限事項.            (line  49)
+* buffer:                                シーケンス型 str.    (line  27)
+* BufferingHandler:                      MemoryHandler.       (line  21)
+* ButtonBox:                             基本ウィジェット.    (line  10)
+* BZ2Compressor:                         逐次的な圧縮（解凍）.
+                                                              (line  10)
+* BZ2Decompressor:                       逐次的な圧縮（解凍）.
+                                                              (line  27)
+* BZ2File:                               ファイルの圧縮（解凍）.
+                                                              (line   9)
+* c_bool:                                基本データ型.        (line 158)
+* c_byte:                                基本データ型.        (line  42)
+* c_char:                                基本データ型.        (line  47)
+* c_char_p:                              基本データ型.        (line  52)
+* c_double:                              基本データ型.        (line  57)
+* c_float:                               基本データ型.        (line  61)
+* c_int:                                 基本データ型.        (line  65)
+* c_int16:                               基本データ型.        (line  75)
+* c_int32:                               基本データ型.        (line  79)
+* c_int64:                               基本データ型.        (line  83)
+* c_int8:                                基本データ型.        (line  71)
+* c_long:                                基本データ型.        (line  87)
+* c_longlong:                            基本データ型.        (line  91)
+* c_short:                               基本データ型.        (line  96)
+* c_size_t:                              基本データ型.        (line 100)
+* c_ubyte:                               基本データ型.        (line 103)
+* c_uint:                                基本データ型.        (line 108)
+* c_uint16:                              基本データ型.        (line 118)
+* c_uint32:                              基本データ型.        (line 122)
+* c_uint64:                              基本データ型.        (line 126)
+* c_uint8:                               基本データ型.        (line 114)
+* c_ulong:                               基本データ型.        (line 130)
+* c_ulonglong:                           基本データ型.        (line 134)
+* c_ushort:                              基本データ型.        (line 139)
+* c_void_p:                              基本データ型.        (line 143)
+* c_wchar:                               基本データ型.        (line 147)
+* c_wchar_p:                             基本データ型.        (line 153)
+* CAB:                                   CAB オブジェクト.    (line   7)
+* CacheFTPHandler:                       urllib2.             (line 222)
+* Calendar:                              calendar.            (line  25)
+* CannotSendHeader:                      httplib.             (line  74)
+* CannotSendRequest:                     httplib.             (line  71)
+* CDLL:                                  共有ライブラリをロードする.
+                                                              (line  10)
+* CGIHandler:                            wsgirefhandlers - サーバ／ゲートウェイのベースクラス.
+                                                              (line  12)
+* CGIHTTPRequestHandler:                 CGIHTTPServer.       (line  27)
+* CGIXMLRPCRequestHandler:               SimpleXMLRPCServer.  (line  24)
+* Charset:                               文字セットの表現.    (line  19)
+* CheckList:                             ハイアラキカルリストボックス.
+                                                              (line  10)
+* Chunk:                                 chunk.               (line  35)
+* Clamped:                               シグナル.            (line  22)
+* Cmd:                                   cmd.                 (line  11)
+* code <1>:                              marshal.             (line  27)
+* code:                                  コードオブジェクト.  (line   6)
+* ComboBox:                              基本ウィジェット.    (line  14)
+* CommandCompiler:                       codeop.              (line  36)
+* Compile:                               codeop.              (line  33)
+* complex number:                        数値型 int.          (line  16)
+* CompressionError:                      tarfile.             (line 128)
+* Condition:                             Condition オブジェクト.
+                                                              (line  62)
+* ConfigParser:                          ConfigParser.        (line  49)
+* ContentHandler:                        xmlsaxhandler.       (line  19)
+* ContentTooShortError:                  urllib.              (line 287)
+* Context:                               Context オブジェクト.
+                                                              (line  90)
+* Control <1>:                           GUI クラス.          (line  13)
+* Control:                               基本ウィジェット.    (line  18)
+* ConversionError:                       例外 3.              (line  13)
+* Cookie:                                cookielib.           (line  86)
+* CookieError:                           Cookie.              (line  19)
+* CookieJar:                             cookielib.           (line  39)
+* CookiePolicy:                          cookielib.           (line  62)
+* DatagramHandler:                       DatagramHandler.     (line  12)
+* date <1>:                              date オブジェクト.   (line  14)
+* date:                                  利用可能なデータ型.  (line   7)
+* datetime <1>:                          datetime オブジェクト.
+                                                              (line  16)
+* datetime:                              利用可能なデータ型.  (line  18)
+* DbfilenameShelf:                       制限事項.            (line  62)
+* DebuggingServer:                       DebuggingServer オブジェクト.
+                                                              (line   7)
+* DebugRunner:                           デバッグ.            (line 179)
+* Decimal:                               Decimal オブジェクト.
+                                                              (line   7)
+* DecimalException:                      シグナル.            (line  30)
+* DecodedGenerator:                      MIME 文書を生成する. (line  99)
+* DefaultContext:                        Context オブジェクト.
+                                                              (line  69)
+* DefaultCookiePolicy:                   cookielib.           (line  66)
+* DeprecationWarning:                    組み込み例外.        (line 355)
+* Dialect:                               モジュールの内容 2.  (line 121)
+* Dialog:                                GUI クラス.          (line  37)
+* dictionary:                            マップ型.            (line   6)
+* DictMixin:                             UserDict.            (line  36)
+* DictReader:                            モジュールの内容 2.  (line  86)
+* DictWriter:                            モジュールの内容 2.  (line 101)
+* Differ <1>:                            Differ オブジェクト. (line  16)
+* Differ:                                difflib.             (line  30)
+* dircmp:                                dircmp クラス.       (line   9)
+* Directory:                             ディレクトリオブジェクト.
+                                                              (line   7)
+* DirList:                               ファイルセレクタ.    (line   7)
+* DirSelectBox:                          ファイルセレクタ.    (line  16)
+* DirSelectDialog:                       ファイルセレクタ.    (line  13)
+* DirTree:                               ファイルセレクタ.    (line  10)
+* dispatcher:                            asyncore.            (line  56)
+* DivisionByZero:                        シグナル.            (line  33)
+* DocCGIXMLRPCRequestHandler:            DocXMLRPCServer.     (line  23)
+* DocTest:                               DocTest オブジェクト.
+                                                              (line   7)
+* DocTestFailure:                        デバッグ.            (line 193)
+* DocTestFinder:                         DocTestFinder オブジェクト.
+                                                              (line   7)
+* DocTestParser:                         DocTestParser オブジェクト.
+                                                              (line   7)
+* DocTestRunner:                         DocTestRunner オブジェクト.
+                                                              (line   7)
+* DocXMLRPCRequestHandler:               DocXMLRPCServer.     (line  28)
+* DocXMLRPCServer:                       DocXMLRPCServer.     (line  16)
+* DOMEventStream:                        xmldompulldom.       (line  17)
+* DOMException:                          例外 2.              (line  21)
+* DomstringSizeErr:                      例外 2.              (line  25)
+* DTDHandler:                            xmlsaxhandler.       (line  25)
+* DumbWriter:                            writer 実装.         (line  21)
+* DuplicateSectionError:                 ConfigParser.        (line  73)
+* ElementTree:                           ElementTree オブジェクト.
+                                                              (line   7)
+* Empty:                                 Queue.               (line  24)
+* EntityResolver:                        xmlsaxhandler.       (line  31)
+* EnvironmentError:                      組み込み例外.        (line  98)
+* EOFError:                              組み込み例外.        (line 130)
+* error <1>:                             sunaudiodev.         (line  18)
+* error <2>:                             jpeg.                (line  22)
+* error <3>:                             imgfile.             (line  17)
+* error:                                 cd.                  (line  58)
+* Error <1>:                             locale.              (line  21)
+* Error:                                 turtle.              (line 168)
+* error <1>:                             ossaudiodev.         (line  25)
+* error:                                 rgbimg.              (line  24)
+* Error <1>:                             wave.                (line  39)
+* Error:                                 sunau.               (line  55)
+* error <1>:                             imageop.             (line  13)
+* error:                                 audioop.             (line  25)
+* Error:                                 webbrowser.          (line  42)
+* error <1>:                             socket.              (line  75)
+* error <2>:                             nis.                 (line  46)
+* error <3>:                             resource.            (line  17)
+* error <4>:                             dl.                  (line  47)
+* error <5>:                             thread.              (line  26)
+* error <6>:                             select.              (line  19)
+* error <7>:                             関数 3.              (line   9)
+* error <8>:                             getopt.              (line  72)
+* error <9>:                             os.                  (line  34)
+* error <10>:                            dumbdbm.             (line  22)
+* error <11>:                            dbhash.              (line  16)
+* error <12>:                            gdbm.                (line  22)
+* error <13>:                            dbm.                 (line  22)
+* error <14>:                            anydbm.              (line  34)
+* error <15>:                            zipfile.             (line  25)
+* error:                                 zlib.                (line  24)
+* Error <1>:                             shutil.              (line  98)
+* Error <2>:                             例外 3.              (line   9)
+* Error:                                 モジュールの内容 2.  (line 181)
+* error:                                 xmlparsersexpat.     (line  29)
+* Error <1>:                             uu.                  (line  41)
+* Error <2>:                             binascii.            (line 115)
+* Error <3>:                             binhex.              (line  32)
+* Error:                                 例外.                (line   9)
+* error <1>:                             struct.              (line  18)
+* error:                                 Contents of Module re.
+                                                              (line 189)
+* error_perm:                            ftplib.              (line  57)
+* error_proto <1>:                       poplib.              (line  40)
+* error_proto:                           ftplib.              (line  60)
+* error_reply:                           ftplib.              (line  51)
+* error_temp:                            ftplib.              (line  54)
+* ErrorHandler:                          xmlsaxhandler.       (line  36)
+* Event:                                 Event オブジェクト.  (line  14)
+* Example:                               Example オブジェクト.
+                                                              (line   7)
+* excel:                                 モジュールの内容 2.  (line 126)
+* excel_tab:                             モジュールの内容 2.  (line 130)
+* Exception:                             組み込み例外.        (line  77)
+* ExFileSelectBox:                       ファイルセレクタ.    (line  19)
+* ExpatError:                            xmlparsersexpat.     (line  24)
+* ExtendedContext:                       Context オブジェクト.
+                                                              (line  57)
+* ExternalClashError:                    例外.                (line  23)
+* ExtractError:                          tarfile.             (line 136)
+* FancyURLopener:                        urllib.              (line 257)
+* Feature:                               フィーチャー.        (line   7)
+* FeedParser:                            FeedParser API.      (line  34)
+* fifo:                                  asynchat - 補助クラスと関数.
+                                                              (line  15)
+* file:                                  ファイルオブジェクト.
+                                                              (line   6)
+* FileCookieJar:                         cookielib.           (line  50)
+* FileEntry:                             ファイルセレクタ.    (line  26)
+* FileHandler <1>:                       urllib2.             (line 216)
+* FileHandler:                           FileHandler.         (line  11)
+* FileInput:                             fileinput.           (line 106)
+* FileSelectBox:                         ファイルセレクタ.    (line  23)
+* FileWrapper:                           wsgirefutil - WSGI 環境のユーティリティ.
+                                                              (line  93)
+* Filter:                                Filter オブジェクト. (line  15)
+* floating point:                        数値型 int.          (line  16)
+* FloatingPointError <1>:                fpectl.              (line  37)
+* FloatingPointError:                    組み込み例外.        (line 138)
+* Folder:                                mhlib.               (line  19)
+* Form:                                  ジオメトリマネジャを作る.
+                                                              (line   9)
+* FormatError:                           例外.                (line  29)
+* Formatter:                             Formatter オブジェクト.
+                                                              (line  58)
+* frame:                                 signal.              (line 130)
+* FTP:                                   ftplib.              (line  38)
+* FTPHandler:                            urllib2.             (line 219)
+* Full:                                  Queue.               (line  29)
+* FunctionTestCase:                      クラスと関数.        (line  30)
+* FutureWarning:                         組み込み例外.        (line 367)
+* gaierror:                              socket.              (line  90)
+* Generator:                             MIME 文書を生成する. (line  29)
+* GeneratorExit:                         組み込み例外.        (line 145)
+* GetoptError:                           getopt.              (line  62)
+* GopherError:                           urllib2.             (line  85)
+* GopherHandler:                         urllib2.             (line 226)
+* GzipFile:                              gzip.                (line  20)
+* Header:                                国際化されたヘッダ.  (line  51)
+* HeaderParseError:                      例外および障害クラス.
+                                                              (line  20)
+* Headers:                               wsgirefheaders - WSGI レスポンスヘッダツール群.
+                                                              (line  10)
+* herror:                                socket.              (line  81)
+* HierarchyRequestErr:                   例外 2.              (line  30)
+* HList:                                 ハイアラキカルリストボックス.
+                                                              (line   7)
+* HRESULT:                               基本データ型.        (line 164)
+* HTMLCalendar:                          calendar.            (line 111)
+* HtmlDiff:                              difflib.             (line  50)
+* HTMLParseError <1>:                    htmllib.             (line  67)
+* HTMLParseError:                        HTMLParser.          (line  30)
+* HTMLParser <1>:                        htmllib.             (line  62)
+* HTMLParser:                            HTMLParser.          (line  16)
+* HTTPBasicAuthHandler:                  urllib2.             (line 174)
+* HTTPConnection:                        httplib.             (line  18)
+* HTTPCookieProcessor:                   urllib2.             (line 146)
+* HTTPDefaultErrorHandler:               urllib2.             (line 139)
+* HTTPDigestAuthHandler:                 urllib2.             (line 196)
+* HTTPError:                             urllib2.             (line  78)
+* HTTPException:                         httplib.             (line  42)
+* HTTPHandler <1>:                       urllib2.             (line 210)
+* HTTPHandler:                           HTTPHandler.         (line  11)
+* HTTPPasswordMgr:                       urllib2.             (line 156)
+* HTTPPasswordMgrWithDefaultRealm:       urllib2.             (line 160)
+* HTTPRedirectHandler:                   urllib2.             (line 143)
+* HTTPSConnection:                       httplib.             (line  33)
+* HTTPServer:                            BaseHTTPServer.      (line  27)
+* HTTPSHandler:                          urllib2.             (line 213)
+* IllegalKeywordArgument:                httplib.             (line  59)
+* IMAP4:                                 imaplib.             (line  19)
+* IMAP4.abort:                           imaplib.             (line  32)
+* IMAP4.error:                           imaplib.             (line  28)
+* IMAP4.readonly:                        imaplib.             (line  38)
+* IMAP4_SSL:                             imaplib.             (line  47)
+* IMAP4_stream:                          imaplib.             (line  60)
+* ImmutableSet:                          sets.                (line  49)
+* ImportError:                           組み込み例外.        (line 160)
+* ImportWarning:                         組み込み例外.        (line 370)
+* ImproperConnectionState:               httplib.             (line  68)
+* Incomplete:                            binascii.            (line 118)
+* IncompleteRead:                        httplib.             (line  65)
+* IncrementalDecoder:                    IncrementalDecoder オブジェクト.
+                                                              (line  12)
+* IncrementalEncoder:                    IncrementalEncoder オブジェクト.
+                                                              (line  14)
+* IncrementalParser:                     xmlsaxxmlreader.     (line  19)
+* IndexError:                            組み込み例外.        (line 165)
+* IndexSizeErr:                          例外 2.              (line  33)
+* Inexact:                               シグナル.            (line  41)
+* InputOnly:                             その他のウィジェット.
+                                                              (line   7)
+* InputSource:                           xmlsaxxmlreader.     (line  52)
+* integer:                               数値型 int.          (line  16)
+* InteractiveConsole:                    code.                (line  14)
+* InteractiveInterpreter:                code.                (line  11)
+* InterpolationDepthError:               ConfigParser.        (line  84)
+* InterpolationError:                    ConfigParser.        (line  81)
+* InterpolationMissingOptionError:       ConfigParser.        (line  89)
+* InterpolationSyntaxError:              ConfigParser.        (line  93)
+* InuseAttributeErr:                     例外 2.              (line  37)
+* InvalidAccessErr:                      例外 2.              (line  41)
+* InvalidCharacterErr:                   例外 2.              (line  45)
+* InvalidModificationErr:                例外 2.              (line  51)
+* InvalidOperation:                      シグナル.            (line  48)
+* InvalidStateErr:                       例外 2.              (line  54)
+* InvalidURL:                            httplib.             (line  49)
+* IOError:                               組み込み例外.        (line 150)
+* IterableUserDict:                      UserDict.            (line  26)
+* KeyboardInterrupt:                     組み込み例外.        (line 175)
+* KeyError:                              組み込み例外.        (line 171)
+* LabelEntry:                            基本ウィジェット.    (line  21)
+* LabelFrame:                            基本ウィジェット.    (line  24)
+* LargeZipFile:                          zipfile.             (line  28)
+* LibraryLoader:                         共有ライブラリをロードする.
+                                                              (line  90)
+* list <1>:                              変更可能なシーケンス型.
+                                                              (line  12)
+* list:                                  シーケンス型 str.    (line  21)
+* ListNoteBook:                          管理ウィジェット.    (line  10)
+* LittleEndianStructure:                 標準データ型.        (line  13)
+* LoadError:                             cookielib.           (line  33)
+* local:                                 threading.           (line  48)
+* LocaleHTMLCalendar:                    calendar.            (line 142)
+* LocaleTextCalendar:                    calendar.            (line 135)
+* Locator:                               xmlsaxxmlreader.     (line  44)
+* LogRecord:                             LogRecord オブジェクト.
+                                                              (line  16)
+* long integer:                          数値型 int.          (line  16)
+* LookupError:                           組み込み例外.        (line  92)
+* LWPCookieJar:                          FileCookieJar のサブクラスと web ブラウザとの連携.
+                                                              (line  28)
+* Mailbox:                               Mailbox オブジェクト.
+                                                              (line   7)
+* Maildir:                               Maildir.             (line   7)
+* MaildirMessage:                        MaildirMessage.      (line   7)
+* MailmanProxy:                          MailmanProxy Objects.
+                                                              (line   7)
+* mapping:                               マップ型.            (line   6)
+* mbox:                                  mbox.                (line   7)
+* mboxMessage:                           mboxMessage.         (line   7)
+* MemoryError:                           組み込み例外.        (line 186)
+* MemoryHandler:                         MemoryHandler.       (line  38)
+* Message <1>:                           rfc822.              (line  26)
+* Message <2>:                           mimetools.           (line  18)
+* Message <3>:                           mhlib.               (line  23)
+* Message <4>:                           Message objects.     (line   7)
+* Message:                               電子メールメッセージの表現.
+                                                              (line  37)
+* MessageError:                          例外および障害クラス.
+                                                              (line  11)
+* MessageParseError:                     例外および障害クラス.
+                                                              (line  16)
+* Meter:                                 基本ウィジェット.    (line  27)
+* method:                                メソッド.            (line   6)
+* MH <1>:                                mhlib.               (line  16)
+* MH:                                    MH.                  (line   7)
+* MHMailbox:                             撤廃されたクラスとメソッド.
+                                                              (line  85)
+* MHMessage:                             MHMessage.           (line   7)
+* MIMEApplication:                       電子メールおよび MIME オブジェクトをゼロから作成する.
+                                                              (line  80)
+* MIMEAudio:                             電子メールおよび MIME オブジェクトをゼロから作成する.
+                                                              (line 103)
+* MIMEBase:                              電子メールおよび MIME オブジェクトをゼロから作成する.
+                                                              (line  25)
+* MIMEImage:                             電子メールおよび MIME オブジェクトをゼロから作成する.
+                                                              (line 131)
+* MIMEMessage:                           電子メールおよび MIME オブジェクトをゼロから作成する.
+                                                              (line 159)
+* MIMEMultipart:                         電子メールおよび MIME オブジェクトをゼロから作成する.
+                                                              (line  54)
+* MIMENonMultipart:                      電子メールおよび MIME オブジェクトをゼロから作成する.
+                                                              (line  43)
+* MIMEText:                              電子メールおよび MIME オブジェクトをゼロから作成する.
+                                                              (line 172)
+* MimeTypes:                             mimetypes.           (line 123)
+* MimeWriter:                            MimeWriter.          (line  21)
+* MissingSectionHeaderError:             ConfigParser.        (line  99)
+* MMDF:                                  MMDF.                (line   7)
+* MmdfMailbox:                           撤廃されたクラスとメソッド.
+                                                              (line  78)
+* MMDFMessage:                           MMDFMessage.         (line   7)
+* ModuleFinder:                          modulefinder.        (line  27)
+* Morsel:                                Morselオブジェクト.  (line   7)
+* MozillaCookieJar:                      FileCookieJar のサブクラスと web ブラウザとの連携.
+                                                              (line  13)
+* MultiCall:                             MultiCall オブジェクト.
+                                                              (line  13)
+* MultiFile:                             multifile.           (line  22)
+* MultipartConversionError:              例外および障害クラス.
+                                                              (line  42)
+* MutableString:                         UserString.          (line  22)
+* mutex:                                 mutex.               (line  17)
+* NameError:                             組み込み例外.        (line 197)
+* NamespaceErr:                          例外 2.              (line  58)
+* NannyNag:                              tabnanny.            (line  22)
+* netrc:                                 netrc.               (line  15)
+* NetrcParseError:                       netrc.               (line  23)
+* NNTP:                                  nntplib.             (line  52)
+* NNTPDataError:                         nntplib.             (line  98)
+* NNTPError:                             nntplib.             (line  71)
+* NNTPPermanentError:                    nntplib.             (line  86)
+* NNTPProtocolError:                     nntplib.             (line  92)
+* NNTPReplyError:                        nntplib.             (line  75)
+* NNTPTemporaryError:                    nntplib.             (line  80)
+* NoDataAllowedErr:                      例外 2.              (line  72)
+* Node:                                  AST ノード.          (line  12)
+* NoModificationAllowedErr:              例外 2.              (line  75)
+* NoOptionError:                         ConfigParser.        (line  78)
+* NoSectionError:                        ConfigParser.        (line  70)
+* NoSuchMailboxError:                    例外.                (line  12)
+* NotANumber:                            fpformat.            (line  43)
+* NotConnected:                          httplib.             (line  46)
+* NoteBook:                              管理ウィジェット.    (line  13)
+* NotEmptyError:                         例外.                (line  19)
+* NotFoundErr:                           例外 2.              (line  62)
+* NotImplementedError:                   組み込み例外.        (line 202)
+* NotSupportedErr:                       例外 2.              (line  68)
+* NTEventLogHandler:                     NTEventLogHandler.   (line  14)
+* NullFormatter:                         formatter 実装.      (line  11)
+* NullImporter:                          imp.                 (line 109)
+* NullWriter:                            writer 実装.         (line  11)
+* numeric:                               数値型 int.          (line  16)
+* OleDLL:                                共有ライブラリをロードする.
+                                                              (line  15)
+* OpenerDirector:                        urllib2.             (line 129)
+* OptionMenu:                            基本ウィジェット.    (line  30)
+* OSError:                               組み込み例外.        (line 208)
+* OutputChecker:                         OutputChecker オブジェクト.
+                                                              (line   7)
+* Overflow:                              シグナル.            (line  67)
+* OverflowError:                         組み込み例外.        (line 215)
+* Packer:                                xdrlib.              (line  22)
+* PanedWindow:                           管理ウィジェット.    (line   7)
+* Parser:                                Parser クラス API.   (line  17)
+* ParserError:                           例外とエラー処理.    (line   9)
+* ParseResult:                           urlparse および urlsplit の結果.
+                                                              (line  41)
+* ParsingError:                          ConfigParser.        (line 102)
+* Pen:                                   turtle.              (line 175)
+* PendingDeprecationWarning:             組み込み例外.        (line 358)
+* PickleError:                           使用法.              (line  81)
+* Pickler:                               使用法.              (line  99)
+* PicklingError:                         使用法.              (line  85)
+* POP3:                                  poplib.              (line  23)
+* POP3_SSL:                              poplib.              (line  28)
+* Popen:                                 subprocess モジュールを使う.
+                                                              (line   9)
+* Popen3:                                popen2.              (line  56)
+* Popen4:                                popen2.              (line  68)
+* PopupMenu:                             基本ウィジェット.    (line  33)
+* PortableUnixMailbox:                   撤廃されたクラスとメソッド.
+                                                              (line  70)
+* PrettyPrinter:                         pprint.              (line  26)
+* Profile:                               hotshot.             (line  30)
+* ProxyBasicAuthHandler:                 urllib2.             (line 181)
+* ProxyDigestAuthHandler:                urllib2.             (line 203)
+* ProxyHandler:                          urllib2.             (line 149)
+* PullDOM:                               xmldompulldom.       (line  14)
+* PureProxy:                             PureProxy オブジェクト.
+                                                              (line   7)
+* py_object:                             基本データ型.        (line 168)
+* PyCompileError:                        py_compile.          (line  18)
+* PyDLL:                                 共有ライブラリをロードする.
+                                                              (line  35)
+* PyZipFile:                             zipfile.             (line  37)
+* QName:                                 QName オブジェクト.  (line   7)
+* Queue:                                 Queue.               (line  17)
+* RadioButtonGroup:                      GUI クラス.          (line  27)
+* RawConfigParser:                       ConfigParser.        (line  42)
+* RawPen:                                turtle.              (line 182)
+* ReadError:                             tarfile.             (line 124)
+* ref:                                   weakref.             (line  67)
+* ReferenceError <1>:                    weakref.             (line 141)
+* ReferenceError:                        組み込み例外.        (line 225)
+* Repr:                                  repr.                (line  13)
+* Request:                               urllib2.             (line  91)
+* ResourceDenied:                        testtest_support --- テストのためのユーティリティ関数.
+                                                              (line  23)
+* ResponseNotReady:                      httplib.             (line  77)
+* RExec:                                 rexec.               (line  37)
+* RobotFileParser:                       robotparser.         (line  16)
+* RotatingFileHandler:                   RotatingFileHandler. (line  11)
+* Rounded:                               シグナル.            (line  77)
+* RuntimeError:                          組み込み例外.        (line 232)
+* RuntimeWarning:                        組み込み例外.        (line 364)
+* SafeConfigParser:                      ConfigParser.        (line  63)
+* SAX2DOM:                               xmldompulldom.       (line  20)
+* SAXException:                          xmlsax.              (line  65)
+* SAXNotRecognizedException:             xmlsax.              (line  86)
+* SAXNotSupportedException:              xmlsax.              (line  92)
+* SAXParseException:                     xmlsax.              (line  79)
+* scheduler:                             sched.               (line  12)
+* Select:                                基本ウィジェット.    (line  37)
+* Semaphore:                             Semaphore オブジェクト.
+                                                              (line  18)
+* sequence:                              シーケンス型 str.    (line  21)
+* SequenceMatcher <1>:                   SequenceMatcherオブジェクト.
+                                                              (line  10)
+* SequenceMatcher:                       difflib.             (line  11)
+* SerialCookie:                          Cookie.              (line  35)
+* ServerProxy:                           xmlrpclib.           (line  18)
+* Set:                                   sets.                (line  41)
+* set:                                   set（集合）型.       (line   6)
+* SGMLParseError:                        sgmllib.             (line  37)
+* SGMLParser:                            sgmllib.             (line  19)
+* Shelf:                                 制限事項.            (line  32)
+* shlex:                                 モジュールの内容 4.  (line  18)
+* simple_producer:                       asynchat - 補助クラスと関数.
+                                                              (line   7)
+* SimpleCookie:                          Cookie.              (line  30)
+* SimpleHandler:                         wsgirefhandlers - サーバ／ゲートウェイのベースクラス.
+                                                              (line  40)
+* SimpleHTTPRequestHandler:              SimpleHTTPServer.    (line  16)
+* SimpleXMLRPCRequestHandler:            SimpleXMLRPCServer.  (line  30)
+* SimpleXMLRPCServer:                    SimpleXMLRPCServer.  (line  16)
+* SmartCookie:                           Cookie.              (line  49)
+* SMTP:                                  smtplib.             (line  16)
+* SMTPConnectError:                      smtplib.             (line  58)
+* SMTPDataError:                         smtplib.             (line  54)
+* SMTPException:                         smtplib.             (line  30)
+* SMTPHandler:                           SMTPHandler.         (line  11)
+* SMTPHeloError:                         smtplib.             (line  61)
+* SMTPRecipientsRefused:                 smtplib.             (line  49)
+* SMTPResponseException:                 smtplib.             (line  38)
+* SMTPSenderRefused:                     smtplib.             (line  44)
+* SMTPServer:                            SMTPServer オブジェクト.
+                                                              (line   7)
+* SMTPServerDisconnected:                smtplib.             (line  33)
+* Sniffer:                               モジュールの内容 2.  (line 134)
+* socket:                                socket.              (line  29)
+* SocketHandler:                         SocketHandler.       (line  11)
+* SplitResult:                           urlparse および urlsplit の結果.
+                                                              (line  46)
+* StandardError:                         組み込み例外.        (line  82)
+* Stats:                                 リファレンス・マニュアル - profile と cProfile.
+                                                              (line  74)
+* StdButtonBox:                          基本ウィジェット.    (line  40)
+* StopIteration:                         組み込み例外.        (line 238)
+* StreamError:                           tarfile.             (line 132)
+* StreamHandler:                         StreamHandler.       (line  13)
+* StreamReader:                          StreamReader オブジェクト.
+                                                              (line  11)
+* StreamReaderWriter:                    StreamReaderWriter オブジェクト.
+                                                              (line  13)
+* StreamRecoder:                         StreamRecoder オブジェクト.
+                                                              (line  14)
+* StreamWriter:                          StreamWriter オブジェクト.
+                                                              (line  11)
+* string:                                シーケンス型 str.    (line  21)
+* StringIO:                              StringIO.            (line  16)
+* Structure:                             標準データ型.        (line  19)
+* Subnormal:                             シグナル.            (line  86)
+* SyntaxErr:                             例外 2.              (line  79)
+* SyntaxError:                           組み込み例外.        (line 245)
+* SyntaxWarning:                         組み込み例外.        (line 361)
+* SysLogHandler:                         SysLogHandler.       (line  11)
+* SystemError:                           組み込み例外.        (line 256)
+* SystemExit:                            組み込み例外.        (line 270)
+* SystemRandom:                          random.              (line 214)
+* TarError:                              tarfile.             (line 121)
+* TarFile <1>:                           TarFile オブジェクト.
+                                                              (line  16)
+* TarFile:                               tarfile.             (line  97)
+* TarFileCompat:                         tarfile.             (line 108)
+* TarInfo:                               TarInfo オブジェクト.
+                                                              (line  16)
+* Telnet:                                telnetlib.           (line  24)
+* Template <1>:                          pipes.               (line  19)
+* Template:                              テンプレート文字列.  (line  32)
+* TestCase:                              クラスと関数.        (line   7)
+* TestFailed:                            testtest_support --- テストのためのユーティリティ関数.
+                                                              (line  14)
+* TestLoader:                            クラスと関数.        (line  46)
+* TestResult:                            クラスと関数.        (line  52)
+* TestSkipped:                           testtest_support --- テストのためのユーティリティ関数.
+                                                              (line  17)
+* TestSuite:                             クラスと関数.        (line  36)
+* Textbox:                               Textbox オブジェクト.
+                                                              (line  10)
+* TextCalendar:                          calendar.            (line  84)
+* TextTestRunner:                        クラスと関数.        (line  61)
+* TextWrapper:                           textwrap.            (line  62)
+* Thread <1>:                            Thread オブジェクト. (line  56)
+* Thread:                                threading.           (line  95)
+* time <1>:                              time オブジェクト.   (line  11)
+* time:                                  利用可能なデータ型.  (line  12)
+* timedelta <1>:                         timedelta オブジェクト.
+                                                              (line  10)
+* timedelta:                             利用可能なデータ型.  (line  22)
+* TimedRotatingFileHandler:              TimedRotatingFileHandler.
+                                                              (line  11)
+* timeout:                               socket.              (line 100)
+* Timer <1>:                             timeit.              (line  20)
+* Timer <2>:                             Timer オブジェクト.  (line  23)
+* Timer:                                 threading.           (line  99)
+* Tix:                                   Tixを使う.           (line   7)
+* tixCommand:                            Tixコマンド.         (line   7)
+* Tk:                                    Tkinter モジュール.  (line  30)
+* TList:                                 タビュラーリストボックス.
+                                                              (line   7)
+* Trace:                                 プログラミングインターフェース.
+                                                              (line   7)
+* traceback <1>:                         traceback.           (line  11)
+* traceback:                             sys.                 (line 108)
+* Tree:                                  ハイアラキカルリストボックス.
+                                                              (line  13)
+* TreeBuilder:                           TreeBuilder オブジェクト.
+                                                              (line   7)
+* tuple:                                 シーケンス型 str.    (line  21)
+* Turtle:                                turtle.              (line 178)
+* TypeError:                             組み込み例外.        (line 299)
+* tzinfo:                                利用可能なデータ型.  (line  26)
+* UnboundLocalError:                     組み込み例外.        (line 304)
+* Underflow:                             シグナル.            (line  93)
+* UnexpectedException:                   デバッグ.            (line 210)
+* Unicode:                               シーケンス型 str.    (line  21)
+* UnicodeDecodeError:                    組み込み例外.        (line 318)
+* UnicodeEncodeError:                    組み込み例外.        (line 314)
+* UnicodeError:                          組み込み例外.        (line 309)
+* UnicodeTranslateError:                 組み込み例外.        (line 322)
+* UnicodeWarning:                        組み込み例外.        (line 374)
+* UnimplementedFileMode:                 httplib.             (line  62)
+* Union:                                 標準データ型.        (line   7)
+* UnixMailbox:                           撤廃されたクラスとメソッド.
+                                                              (line  34)
+* UnknownHandler:                        urllib2.             (line 229)
+* UnknownProtocol:                       httplib.             (line  53)
+* UnknownTransferEncoding:               httplib.             (line  56)
+* Unpacker:                              xdrlib.              (line  26)
+* Unpickler:                             使用法.              (line 150)
+* UnpicklingError:                       使用法.              (line  89)
+* URLError:                              urllib2.             (line  73)
+* URLopener:                             urllib.              (line 229)
+* UserDict:                              UserDict.            (line  21)
+* UserList:                              UserList.            (line  16)
+* UserString:                            UserString.          (line  19)
+* UserWarning:                           組み込み例外.        (line 352)
+* UUID:                                  uuid.                (line  20)
+* ValueError:                            組み込み例外.        (line 326)
+* Warning:                               組み込み例外.        (line 349)
+* WeakKeyDictionary:                     weakref.             (line 113)
+* WeakValueDictionary:                   weakref.             (line 126)
+* WichmannHill:                          random.              (line 197)
+* WinDLL:                                共有ライブラリをロードする.
+                                                              (line  23)
+* WindowsError:                          組み込み例外.        (line 331)
+* WrongDocumentErr:                      例外 2.              (line  82)
+* WSGIRequestHandler:                    wsgirefsimple_server - シンプルな WSGI HTTP サーバ.
+                                                              (line  69)
+* WSGIServer:                            wsgirefsimple_server - シンプルな WSGI HTTP サーバ.
+                                                              (line  44)
+* XMLFilterBase:                         xmlsaxsaxutils.      (line  57)
+* XMLGenerator:                          xmlsaxsaxutils.      (line  48)
+* XMLReader:                             xmlsaxxmlreader.     (line  16)
+* XMLTreeBuilder:                        XMLTreeBuilder オブジェクト.
+                                                              (line   7)
+* xrange <1>:                            XRange 型.           (line   6)
+* xrange:                                シーケンス型 str.    (line  32)
+* ZeroDivisionError:                     組み込み例外.        (line 341)
+* ZipFile <1>:                           ZipFile オブジェクト.
+                                                              (line   7)
+* ZipFile:                               zipfile.             (line  32)
+* zipimporter <1>:                       zipimporter オブジェクト.
+                                                              (line   7)
+* zipimporter:                           zipimport.           (line  45)
+* ZipImporterError:                      zipimport.           (line  41)
+* ZipInfo:                               zipfile.             (line  40)
+

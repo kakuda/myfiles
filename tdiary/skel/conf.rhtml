@@ -1,0 +1,26 @@
+<%# conf.rhtml $Revision: 1.20.2.1 $ %>
+<%%=navi%>
+
+<h1><%= CGI::escapeHTML( @conf.html_title ) %> [<%%=navi_preference%>]</h1>
+
+<div class="sidebar">
+<ul style="margin-top: 5em;">
+<%% each_conf_key do |key|%>
+	<li><a href="<%%=@conf.update%>?conf=<%%=key%>"><%%=conf_label( key )%></a></li>
+<%% end %>
+</ul>
+</div>
+<div class="main">
+<form method="post" action="<%= @conf.update %>">
+<div class="conf day">
+	<input type="hidden" name="conf" value="<%=@key%>">
+	<%=@csrf_protection%>
+	<h2><span class="title"><%%=conf_label( '<%=@key%>' )%></span></h2>
+	<div class="body">
+	<%%=conf_proc( "#{@cgi.params['conf'][0]}" )%>
+	<div><input type="submit" name="saveconf" value="OK"></div>
+	</div>
+</div>
+</form>
+<hr class="sep">
+</div>

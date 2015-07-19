@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="http://www.w3.org/2000/08/w3c-synd/style.css" type="text/css"?>
+<rdf:RDF 
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns="http://purl.org/rss/1.0/"
+ xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xml:lang="ja-JP"
+>
+ <channel rdf:about="http://secure.ddo.jp/~kaku/tdiary/t.rdf">
+   <title>オレンジニュース</title>
+   <link>http://secure.ddo.jp/~kaku/tdiary/</link>
+   <description>オレンジニュース</description>
+   <dc:date>2004-07-15T12:45</dc:date>
+   <items>
+     <rdf:Seq>
+       <rdf:li rdf:resource="http://secure.ddo.jp/~kaku/tdiary/20040715.html#p01" />
+     </rdf:Seq>
+   </items>
+ </channel>
+ <item rdf:about="http://secure.ddo.jp/~kaku/tdiary/20040715.html#p01">
+   <title>RSSのURLを変更しましたのでトップページにて確認して下さい</title>
+   <link>http://secure.ddo.jp/~kaku/tdiary/</link>
+   <description></description>
+ </item>
+</rdf:RDF>

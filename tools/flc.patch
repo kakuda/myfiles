@@ -1,0 +1,152 @@
+diff --git a/src/background.html b/src/background.html
+index 6c45b46..0b42a95 100644
+--- a/src/background.html
++++ b/src/background.html
+@@ -119,6 +119,15 @@ Options = {
+             alt_key: false,
+             meta_key: false
+         },
++        alc:{
++            use:'true',
++            sc1:'none',
++            sc2:'Alt',
++            shift_key: false,
++            ctrl_key: false,
++            alt_key: true,
++            meta_key: false
++        },
+         google:{
+             use:'true',
+             settings:[{
+@@ -233,6 +242,19 @@ Options = {
+         if( this.options_data['excite'].sc2 == "Alt" ) this.options_data['excite'].alt_key = true;
+         if( this.options_data['excite'].sc2 == "Meta" ) this.options_data['excite'].meta_key = true;
+         
++        this.options_data['alc'].shift_key = false;
++        this.options_data['alc'].ctrl_key = false;
++        this.options_data['alc'].alt_key = false;
++        this.options_data['alc'].meta_key = false;
++        if( this.options_data['alc'].sc1 == "Shift" ) this.options_data['alc'].shift_key = true;
++        if( this.options_data['alc'].sc1 == "Ctrl" ) this.options_data['alc'].ctrl_key = true;
++        if( this.options_data['alc'].sc1 == "Alt" ) this.options_data['alc'].alt_key = true;
++        if( this.options_data['alc'].sc1 == "Meta" ) this.options_data['alc'].meta_key = true;
++        if( this.options_data['alc'].sc2 == "Shift" ) this.options_data['alc'].shift_key = true;
++        if( this.options_data['alc'].sc2 == "Ctrl" ) this.options_data['alc'].ctrl_key = true;
++        if( this.options_data['alc'].sc2 == "Alt" ) this.options_data['alc'].alt_key = true;
++        if( this.options_data['alc'].sc2 == "Meta" ) this.options_data['alc'].meta_key = true;
++        
+         for (var i = 0; i < this.options_data['google'].settings.length; i++) {
+             this.options_data['google'].settings[i].shift_key = false;
+             this.options_data['google'].settings[i].ctrl_key = false;
+diff --git a/src/fastlookup.js b/src/fastlookup.js
+index c55b774..7ab307b 100644
+--- a/src/fastlookup.js
++++ b/src/fastlookup.js
+@@ -412,6 +412,7 @@ System = {
+ 
+         // add translator.
+         this._addExciteTranslator( ev );
++        this._addAlcTranslator( ev );
+         this._addGoogleTranslator( ev );
+         
+         // enable optimum?
+@@ -435,6 +436,17 @@ System = {
+         }
+     },
+     
++    // alc.
++    _addAlcTranslator: function( ev ){
++        if( Options.get('alc').use && 
++            ev.ctrlKey == Options.get('alc').ctrl_key && 
++            ev.shiftKey == Options.get('alc').shift_key && 
++            ev.altKey == Options.get('alc').alt_key &&
++            ev.metaKey == Options.get('alc').meta_key ){
++            this.push( "alc", [] );
++        }
++    },
++    
+     // google.
+     _addGoogleTranslator: function( ev ){
+         var google = Options.get('google');
+diff --git a/src/options.html b/src/options.html
+index 7cf6e5d..50b22e2 100644
+--- a/src/options.html
++++ b/src/options.html
+@@ -146,6 +146,26 @@ Configure = {
+             }
+         }
+ 
++        // alc
++        if ( Options.get('alc').use ){
++            document.options['use_alc'].checked = true;
++            show( "id_alc" );
++        }
++        else{
++            document.options['use_alc'].checked = false;
++            hide( "id_alc" );
++        }
++        for( var i = 0; i < document.options['sc1_alc'].length; i++ ){
++            if( document.options['sc1_alc'][i].value == Options.get('alc').sc1 ){
++                document.options['sc1_alc'][i].selected = true;
++            }
++        }
++        for( var i = 0; i < document.options['sc2_alc'].length; i++ ){
++            if( document.options['sc2_alc'][i].value == Options.get('alc').sc2 ){
++                document.options['sc2_alc'][i].selected = true;
++            }
++        }
++
+         // google
+         if( Options.get('google').use ){
+             document.options['use_google'].checked = true;
+@@ -175,6 +195,12 @@ Configure = {
+ 	    excite["sc2"] = document.options.sc2_excite[document.options.sc2_excite.selectedIndex].value;
+ 	    Options.set( 'excite', excite );
+ 	    
++	    var alc = {};
++	    alc["use"] = document.options.use_alc.checked;
++	    alc["sc1"] = document.options.sc1_alc[document.options.sc1_alc.selectedIndex].value;
++	    alc["sc2"] = document.options.sc2_alc[document.options.sc2_alc.selectedIndex].value;
++	    Options.set( 'alc', alc );
++      
+ 	    var google = {};
+         google["use"] = document.options.use_google.checked;
+         google['settings'] = []
+@@ -513,6 +539,37 @@ function fadeOutToggle( id, arg )
+         
+         <fieldset>
+             <legend>
++                <label for='use_alc'>Alc:</label>
++                <input type='checkbox' id='use_alc' name='use_alc' onclick='slideToggle("id_alc");'>
++            </legend>
++            <div id='id_alc'>
++                <label>Shortcut:</label>
++                <select name='sc1_alc'>
++                    <option>none</option>
++                    <option>Shift</option>
++                    <option>Ctrl</option>
++                    <option>Alt</option>
++                    <option>Meta</option>
++                </select>
++                +
++                <select name='sc2_alc'>
++                    <option>none</option>
++                    <option>Shift</option>
++                    <option>Ctrl</option>
++                    <option>Alt</option>
++                    <option>Meta</option>
++                </select>
++                + Select
++                <br>
++                <label>From:</label>
++                <div>English and Japanese Only</div>
++                <label>To:</label>
++                <div>English and Japanese Only</div>
++            </div>
++        </fieldset>
++        
++        <fieldset>
++            <legend>
+                 <label for='use_google'>Google:</label>
+                 <input type='checkbox' id='use_google' name='use_google' onclick='slideToggle("id_google");'>
+             </legend>

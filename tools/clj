@@ -1,0 +1,22 @@
+#!/bin/sh
+
+cljdir=${HOME}/.m2/repository/org/clojure
+corejar=${cljdir}/clojure/1.2.0/clojure-1.2.0.jar
+contribjar=${cljdir}/clojure-contrib/1.2.0/clojure-contrib-1.2.0.jar
+
+othercp=.
+dirs=(lib war/WEB-INF/lib)
+for d in ${dirs[@]}; do
+  if [ -e $d ]; then
+    for jar in `find $d -type f ! -name "clojure-*.jar" -name "*.jar"`; do
+      othercp=${othercp}:${jar}
+    done
+  fi
+done
+
+cp=${othercp}:${corejar}:${contribjar}
+#vmopt="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8021 -client"
+#vmopt="-agentlib:hprof=format=b"
+vmopt="-client"
+
+exec java -Dfile.encoding=utf-8 ${vmopt} -classpath ${cp} clojure.main $*

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<rdf:RDF xmlns="http://purl.org/rss/1.0/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xml:lang="ja-JP">
+	<channel rdf:about="http://secure.ddo.jp/~kaku/tdiary/zatta.rdf">
+	<title>オレンジニュース 雑多ネタ</title>
+	<link>http://secure.ddo.jp/~kaku/tdiary/</link>
+	<description></description>
+	<dc:creator>Naoyuki Kakuda</dc:creator>
+	<copyright>Copyright 2008 Naoyuki Kakuda &lt;kakuda@gmail.com&gt;, copyright of comments by respective authors</copyright>
+	<items><rdf:Seq>
+<rdf:li rdf:resource="http://secure.ddo.jp/~kaku/tdiary/20080221.html#p08"/>
+<rdf:li rdf:resource="http://secure.ddo.jp/~kaku/tdiary/20080221.html#p09"/>
+<rdf:li rdf:resource="http://secure.ddo.jp/~kaku/tdiary/20080221.html#p10"/>
+<rdf:li rdf:resource="http://secure.ddo.jp/~kaku/tdiary/20080221.html#p11"/>
+<rdf:li rdf:resource="http://secure.ddo.jp/~kaku/tdiary/20080221.html#p12"/>
+<rdf:li rdf:resource="http://secure.ddo.jp/~kaku/tdiary/20080221.html#p13"/>
+<rdf:li rdf:resource="http://secure.ddo.jp/~kaku/tdiary/20080221.html#p14"/>
+<rdf:li rdf:resource="http://secure.ddo.jp/~kaku/tdiary/20080221.html#p15"/>
+<rdf:li rdf:resource="http://secure.ddo.jp/~kaku/tdiary/20080220.html#p10"/>
+<rdf:li rdf:resource="http://secure.ddo.jp/~kaku/tdiary/20080220.html#p11"/>
+<rdf:li rdf:resource="http://secure.ddo.jp/~kaku/tdiary/20080220.html#p12"/>
+<rdf:li rdf:resource="http://secure.ddo.jp/~kaku/tdiary/20080220.html#p13"/>
+</rdf:Seq></items>
+</channel>
+<item rdf:about="http://secure.ddo.jp/~kaku/tdiary/20080221.html#p08">
+<link>http://www.excite.co.jp/News/bit/00091203317936.html</link>
+<dc:date>2008-02-22T00:54:27+09:00</dc:date>
+<title>寝すぎで眠いってありうるの?(より眠くなるということはない)</title>
+<dc:creator>Naoyuki Kakuda</dc:creator>
+<description></description>
+<content:encoded></content:encoded>
+</item>
+<item rdf:about="http://secure.ddo.jp/~kaku/tdiary/20080221.html#p09">
+<link>http://netallica.yahoo.co.jp/news/25572</link>
+<dc:date>2008-02-22T00:54:27+09:00</dc:date>
+<title>黒人の演歌歌手ジェロ、デビュー</title>
+<dc:creator>Naoyuki Kakuda</dc:creator>
+<description></description>
+<content:encoded></content:encoded>
+</item>
+<item rdf:about="http://secure.ddo.jp/~kaku/tdiary/20080221.html#p10">
+<link>http://jp.youtube.com/watch?v=yTvvc26rnVs</link>
+<dc:date>2008-02-22T00:54:27+09:00</dc:date>
+<title>　YouTube:ジェロ「海雪」(映像がめちゃめちゃHIPHOP)　</title>
+<dc:creator>Naoyuki Kakuda</dc:creator>
+<description></description>
+<content:encoded></content:encoded>
+</item>
+<item rdf:about="http://secure.ddo.jp/~kaku/tdiary/20080221.html#p11">
+<link>http://widegeinou.blog39.fc2.com/blog-entry-1500.html</link>
+<dc:date>2008-02-22T00:54:27+09:00</dc:date>
+<title>小室哲哉さんは、セレブに誕生日ソングを作って暮らしているらしい</title>
+<dc:creator>Naoyuki Kakuda</dc:creator>
+<description></description>
+<content:encoded></content:encoded>
+</item>
+<item rdf:about="http://secure.ddo.jp/~kaku/tdiary/20080221.html#p12">
+<link>http://gigazine.net/index.php?/news/comments/20080221_english_test/</link>
+<dc:date>2008-02-22T00:54:27+09:00</dc:date>
+<title>GIGAZINE:自分の英語力がすぐにわかるNHK出版の「英語力測定テスト」</title>
+<dc:creator>Naoyuki Kakuda</dc:creator>
+<description></description>
+<content:encoded></content:encoded>
+</item>
+<item rdf:about="http://secure.ddo.jp/~kaku/tdiary/20080221.html#p13">
+<link>http://guideline.livedoor.biz/archives/51039976.html</link>
+<dc:date>2008-02-22T00:54:27+09:00</dc:date>
+<title>2ch:小中学生の間ではメール返信が30分以上遅れると嫌われる「30分ルール」がある</title>
+<dc:creator>Naoyuki Kakuda</dc:creator>
+<description></description>
+<content:encoded></content:encoded>
+</item>
+<item rdf:about="http://secure.ddo.jp/~kaku/tdiary/20080221.html#p14">
+<link>http://www.varietyjapan.com/news/movie/u3eqp30000030mp0.html</link>
+<dc:date>2008-02-22T00:54:27+09:00</dc:date>
+<title>日本人が選ぶ2007年の最低映画、1位は反町隆史主演の「蒼き狼」2位は「恋空」</title>
+<dc:creator>Naoyuki Kakuda</dc:creator>
+<description></description>
+<content:encoded></content:encoded>
+</item>
+<item rdf:about="http://secure.ddo.jp/~kaku/tdiary/20080221.html#p15">
+<link>http://www.youtube.com/watch?v=nY-AEZjsPT0</link>
+<dc:date>2008-02-22T00:54:27+09:00</dc:date>
+<title>YouTube:サッカー東アジア選手権 日本×中国ラフプレイ集</title>
+<dc:creator>Naoyuki Kakuda</dc:creator>
+<description></description>
+<content:encoded></content:encoded>
+</item>
+<item rdf:about="http://secure.ddo.jp/~kaku/tdiary/20080220.html#p10">
+<link>http://alfalfa.livedoor.biz/archives/51237788.html</link>
+<dc:date>2008-02-21T00:56:37+09:00</dc:date>
+<title>2ch:シャワートイレ板で唯一実用的なスレ「トイレ詰まり体験談」</title>
+<dc:creator>Naoyuki Kakuda</dc:creator>
+<description></description>
+<content:encoded></content:encoded>
+</item>
+<item rdf:about="http://secure.ddo.jp/~kaku/tdiary/20080220.html#p11">
+<link>http://afoafodayo.blog84.fc2.com/blog-entry-440.html</link>
+<dc:date>2008-02-21T00:56:37+09:00</dc:date>
+<title>SMAPの中居正広さん、映画の役作りで丸刈りに</title>
+<dc:creator>Naoyuki Kakuda</dc:creator>
+<description></description>
+<content:encoded></content:encoded>
+</item>
+<item rdf:about="http://secure.ddo.jp/~kaku/tdiary/20080220.html#p12">
+<link>http://antepaenultima.blog76.fc2.com/blog-entry-509.html</link>
+<dc:date>2008-02-21T00:56:37+09:00</dc:date>
+<title>ワーキングプアの実態、8〜22時の残業ボーナス無しで手取り15万</title>
+<dc:creator>Naoyuki Kakuda</dc:creator>
+<description></description>
+<content:encoded></content:encoded>
+</item>
+<item rdf:about="http://secure.ddo.jp/~kaku/tdiary/20080220.html#p13">
+<link>http://iori3.cocolog-nifty.com/tenkannichijo/2006/02/100ur_9e5c.html</link>
+<dc:date>2008-02-21T00:56:37+09:00</dc:date>
+<title>UR都市機構の「特別募集住宅」は人間死亡率100%</title>
+<dc:creator>Naoyuki Kakuda</dc:creator>
+<description></description>
+<content:encoded></content:encoded>
+</item>
+</rdf:RDF>

@@ -1,0 +1,37 @@
+global:
+  #plugin_path:
+  #  - /home/miyagawa/plagger/plugins
+  #template_path: /home/miyagawa/plagger/templates
+  assets_path: /home/nakakuda/plagger/assets
+  timezone: Asia/Tokyo
+
+plugins:
+  - module: Publish::Gmail
+    rule:
+      - module: Rating
+        rate:   '>= 0'
+      - module: Fresh
+        mtime:
+            path: /tmp/foo.tmp
+            autoupdate: 1
+    config:
+      mailto:   kakuda+plagger@gmail.com
+      mailfrom: kakuda+plagger@gmail.com
+      mailroute:
+        via: smtp_tls
+        host: smtp.gmail.com:587
+        username: kakuda
+        password: base64::aDRzMVJON20=
+
+  - module: CustomFeed::Mixi
+    config:
+      email: kakuda@gmail.com
+      password: base64::aDRzMVJON20=
+      fetch_body: 1
+      fetch_body_interval: 1.5
+      show_icon: 1
+
+  #- module: Filter::HatenaBookmarkUsersCount
+  - module: Filter::StripRSSAd
+  - module: Filter::TTP
+  - module: Filter::tDiaryComment

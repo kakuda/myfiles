@@ -1,0 +1,22 @@
+#compdef ri
+ 
+_arguments -C -s \
+  '(-h --help)'{-h,--help}'[print help message]' \
+  '(-c --classes)'{-c,--classes}'[Display the names of classes and modules we know about]' \
+  '-d+[A directory to search for documentation]:directory:_files -/' \
+  '(-f --format)'{-f,--format}'[Format to use when displaying output]:format:(ansi bs html plain simple)' \
+  '(-l --list-names)'{-l,--list-names}'[List all the names known to RDoc, one per line]' \
+  '(-T --no-pager)'{-T,--no-pager}'[Send output directly to stdout]' \
+  '(-w --width)'{-w+,--width+}'[output width]' \
+  '(-v --version)'{-v,--version}'[Display the version of ri]' \
+  "*:names:->ri_names" \
+  && return 0
+ 
+if [[ $state = ri_names ]]; then
+  if ( [[ ${+_ri_list_names} -eq 0 ]] || _cache_invalid ri-names ) &&
+    ! _retrieve_cache ri-names; then
+    _ri_list_names=( $(_call_program ri--list-names ri -l 2>/dev/null) )
+    _store_cache ri-names _ri_list_names
+  fi
+  _wanted ri_names expl 'ri --list-names' compadd "$@" -a _ri_list_names
+fi

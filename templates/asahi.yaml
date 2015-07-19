@@ -1,0 +1,28 @@
+global:
+  #plugin_path:
+  #  - /home/miyagawa/plagger/plugins
+  #template_path: /home/miyagawa/plagger/templates
+  assets_path: /home/nakakuda/plagger/assets
+  timezone: Asia/Tokyo
+  log:
+    level: info
+
+plugins:
+  - module: Subscription::Config
+    config:
+      feed:
+        - url: http://www3.asahi.com/rss/index.rdf
+
+  - module: Filter::Rule
+    rule:
+      - module: Deduped
+
+  - module: Filter::EntryFullText
+    config:
+      store_html_on_failue: 1
+
+  - module: Publish::Feed
+    config:
+      format: RSS
+      dir: /home/nakakuda/public_html
+      filename: asahi.rdf

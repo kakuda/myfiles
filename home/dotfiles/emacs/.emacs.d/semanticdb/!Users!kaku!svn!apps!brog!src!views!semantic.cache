@@ -1,0 +1,23 @@
+;; Object views/
+;; SEMANTICDB Tags save file
+(semanticdb-project-database-file "views/"
+  :tables (list 
+   (semanticdb-table "index.html"
+    :major-mode 'html-mode
+    :tags 
+        '( ("HTML5 Demos and Examples" section nil nil [80 193])
+            ("ブログロ1aaaaaaaaaaaaaa" section nil nil [193 234])
+            ("ブログロ1aaaaaaaaaaaaaa" section nil nil [234 290])
+            ("ブログロ1aaaaaaaaaaaaaa" section (:members 
+              ( ("投稿" anchor nil nil [375 378]))              ) nil [290 421]))          
+    :file "index.html"
+    :pointmax 421
+    :fsize 432
+    :lastmodtime '(19955 22316)
+    :unmatched-syntax 'nil
+    )
+   )
+  :file "!Users!kaku!svn!apps!brog!src!views!semantic.cache"
+  :semantic-tag-version "2.0"
+  :semanticdb-version "2.0"
+  )

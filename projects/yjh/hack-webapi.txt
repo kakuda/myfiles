@@ -1,0 +1,287 @@
+色々な言語を使って、Web APIにアクセスしてXMLを解析する
+{{toc}}
+
+世の中の多くのAPIはリクエストをHTTPで投げてXMLを取得し、解析するものが多くあります。Yahoo!デベロッパーネットワークで提供しているAPIの多くもXMLを返します。
+
+ここではPerl、PHP、Ruby、GreaseMonkey(JavaScript)を使ってWeb APIにアクセスし、XMLを解析する方法を示します。
+
+! Perl
+PerlでWebにアクセスするにはLWP::Simpleモジュール、XMLを解析するにはXML::Simpleを使うと便利です。どちらもPerl標準モジュールではないので、CPANにて取得する必要があります。
+
+!! コード
+
+     1	#!/usr/bin/perl -w
+     2	
+     3	use strict;
+     4	use warnings;
+     5	use LWP::Simple;
+     6	use XML::Simple;
+     7	
+     8	my $xml = LWP::Simple::get("http://api.map.yahoo.co.jp/LocalSearchService/V1/LocalSearch?appid=YahooDemo&p=%E5%85%AD%E6%9C%AC%E6%9C%A8%E3%83%92%E3%83%AB%E3%82%BA");
+     9	my $xs = XML::Simple->new;
+    10	my $doc = $xs->XMLin($xml);
+    11	for my $item (@{$doc->{Item}}) {
+    12	    print "$item->{Title}: $item->{Address}\n";
+    13	}
+
+実行結果は以下のようになります。
+ 六本木ヒルズ: 東京都港区
+ 六本木ヒルズ森タワー: 東京都港区
+ 六本木ヒルズレジデンス: 東京都港区
+ 六本木ヒルズゲートタワー: 東京都港区
+
+! PHP5
+PHP5の標準モジュールにSimple XMLがあります。Simple XMLの関数である、simplexml_load_fileを利用すると、WebアクセスとXMLの解析をいっぺんに行えます。
+
+!! コード
+
+     1	#!/usr/local/bin/php
+     2	<?php
+     3	$doc = simplexml_load_file("http://api.map.yahoo.co.jp/LocalSearchService/V1/LocalSearch?appid=YahooDemo&p=%E5%85%AD%E6%9C%AC%E6%9C%A8%E3%83%92%E3%83%AB%E3%82%BA");
+     4	foreach ($doc->Item as $item) {
+     5	    echo $item->Title . ": " . $item->DatumTky97->Lat . "," . $item->DatumTky97->Lon . "\n";
+     6	}
+
+実行結果は以下のようになります。
+ 六本木ヒルズ: 35.65678,139.733555
+ 六本木ヒルズ森タワー: 35.65728111,139.73264
+ 六本木ヒルズレジデンス: 35.65541806,139.7328
+ 六本木ヒルズゲートタワー: 35.65537111,139.73518889
+
+! Ruby
+Rubyで簡単にWebにアクセスするにはopen-uri、XMLの解析にはREXMLを利用します。どちらも標準ライブラリなので、別途インストールする必要はありません。
+
+!! コード
+
+     1	#!/usr/bin/env ruby
+     2	
+     3	require 'open-uri'
+     4	require 'rexml/document'
+     5	include REXML
+     6	
+     7	f = open("http://api.map.yahoo.co.jp/LocalSearchService/V1/LocalSearch?appid=YahooDemo&p=%E5%85%AD%E6%9C%AC%E6%9C%A8%E3%83%92%E3%83%AB%E3%82%BA")
+     8	doc = Document.new(f)
+     9	doc.elements.each('/LocalSearchResult/Item') do |item|
+    10	  puts item.elements['Title'].text
+    11	end
+ 
+実行結果は以下のようになります。
+ 六本木ヒルズ
+ 六本木ヒルズ森タワー
+ 六本木ヒルズレジデンス
+ 六本木ヒルズゲートタワー
+
+! GreaseMonkey(JavaScript)
+GreaseMonkeyのGM_xmlhttpRequestを使うと、JavaScriptのクロスドメイン制限に関係なくリモートのリソースを取得することができます。また、取得したXMLはDOMParserを通すことによって、DOM操作にてXMLを扱うことができます。
+
+!! コード
+
+     1	// ==UserScript==
+     2	// @name        yjh hack01
+     3	// @namespace   http://hacks.yahoo.co.jp/
+     4	// @include     http://*
+     5	// ==/UserScript==
+     6	
+     7	(function () {
+     8	
+     9	    GM_xmlhttpRequest({
+    10	        method: 'GET',
+    11	        url: 'http://api.map.yahoo.co.jp/LocalSearchService/V1/LocalSearch?appid=YahooDemo&p=%E5%85%AD%E6%9C%AC%E6%9C%A8%E3%83%92%E3%83%AB%E3%82%BA',
+    12	        onload: function(res) {
+    13	            var parser = new DOMParser();
+    14	            var dom = parser.parseFromString(res.responseText, "application/xml");
+    15	            var items = dom.getElementsByTagName('Item');
+    16	            var title;
+    17	            var address;
+    18	            for (var i = 0; i < items.length; i++) {
+    19	                title = items[i].getElementsByTagName('Title')[0].textContent;
+    20	                address = items[i].getElementsByTagName('Address')[0].textContent;
+    21	                alert(title + ': ' + address);
+    22	            }
+    23	        }
+    24	    });
+    25	
+    26	})();
+
+上記コードをGreaseMonkey Scriptとしてインストールし、適当なページを開けるとalertが表示されます。
+
+{{attach_view(yjh_greasemonkey.png)}}
+
+! HackをHackする
+Web APIを使って何かしらのサービスを作る際、一度に複数のAPIを叩く必要があります。1つ1つ順番にアクセスしていくと時間がかかり、全体のレスポンスに影響を与えます。そこで、一度に複数のAPIをアクセスすることが出来ると時間の短縮につながります。それでは各言語について一度に複数HTTPアクセスを行う方法を示します。
+
+!! Perl
+LWP::ParallelというPerlモジュールを利用します。まずは一つずつアクセスしていく方法を示します。
+
+     1	#!/usr/bin/perl -w
+     2	
+     3	use strict;
+     4	use warnings;
+     5	use LWP::Simple;
+     6	
+     7	my @urls = (
+     8	    "http://api.search.yahoo.co.jp/WebSearchService/V1/webSearch?appid=YahooDemo&query=yahoo",
+     9	    "http://api.search.yahoo.co.jp/ImageSearchService/V1/imageSearch?appid=YahooDemo&query=yahoo",
+    10	    "http://api.search.yahoo.co.jp/VideoSearchService/V1/videoSearch?appid=YahooDemo&query=yahoo",
+    11	    "http://api.map.yahoo.co.jp/LocalSearchService/V1/LocalSearch?appid=YahooDemo&p=yahoo"
+    12	);
+    13	
+    14	my @contents = ();
+    15	foreach (@urls) {
+    16	    push @contents, LWP::Simple::get($_);
+    17	}
+    18	
+    19	# print @contents;
+
+次に、LWP::Parallelを使って一度に複数の接続を行う方法を示します。
+     1	#!/usr/bin/perl -w
+     2	
+     3	use strict;
+     4	use warnings;
+     5	use LWP::Parallel::UserAgent;
+     6	use HTTP::Request; 
+     7	
+     8	my $reqs = [  
+     9	    HTTP::Request->new('GET', "http://api.search.yahoo.co.jp/WebSearchService/V1/webSearch?appid=YahooDemo&query=yahoo"),
+    10	    HTTP::Request->new('GET', "http://api.search.yahoo.co.jp/ImageSearchService/V1/imageSearch?appid=YahooDemo&query=yahoo"),
+    11	    HTTP::Request->new('GET', "http://api.search.yahoo.co.jp/VideoSearchService/V1/videoSearch?appid=YahooDemo&query=yahoo"),
+    12	    HTTP::Request->new('GET', "http://api.map.yahoo.co.jp/LocalSearchService/V1/LocalSearch?appid=YahooDemo&p=yahoo"),
+    13	];
+    14	
+    15	my $pua = LWP::Parallel::UserAgent->new();
+    16	foreach my $req (@$reqs) {
+    17	    $pua->register($req);
+    18	}
+    19	
+    20	my $entries = $pua->wait(2);
+    21	
+    22	my @contents = ();
+    23	foreach (keys %$entries) {
+    24	    my $res = $entries->{$_}->response;
+    25	    push @contents, $res->content;
+    26	}
+    27	
+    28	# print @contents;
+
+!! PHP5
+PHP5の標準モジュールにcurlがあり、curl_multiを使うことによってHTTPの並列アクセスを実現することができます。検証では並列アクセスとの違いを調べるため、逐次アクセスでは普通のcurlを使います。
+
+まずは普通のcurlを使って一つずつアクセスするコードを以下に示します。
+     1	#!/usr/local/bin/php
+     2	<?php
+     3	
+     4	$urls = array("http://api.search.yahoo.co.jp/WebSearchService/V1/webSearch?appid=YahooDemo&query=yahoo",
+     5	              "http://api.search.yahoo.co.jp/ImageSearchService/V1/imageSearch?appid=YahooDemo&query=yahoo",
+     6	              "http://api.search.yahoo.co.jp/VideoSearchService/V1/videoSearch?appid=YahooDemo&query=yahoo",
+     7	              "http://api.map.yahoo.co.jp/LocalSearchService/V1/LocalSearch?appid=YahooDemo&p=yahoo"
+     8	              );
+     9	
+    10	foreach ($urls as $url) {
+    11	    $curl = curl_init();
+    12	    curl_setopt($curl, CURLOPT_URL, $url);
+    13	    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    14	    curl_setopt($curl, CURLOPT_HEADER, FALSE);
+    15	    $contents[] = curl_exec($curl);
+    16	    curl_close($curl);
+    17	}
+    18	
+    19	//print_r($contents);
+次にcurl_multiを使って複数アクセスを行うコードは以下のようになります。
+     1	#!/usr/local/bin/php
+     2	<?php
+     3	
+     4	$urls = array("http://api.search.yahoo.co.jp/WebSearchService/V1/webSearch?appid=YahooDemo&query=yahoo",
+     5	              "http://api.search.yahoo.co.jp/ImageSearchService/V1/imageSearch?appid=YahooDemo&query=yahoo",
+     6	              "http://api.search.yahoo.co.jp/VideoSearchService/V1/videoSearch?appid=YahooDemo&query=yahoo",
+     7	              "http://api.map.yahoo.co.jp/LocalSearchService/V1/LocalSearch?appid=YahooDemo&p=yahoo"
+     8	              );
+     9	
+    10	$cm = curl_multi_init();
+    11	$chlist = array();
+    12	foreach ($urls as $url) {
+    13	    $curl = curl_init();
+    14	    curl_setopt($curl, CURLOPT_URL, $url);
+    15	    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    16	    curl_setopt($curl, CURLOPT_HEADER, FALSE);
+    17	    curl_multi_add_handle($cm, $curl);
+    18	    $chlist[] = $curl;
+    19	}
+    20	
+    21	do {
+    22	    $n = curl_multi_exec($cm, $active);
+    23	} while ($active);
+    24	
+    25	$contents = array();
+    26	for ($i = 0; $i < sizeof($chlist); $i++) {
+    27	    $contents[] = curl_multi_getcontent($chlist[$i]);
+    28	    curl_close($chlist[$i]);
+    29	}
+    30	curl_multi_close($cm);
+    31	
+    32	//print_r($contents);
+
+!! Ruby
+RubyにはHTTPを並列にアクセスするライブラリに関して特に有名なものはありませんが、Threadを使うことで簡単に並列処理を実現できます。
+
+まずは一つずつアクセスしていく方法を示します。
+     1	#!/usr/bin/env ruby
+     2	
+     3	require 'open-uri'
+     4	
+     5	urls = ["http://api.search.yahoo.co.jp/WebSearchService/V1/webSearch?appid=YahooDemo&query=yahoo",
+     6	        "http://api.search.yahoo.co.jp/ImageSearchService/V1/imageSearch?appid=YahooDemo&query=yahoo",
+     7	        "http://api.search.yahoo.co.jp/VideoSearchService/V1/videoSearch?appid=YahooDemo&query=yahoo",
+     8	        "http://api.map.yahoo.co.jp/LocalSearchService/V1/LocalSearch?appid=YahooDemo&p=yahoo"
+     9	       ]
+    10	
+    11	contents = []
+    12	urls.each do |url|
+    13	  contents << open(url).readlines
+    14	end
+    15	
+    16	# p contents
+
+次にThreadを使ってopen-uri処理を並列に実行するコードを示します。
+     1	#!/usr/bin/env ruby
+     2	
+     3	require 'open-uri'
+     4	
+     5	urls = ["http://api.search.yahoo.co.jp/WebSearchService/V1/webSearch?appid=YahooDemo&query=yahoo",
+     6	        "http://api.search.yahoo.co.jp/ImageSearchService/V1/imageSearch?appid=YahooDemo&query=yahoo",
+     7	        "http://api.search.yahoo.co.jp/VideoSearchService/V1/videoSearch?appid=YahooDemo&query=yahoo",
+     8	        "http://api.map.yahoo.co.jp/LocalSearchService/V1/LocalSearch?appid=YahooDemo&p=yahoo"
+     9	       ]
+    10	
+    11	threads = []
+    12	contents = []
+    13	urls.each do |url|
+    14	  threads << Thread.new(url) do |u|
+    15	    contents << open(u).readlines
+    16	  end
+    17	end
+    18	
+    19	threads.each { |thred| thred.join }
+    20	
+    21	# p contents
+
+!! 速度の違いを検証する
+一つずつアクセスしていく方法(Sequense)と、一度に複数アクセスする方法(Parallel)ではどれだけの差があるか、調べてみます。
+
+ $ time perl sequence.pl
+ 2.214 secs
+ $ time perl parallel.pl
+ 1.070 secs
+ $ time php sequence.php
+ 2.496 secs
+ $ time php parallel.php
+ 1.010 secs
+ $ time ruby sequence.rb
+ 2.578 secs
+ $ time ruby parallel.rb
+ 1.085 secs
+
+上記のように、どの言語でも一度に複数アクセスした方が早いレスポンスを得ることができました。サービスなどを作るにあたって、一度に多くのAPIを叩く必要がある場合、複数同時にアクセスするやり方を検討してみて下さい。
+
+-- Naoyuki Kakuda
+! コメント
+{{comment}}

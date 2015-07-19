@@ -1,0 +1,54 @@
+Options +ExecCGI -Indexes
+
+# if you run tDiary with symbolic link, use settings below.
+Options +FollowSymLinks
+
+# if making anchor style as 'YYYYMMDD.html', use settings below,
+# then change 'your_URL_of_index.rb' and use html_anchor.rb plugn.
+# But this method makes error into error_log of apache. It is better
+# method to use mod_rewrite.
+#
+#<Files ~ "^([0-9]{4}|[0-9]{6}|[0-9]{8}).html$">
+#    ErrorDocument 404 index.rb
+#</Files>
+
+AddHandler cgi-script htaccess
+AddHandler cgi-script htpasswd
+AddHandler cgi-script rb
+AddHandler cgi-script cgi
+DirectoryIndex index.rb
+AddType text/xml rdf
+#AddType application/octet-stream rdf
+
+<Files ~ "^\.[Hh][Tt]">
+#    Order allow,deny
+    Deny from all    
+#    Satisfy All
+</Files>
+
+<Files "*.rhtml">
+        deny from all
+</Files>
+
+<Files "tdiary.*">
+        deny from all
+</Files>
+
+<Files update.rb>
+        AuthName      tDiary
+        AuthType      Basic
+#       AuthUserFile  /home/foo/.htpasswd
+#       AuthUserFile  /Users/kaku/Sites/tdiary/user.passwd
+        AuthUserFile  /Users/kaku/Public/news/.passwd
+        Require user  stf00236
+</Files>
+
+RewriteEngine on
+RewriteBase /~kaku/tdiary
+RewriteRule ^([0-9]+)\.html$ index.rb?date=$1
+
+RewriteCond %{QUERY_STRING} ^date\=([0-9]+)$
+RewriteRule index.html %1.html? [L,R=301]
+
+RewriteCond %{QUERY_STRING} .*
+RewriteRule index.html index.rb

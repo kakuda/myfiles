@@ -1,0 +1,25 @@
+This is the file .../info/dir, which contains the
+topmost node of the Info hierarchy, called (dir)Top.
+The first time you invoke Info you start off looking at this node.
+
+File: dir,	Node: Top	This is the top of the INFO tree
+
+  This (the Directory node) gives a menu of major topics.
+  Typing "q" exits, "?" lists all Info commands, "d" returns here,
+  "h" gives a primer for first-timers,
+  "mEmacs<Return>" visits the Emacs manual, etc.
+
+  In Emacs, you can click mouse button 2 on a menu item or cross reference
+  to select it.
+
+* Menu:
+
+Python Standard Documentation
+* What's New: (python-whatsnew25).         What's New in Python 2.5?
+* Python Library: (python-lib-jp).         Python ¥é¥¤¥Ö¥é¥ê¥ê¥Õ¥¡¥ì¥ó¥¹
+* Python Mac Modules: (python-mac-jp).     Python Macintosh ¥â¥¸¥å¡¼¥ë·²
+* Python Reference: (python-ref-jp).       Python ¥ê¥Õ¥¡¥ì¥ó¥¹¥Þ¥Ë¥å¥¢¥ë
+* Python API: (python-api-jp).             Python/C API ¥ê¥Õ¥¡¥ì¥ó¥¹¥Þ¥Ë¥å¥¢¥ë
+* Python Extending: (python-ext-jp).       Python ¤Î³ÈÄ¥¤ÈËä¤á¹þ¤ß
+* Python Tutorial: (python-tut-jp).        Python ¥Á¥å¡¼¥È¥ê¥¢¥ë
+* Distributing Modules: (python-dist-jp).  Python ¥â¥¸¥å¡¼¥ë¤ÎÇÛÉÛ

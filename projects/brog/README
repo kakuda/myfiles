@@ -1,0 +1,34 @@
+# brog
+
+private blog application powered by google app engine
+
+## Usage
+
+/ -> recent 5 articles (title, body)
+/yyyy -> articles (title only) in yyyy
+/yyyy/mm -> articles (title, body) in mm/yyyy
+/yyyy/mm/dd -> articles (title, body) in dd/mm/yyyy
+/yyyy/mm/dd/n -> article at n in dd/mm/yyyy
+
+/tag/xxx -> articles (title, body) in dd/mm/yyyy with tags
+
+/admin
+/admin/posts
+
+p -> page number
+q -> search query
+
+## Architecture
+ring + compojure
+hiccup
+
+
+## Installation
+
+FIXME: write
+
+## License
+
+Copyright (C) 2010 FIXME
+
+Distributed under the Eclipse Public License, the same as Clojure.

@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>Yahoo! 地図情報 JavaScript API</title>
+  </head>
+  <body>
+    <h2>自動スクロール</h2>
+    <div id="yahoomaps" style="width: 400px; height: 400px" />
+    <script type="text/javascript" src="http://api.map.yahoo.co.jp/MapsService/js/V1/?appid=YahooDemo"></script>
+    <script type="text/javascript">
+      map = new YahooMapsCtrl("yahoomaps");
+      window.setTimeout(function() {
+        a = Math.random() * 60;
+        b = Math.random() * 60;
+        map.moveTo('35.39.' + a + '.180,139.43.' + b + '.868');
+      }, 10000);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,9 @@
+#compdef daemon
+
+_arguments \
+'-c[change the current working directory to the root]' \
+'-f[redirect standard input, standard output and standard error to /dev/null]' \
+'-p[write the ID of the created process into the file]:file:_files' \
+'-u[run the program with the rights of user specified]:user:_users' \
+':command:_command_names -e' \
+'*::args:_normal'

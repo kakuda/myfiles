@@ -1,0 +1,50 @@
+JavaScript版地図APIのソースを解析する
+{{toc}}
+
+[[JavaScript版地図API|http://developer.yahoo.co.jp/map/map/V1/map.html]]は、HTMLのscriptタグのsrc属性に指定のURLを指定します。通常、JavaScriptファイルは静的なファイルであるため.jsの拡張子で終わるのですが、JavaScript版地図APIは動的に出力しています。しかし、ブラウザのアドレス欄にURLを指定すると、JavaScriptのソースが表示されます。他の色々なAPIと違い、JavaScript APIはソースコードが読める状態にあるのでHackするにはもってこいの素材です。
+
+! JavaScript APIのソースをダウンロードする
+
+まずはこのファイルをPerlのワンライナーでローカルに保存してみます。LWP::Simpleモジュールがインストールされているマシン上で
+ $ perl -MLWP::Simple -e 'print get("http://api.map.yahoo.co.jp/MapsService/js/V1/?appid=YahooDemo");' > yahoomaps.js
+
+とコマンドを実行すると、カレントディレクトリにyahoomaps.jsというファイルでダウンロードします。しかし、このyahoomaps.jsをエディタで開けてみると、スペースや改行、インデントが入っていない圧縮化された状態になっています。
+
+{{attach_view(yahoomaps.png)}}
+
+このままでは読みづらいため、何かしらの手段で整形する必要があります。
+
+! 圧縮化されたJavaScriptソースを整形する
+
+CPANには[[JavaScript::Swell|http://search.cpan.org/~yappo/JavaScript-Swell/lib/JavaScript/Swell.pm]]というJavaScriptコードを整形してくれるPerlモジュールがあります。このモジュールを使って再度ダウンロードしてみます。
+
+ $ perl -MLWP::Simple -MJavaScript::Swell -e '$js = get("http://api.map.yahoo.co.jp/MapsService/js/V1/?appid=YahooDemo"); print JavaScript::Swell->swell($js);' > yahoomaps-format.js
+
+カレントに作られたyahoomaps-format.jsをエディタで開けると、きれいに整形されていることが分かります。
+
+{{attach_view(yahoomaps_format.png)}}
+
+これで、提供されているAPIがどのような処理で実現しているのかを追っていくことができます。
+
+! HackをさらにHackする
+
+[[JavaScript版地図APIリファレンス|http://developer.yahoo.co.jp/map/reference.html]]には利用できるAPIの使い方が載っていますが、ソースコードを読んでいくと、リファレンスに載っていないけれども有用なAPIが幾つかあります。ここではその一つである、測地系変換を行う機能を紹介します。
+
+FirebugがインストールされたFirefoxで、JavaScript版地図APIを利用したページを開き、FirebugのConsoleペインで以下のコードを一行ずつ入力します。
+
+ var wgs84 = new YLLPoint("35.39.37.864", "139.43.45.223");
+ console.log(wgs84);
+ var tokyo = BesslWgs(1, wgs84);
+ console.log(tokyo);
+ var wgs = BesslWgs(0, tokyo);
+ console.log(wgs);
+
+Firebugのコンソールに世界測地系の緯度経度を日本測地系に、日本測地系の緯度経度を世界測地系に変換した結果をconsole.logで出力しています。
+
+{{attach_view(js_besslwgs.png)}}
+
+このように自前で計算を行うことなく、緯度経度の測地系変換が行えます。ただし、このAPIを含めドキュメントに記載されていないものは、今後のバージョンアップによって無くなったり変更したりする可能性があるため、影響の少ない範囲で利用するとよいでしょう。
+
+-- Naoyuki Kakuda
+! コメント
+{{comment}}

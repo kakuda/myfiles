@@ -1,0 +1,63 @@
+@charset "UTF-8";
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+}
+
+h1, h2, h3, h4, h5, h6, address {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 100%;
+}
+
+div, blockquote, p, pre, ul, ol, li, dl, dt, dd {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+}
+
+table, caption, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 100%;
+}
+
+hr {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+}
+
+iframe {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+}
+
+form, fieldset, input, button, select, optgroup, option, textarea,
+label, legend {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+}
+
+span, em, strong, dfn, code, samp, kbd, var, cite, abbr, acronym, q, br,
+ins, del, a, img, object {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-style: normal;
+  font-weight: inherit;
+  font-size: 100%;
+}

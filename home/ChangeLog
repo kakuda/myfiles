@@ -1,0 +1,28 @@
+2007-03-13 (Tue)  Naoyuki Kakuda  <kakuda@gmail.com>
+
+	* chuck: デモ動画がすごい。Java EE勉強会のポジペネタにいいかも。
+
+	* rails起動時のポート番号: ruby script/server --help で確認できる
+
+2007-02-28 (Wed)  Naoyuki Kakuda  <kakuda@gmail.com>
+
+	* PHP Tips: http://www.moskalyuk.com/blog/php-optimization-tips/1272
+	- staticメソッドが使えるなら使おう。速度は4倍になる
+	- __get, __set, __autoload は使わない
+	- require_once は重い
+	- include, requireで読み込むファイルはフルパスにしよう
+	- スクリプト開始時のUNIXタイムを $_SERVER['REQUEST_TIME'] で取れる
+	- strncasecmp関数やstrpbrk関数を使えるケースはこれらを使い、正規表現は使わない
+	- preg_replaceはstr_replaceより速い、しかし、strtrはpreg_replaceより４倍速い
+	- 引数を、単体か配列かで自動判別するようなコードは出来るだけ避ける
+	- @ を使ったエラー制御はとても遅い。→ @fputs($fp, "?");
+	- $row["id"] は　$row[id] より７倍速い
+	- PHPのエラーメッセージは重い( noticeとかwarningとか)
+	- for ($x=0; $x < count($array); $x) のように、forの中でcountを使うと毎回countが呼ばれるので使わない。
+
+2007-02-26 (Mon)  Naoyuki Kakuda  <kakuda@gmail.com>
+
+	* 翻訳メモリ: オープンソースにOmegaTというのがあるらしい
+
+	* ChangeLogをはじめる: メモの習慣がないのでどれだけ続くか不安
+

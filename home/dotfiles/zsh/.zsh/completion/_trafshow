@@ -1,0 +1,15 @@
+#compdef trafshow
+
+_arguments \
+'-v[print version number, compile-time definitions, and exit]' \
+'-p[do not put the interface(s) into promiscuous mode]' \
+'-n[do not convert numeric values to names]' \
+'-b[to place a backflow near to the main stream]' \
+'-a[to aggregate IP addresses using the prefix length]' \
+'-c[color config file instead of default /usr/local/etc/trafshow]:file:_files' \
+'-i[network interface name; all by default]:network interface:_net_interfaces' \
+'-s[to search & follow for string in the list show]' \
+'-u[UDP port number to listen for Cisco Netflow; default 9995]' \
+'-R[set the refresh-period of data show to seconds; default 2 sec]' \
+'-P[set the expired data purge-period to seconds; default 10 sec]' \
+'-F[use file as input for the filter expression]:file:_files'

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>Label</key>
+        <string>users.kaku.knkr.mission</string>
+        <key>LowPriorityIO</key>
+        <true/>
+        <key>Nice</key>
+        <integer>1</integer>
+        <key>ProgramArguments</key>
+        <array>
+           <string>/usr/bin/curl</string>
+           <string>http://localhost:2411/mission</string>
+        </array>
+        <key>StartInterval</key>
+        <integer>601</integer>
+    </dict>
+</plist>

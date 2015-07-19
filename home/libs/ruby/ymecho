@@ -1,0 +1,46 @@
+#!/usr/bin/ruby
+
+require "net-im-yahooj"
+
+class EchoClient < Net::IM::YahooJ::SimpleClient
+	def on_message(from, to, message, raw_message)
+		send_message(from, message)
+	end
+
+	def on_auth_ng(myid, mynick)
+		print "#{mynick}: auth failed.\n"
+	end
+
+#	def on_auth_ok(myid, mynick)
+#		print "ok\n"
+#	end
+
+	def on_disconnect()
+		print "disconnected.\n"
+		exit 0
+	end
+
+	def run(nick, pass)
+		login(nick, pass)
+		set_status(:none, "echo")
+		print "press RETURN to end.\n"
+		STDIN.gets
+	end
+end
+
+	nick, pass = *ARGV
+	if nick.nil? || nick.empty?
+		print "login: "
+		nick = STDIN.gets.chomp
+	end
+	if pass.nil? || pass.empty?
+		print "password: "
+		system("stty -echo")
+		begin
+			pass = STDIN.gets.chomp
+		ensure
+			print "\n"
+			system("stty echo")
+		end
+	end
+	EchoClient.new.run(nick, pass)

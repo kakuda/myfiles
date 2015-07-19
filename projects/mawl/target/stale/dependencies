@@ -1,0 +1,1 @@
+([:dependencies [[org.clojure/tools.nrepl "0.2.0-beta10"] [clojure-complete "0.2.1" :exclusions [org.clojure/clojure]] [org.clojure/clojure "1.4.0"] [clj-http "0.5.8"] [com.google.gerrit/juniversalchardet "1.0.3"]]])
